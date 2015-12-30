@@ -1,0 +1,99 @@
+{
+	"ImportPath": "github.com/fabric8io/docker-client/generator",
+	"GoVersion": "go1.5.2",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/docker/docker/api/types",
+			"Comment": "v1.9.1",
+			"Rev": "a34a1d598c6096ed8b5ce5219e77d68e5cd85462"
+		},
+		{
+			"ImportPath": "github.com/docker/distribution/digest",
+			"Rev": "20c4b7a1805a52753dfd593ee1cc35558722a0ce"
+		},
+		{
+			"ImportPath": "github.com/docker/distribution/registry/api/v2",
+			"Rev": "20c4b7a1805a52753dfd593ee1cc35558722a0ce"
+		},
+		{
+			"ImportPath": "github.com/docker/libtrust",
+			"Comment": "master",
+			"Rev": "9cbd2a1374f46905c68a4eb3694a130610adc62a"
+		},
+		{
+			"ImportPath": "github.com/opencontainers/runc/libcontainer/user",
+			"Comment": "v0.0.6",
+			"Rev": "cb04f038547ca823181c9baa4b989123674330e1"
+		},
+		{
+			"ImportPath": "github.com/gorilla/mux",
+			"Rev": "2aad27d3101b8183f8fa1bebdbc2cdb74fcef090"
+		},
+		{
+			"ImportPath": "github.com/gorilla/context",
+			"Rev": "1c83b3eabd45b6d76072b66b746c20815fb2872d"
+		},
+		{
+			"ImportPath": "golang.org/x/net/context",
+			"Rev": "c2528b2dd8352441850638a8bb678c2ad056fd3e"
+		},
+		{
+			"ImportPath": "github.com/Azure/go-ansiterm/winterm",
+			"Rev": "70b2c90b260171e829f1ebd7c17f600c11858dbe"
+		},
+		{
+			"ImportPath": "github.com/bugsnag/bugsnag-go",
+			"Comment": "v1.0.5",
+			"Rev": "9ee24c1db7e2c5b87e7228acb3e587a35124a041"
+		},
+		{
+			"ImportPath": "github.com/bugsnag/panicwrap",
+			"Rev": "e2c28503fcd0675329da73bf48b33404db873782"
+		},
+		{
+			"ImportPath": "github.com/bugsnag/osext",
+			"Rev": "0dd3f918b21bec95ace9dc86c7e70266cfc5c702"
+		},
+		{
+			"ImportPath": "github.com/gorilla/handlers",
+			"Rev": "1af6d56d7cd39d982856bc0cee11142baf392c52"
+		},
+		{
+			"ImportPath": "github.com/spf13/cobra",
+			"Rev": "b3f29e98e63a3618988a231fd02b45c1e6369d4f"
+		},
+		{
+			"ImportPath": "github.com/inconshreveable/mousetrap",
+			"Rev": "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
+		},
+		{
+			"ImportPath": "github.com/yvasiyarov/gorelic",
+			"Comment": "v0.0.6",
+			"Rev": "4dc1bb7ab951bc884feb2c009092b1a454152355"
+		},
+		{
+			"ImportPath": "github.com/yvasiyarov/go-metrics",
+			"Rev": "c25f46c4b94079672242ec48a545e7ca9ebe3aec"
+		},
+		{
+			"ImportPath": "github.com/yvasiyarov/newrelic_platform_go",
+			"Rev": "db03d6dfd965ebc22dbfd910567c641b326ff055"
+		},
+		{
+			"ImportPath": "github.com/garyburd/redigo",
+			"Rev": "836b6e58b3358112c8291565d01c35b8764070d7"
+		},
+		{
+			"ImportPath": "github.com/stevvooe/resumable",
+			"Rev": "eb352b28d119500cb0382a8379f639c1c8d65831"
+		},
+		{
+			"ImportPath": "github.com/Sirupsen/logrus",
+			"Comment": "v0.8.7",
+			"Rev": "418b41d23a1bf978c06faea5313ba194650ac088"
+		}
+	]
+}
