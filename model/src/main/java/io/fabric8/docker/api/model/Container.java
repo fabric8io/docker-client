@@ -18,7 +18,7 @@ import java.util.Map;
         "Id",
         "Name",
         "Image",
-        "ImageId",
+        "ImageID",
         "Command",
         "Created",
         "Ports",
@@ -35,14 +35,13 @@ import java.util.Map;
 @Buildable(editableEnabled = true, validationEnabled = true, generateBuilderPackage = true, builderPackage = "io.fabric8.docker.api.builder", inline = @Inline(type = Doneable.class, prefix = "Doneable", value = "done"))
 public class Container {
 
-
     @JsonProperty("Id")
     private String id;
     @JsonProperty("Names")
     private List<String> names = new ArrayList<String>();
     @JsonProperty("Image")
     private String image;
-    @JsonProperty("ImageId")
+    @JsonProperty("ImageID")
     private String  imageId;
     @JsonProperty("Command")
     private String  command;
@@ -186,6 +185,4 @@ public class Container {
     public void setSummaryNetworkSettings(NetworkSettings summaryNetworkSettings) {
         this.summaryNetworkSettings = summaryNetworkSettings;
     }
-
-
 }

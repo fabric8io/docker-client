@@ -16,7 +16,6 @@
 
 package io.fabric8.docker.client.dsl.annotations;
 
-import io.sundr.dsl.annotations.All;
 import io.sundr.dsl.annotations.Keyword;
 import io.sundr.dsl.annotations.Only;
 
@@ -28,7 +27,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.SOURCE)
 @Keyword
-@All({NamedOption.class})
-@Only({NamedOption.class, CreateOption.class})
+@Only(CreateOption.class)
 public @interface CreateOption {
 }
