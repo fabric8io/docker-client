@@ -8,6 +8,7 @@ import io.fabric8.docker.api.model.ContainerInfo;
 import io.fabric8.docker.api.model.ContainerProcessList;
 import io.fabric8.docker.api.model.ContainerState;
 import io.fabric8.docker.api.model.InlineContainerCreate;
+import io.fabric8.docker.api.model.Stats;
 import io.fabric8.docker.client.InputOutputHandle;
 import io.fabric8.docker.client.OutputHandle;
 import io.fabric8.docker.client.dsl.annotations.CreateOption;
@@ -109,13 +110,13 @@ public interface ContainerDSL {
     @OtherOption
     @All({NamedOption.class})
     @InterfaceName("ContainerResource")
-    ContainerProcessList stats();
+    Stats stats();
 
     @Terminal
     @All({NamedOption.class})
     @InterfaceName("ContainerResource")
     @OtherOption
-    ContainerState stats(Boolean args);
+    Stats stats(Boolean args);
 
     @Terminal
     @OtherOption
@@ -163,7 +164,7 @@ public interface ContainerDSL {
     @OtherOption
     @All({NamedOption.class})
     @InterfaceName("ContainerResource")
-    Boolean kill(int signal);
+    Boolean kill(String signal);
 
     @Terminal
     @OtherOption

@@ -11,6 +11,7 @@ import io.fabric8.docker.api.model.ContainerProcessList;
 import io.fabric8.docker.api.model.ContainerState;
 import io.fabric8.docker.api.model.DoneableContainerCreateRequest;
 import io.fabric8.docker.api.model.InlineContainerCreate;
+import io.fabric8.docker.api.model.Stats;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.client.InputOutputHandle;
@@ -39,7 +40,7 @@ public class ContainerOperationImpl extends OperationSupport implements Containe
     }
 
     @Override
-    public ContainerResourceOrLogsOrInspectOrAttachOrArhciveInterface<ContainerProcessList, List<ContainerChange>, InputStream, ContainerState, Boolean, OutputHandle, ContainerInfo, InputOutputHandle, OutputStream> withName(String name) {
+    public ContainerResourceOrLogsOrInspectOrAttachOrArhciveInterface<ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, OutputHandle, ContainerInfo, InputOutputHandle, OutputStream> withName(String name) {
         return new ContainerNamedOperationImpl(client, config, name);
     }
 

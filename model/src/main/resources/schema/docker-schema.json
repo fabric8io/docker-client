@@ -14,6 +14,158 @@
       "additionalProperties": true,
       "javaType": "io.fabric8.docker.api.model.AuthResponse"
     },
+    "docker_BlkioStatEntry": {
+      "type": "object",
+      "description": "",
+      "properties": {
+        "major": {
+          "type": "integer",
+          "description": "",
+          "javaType": "Long"
+        },
+        "minor": {
+          "type": "integer",
+          "description": "",
+          "javaType": "Long"
+        },
+        "op": {
+          "type": "string",
+          "description": ""
+        },
+        "value": {
+          "type": "integer",
+          "description": "",
+          "javaType": "Long"
+        }
+      },
+      "additionalProperties": true,
+      "javaType": "io.fabric8.docker.api.model.BlkioStatEntry"
+    },
+    "docker_BlkioStats": {
+      "type": "object",
+      "description": "",
+      "properties": {
+        "io_merged_recursive": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "$ref": "#/definitions/docker_BlkioStatEntry",
+            "javaType": "io.fabric8.docker.api.model.BlkioStatEntry"
+          }
+        },
+        "io_queue_recursive": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "$ref": "#/definitions/docker_BlkioStatEntry",
+            "javaType": "io.fabric8.docker.api.model.BlkioStatEntry"
+          }
+        },
+        "io_service_bytes_recursive": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "$ref": "#/definitions/docker_BlkioStatEntry",
+            "javaType": "io.fabric8.docker.api.model.BlkioStatEntry"
+          }
+        },
+        "io_service_time_recursive": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "$ref": "#/definitions/docker_BlkioStatEntry",
+            "javaType": "io.fabric8.docker.api.model.BlkioStatEntry"
+          }
+        },
+        "io_serviced_recursive": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "$ref": "#/definitions/docker_BlkioStatEntry",
+            "javaType": "io.fabric8.docker.api.model.BlkioStatEntry"
+          }
+        },
+        "io_time_recursive": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "$ref": "#/definitions/docker_BlkioStatEntry",
+            "javaType": "io.fabric8.docker.api.model.BlkioStatEntry"
+          }
+        },
+        "io_wait_time_recursive": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "$ref": "#/definitions/docker_BlkioStatEntry",
+            "javaType": "io.fabric8.docker.api.model.BlkioStatEntry"
+          }
+        },
+        "sectors_recursive": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "$ref": "#/definitions/docker_BlkioStatEntry",
+            "javaType": "io.fabric8.docker.api.model.BlkioStatEntry"
+          }
+        }
+      },
+      "additionalProperties": true,
+      "javaType": "io.fabric8.docker.api.model.BlkioStats"
+    },
+    "docker_CPUStats": {
+      "type": "object",
+      "description": "",
+      "properties": {
+        "cpu_usage": {
+          "$ref": "#/definitions/docker_CPUUsage",
+          "javaType": "io.fabric8.docker.api.model.CPUUsage"
+        },
+        "system_cpu_usage": {
+          "type": "integer",
+          "description": "",
+          "javaType": "Long"
+        },
+        "throttling_data": {
+          "$ref": "#/definitions/docker_ThrottlingData",
+          "javaType": "io.fabric8.docker.api.model.ThrottlingData"
+        }
+      },
+      "additionalProperties": true,
+      "javaType": "io.fabric8.docker.api.model.CPUStats"
+    },
+    "docker_CPUUsage": {
+      "type": "object",
+      "description": "",
+      "properties": {
+        "percpu_usage": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "type": "integer",
+            "description": "",
+            "javaType": "Long"
+          }
+        },
+        "total_usage": {
+          "type": "integer",
+          "description": "",
+          "javaType": "Long"
+        },
+        "usage_in_kernelmode": {
+          "type": "integer",
+          "description": "",
+          "javaType": "Long"
+        },
+        "usage_in_usermode": {
+          "type": "integer",
+          "description": "",
+          "javaType": "Long"
+        }
+      },
+      "additionalProperties": true,
+      "javaType": "io.fabric8.docker.api.model.CPUUsage"
+    },
     "docker_ContainerChange": {
       "type": "object",
       "description": "",
@@ -772,6 +924,44 @@
       "additionalProperties": true,
       "javaType": "io.fabric8.docker.api.model.Info"
     },
+    "docker_MemoryStats": {
+      "type": "object",
+      "description": "",
+      "properties": {
+        "failcnt": {
+          "type": "integer",
+          "description": "",
+          "javaType": "Long"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "",
+          "javaType": "Long"
+        },
+        "max_usage": {
+          "type": "integer",
+          "description": "",
+          "javaType": "Long"
+        },
+        "stats": {
+          "type": "object",
+          "description": "",
+          "additionalProperties": {
+            "type": "integer",
+            "description": "",
+            "javaType": "Long"
+          },
+          "javaType": "java.util.Map\u003cString,Long\u003e"
+        },
+        "usage": {
+          "type": "integer",
+          "description": "",
+          "javaType": "Long"
+        }
+      },
+      "additionalProperties": true,
+      "javaType": "io.fabric8.docker.api.model.MemoryStats"
+    },
     "docker_MountPoint": {
       "type": "object",
       "description": "",
@@ -1033,6 +1223,57 @@
       "additionalProperties": true,
       "javaType": "io.fabric8.docker.api.model.Port"
     },
+    "docker_Stats": {
+      "type": "object",
+      "description": "",
+      "properties": {
+        "blkio_stats": {
+          "$ref": "#/definitions/docker_BlkioStats",
+          "javaType": "io.fabric8.docker.api.model.BlkioStats"
+        },
+        "cpu_stats": {
+          "$ref": "#/definitions/docker_CPUStats",
+          "javaType": "io.fabric8.docker.api.model.CPUStats"
+        },
+        "memory_stats": {
+          "$ref": "#/definitions/docker_MemoryStats",
+          "javaType": "io.fabric8.docker.api.model.MemoryStats"
+        },
+        "precpu_stats": {
+          "$ref": "#/definitions/docker_CPUStats",
+          "javaType": "io.fabric8.docker.api.model.CPUStats"
+        },
+        "read": {
+          "type": "string",
+          "description": ""
+        }
+      },
+      "additionalProperties": true,
+      "javaType": "io.fabric8.docker.api.model.Stats"
+    },
+    "docker_ThrottlingData": {
+      "type": "object",
+      "description": "",
+      "properties": {
+        "periods": {
+          "type": "integer",
+          "description": "",
+          "javaType": "Long"
+        },
+        "throttled_periods": {
+          "type": "integer",
+          "description": "",
+          "javaType": "Long"
+        },
+        "throttled_time": {
+          "type": "integer",
+          "description": "",
+          "javaType": "Long"
+        }
+      },
+      "additionalProperties": true,
+      "javaType": "io.fabric8.docker.api.model.ThrottlingData"
+    },
     "docker_Version": {
       "type": "object",
       "description": "",
@@ -1137,6 +1378,34 @@
       },
       "additionalProperties": true,
       "javaType": "io.fabric8.docker.api.model.VolumesListResponse"
+    },
+    "docker_cliconfig_AuthConfig": {
+      "type": "object",
+      "description": "",
+      "properties": {
+        "auth": {
+          "type": "string",
+          "description": ""
+        },
+        "email": {
+          "type": "string",
+          "description": ""
+        },
+        "password": {
+          "type": "string",
+          "description": ""
+        },
+        "serveraddress": {
+          "type": "string",
+          "description": ""
+        },
+        "username": {
+          "type": "string",
+          "description": ""
+        }
+      },
+      "additionalProperties": true,
+      "javaType": "io.fabric8.docker.api.model.AuthConfig"
     },
     "docker_nat_PortBinding": {
       "type": "object",
@@ -1835,6 +2104,10 @@
       "$ref": "#/definitions/docker_network_Address",
       "javaType": "io.fabric8.docker.api.model.Address"
     },
+    "AuthConfig": {
+      "$ref": "#/definitions/docker_cliconfig_AuthConfig",
+      "javaType": "io.fabric8.docker.api.model.AuthConfig"
+    },
     "AuthResponse": {
       "$ref": "#/definitions/docker_AuthResponse",
       "javaType": "io.fabric8.docker.api.model.AuthResponse"
@@ -1990,6 +2263,10 @@
     "ServiceConfig": {
       "$ref": "#/definitions/docker_registry_ServiceConfig",
       "javaType": "io.fabric8.docker.api.model.ServiceConfig"
+    },
+    "Stats": {
+      "$ref": "#/definitions/docker_Stats",
+      "javaType": "io.fabric8.docker.api.model.Stats"
     },
     "StrSlice": {
       "$ref": "#/definitions/docker_stringutils_StrSlice",

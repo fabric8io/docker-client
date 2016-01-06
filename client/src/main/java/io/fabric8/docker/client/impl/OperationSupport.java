@@ -40,11 +40,20 @@ import java.util.concurrent.ExecutionException;
 
 public class OperationSupport {
 
-
   public static final MediaType MEDIA_TYPE_RAW_STREAM = MediaType.parse("application/vnd.docker.raw-stream");
   public static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
+  public static final MediaType MEDIA_TYPE_TEXT = MediaType.parse("text/play; charset=utf-8");
+  public static final MediaType MEDIA_TYPE_TAR = MediaType.parse("application/tar");
+  public static final MediaType MEDIA_TYPE_BZIP2 = MediaType.parse("application/x-bzip2");
+
+  public static final String Q = "?";
+  public static final String A = "&";
+  public static final String EQUALS = "=";
+
   protected static final ObjectMapper JSON_MAPPER = new ObjectMapper();
   protected static final ObjectMapper YAML_MAPPER = new ObjectMapper(new YAMLFactory());
+
+  protected static final String IMAGES_RESOURCE = "images";
   
   protected final OkHttpClient client;
   protected final Config config;
@@ -164,6 +173,18 @@ public class OperationSupport {
     return handleResponse(requestBuilder, successStatusCode, JSON_MAPPER.getTypeFactory().constructType(type));
   }
 
+  protected Response handleResponse(Request.Builder requestBuilder, int successStatusCode) throws ExecutionException, InterruptedException, DockerClientException, IOException {
+    Request request = requestBuilder.build();
+    Response response = null;
+    try {
+      response = client.newCall(request).execute();
+    } catch (Exception e) {
+      throw requestException(request, e);
+    }
+    assertResponseCode(request, response, successStatusCode);
+    return response;
+  }
+
   protected <T> T handleResponse(Request.Builder requestBuilder, int successStatusCode, JavaType type) throws ExecutionException, InterruptedException, DockerClientException, IOException {
     Request request = requestBuilder.build();
     Response response = null;
@@ -178,6 +199,18 @@ public class OperationSupport {
     } else {
       return null;
     }
+  }
+
+  protected InputStream handleResponseStream(Request.Builder requestBuilder, int successStatusCode) throws ExecutionException, InterruptedException, DockerClientException, IOException {
+    Request request = requestBuilder.build();
+    Response response = null;
+    try {
+      response = client.newCall(request).execute();
+    } catch (Exception e) {
+      throw requestException(request, e);
+    }
+    assertResponseCode(request, response, successStatusCode);
+    return response.body().byteStream();
   }
 
   /**
@@ -200,8 +233,15 @@ public class OperationSupport {
   DockerClientException requestFailure(Request request, Response response) {
     StringBuilder sb = new StringBuilder();
     sb.append("Failure executing: ").append(request.method())
-      .append(" at: ").append(request.urlString()).append(".")
-      .append(" Status:").append(response.code());
+            .append(" at: ").append(request.urlString()).append(".")
+            .append(" Status:").append(response.code()).append(".")
+            .append(" Message: ").append(response.message()).append(".");
+    try {
+      String body = response.body().string();
+      sb.append(" Body: ").append(body);
+    } catch (Throwable t) {
+      sb.append(" Body: <unreadable>");
+    }
     return new DockerClientException(sb.toString(), response.code());
   }
 

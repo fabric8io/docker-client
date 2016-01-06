@@ -1,6 +1,7 @@
 package io.fabric8.docker.client.dsl.image;
 
 
+import io.fabric8.docker.api.model.Image;
 import io.fabric8.docker.api.model.ImageDelete;
 import io.fabric8.docker.api.model.ImageHistory;
 import io.fabric8.docker.client.dsl.annotations.CreateOption;
@@ -20,6 +21,7 @@ import io.sundr.dsl.annotations.InterfaceName;
 import io.sundr.dsl.annotations.Multiple;
 import io.sundr.dsl.annotations.Terminal;
 
+import java.io.InputStream;
 import java.util.List;
 
 @Dsl
@@ -40,22 +42,20 @@ public interface ImageDSL {
     @ListOption
     void list();
 
-    @ListOption
+    @All({ListOption.class})
+    void filter(String key);
+
     @All({ListOption.class})
     @Multiple
     void filters(String key, String value);
 
-    @ListOption
+    @Terminal
     @All({ListOption.class})
-    void filter(String key);
+    List<Image> allImages();
 
     @Terminal
     @All({ListOption.class})
-    void allImages();
-
-    @Terminal
-    @All({ListOption.class})
-    void imagesWithoutIntermediate();
+    List<Image> endImages();
 
     @BuildOption
     void build();
@@ -73,9 +73,11 @@ public interface ImageDSL {
     void pulling();
 
     @All({BuildOption.class})
+    @InterfaceName("RemoveIntermediateInterface")
     void removingIntermediateOnSuccess();
 
     @All({BuildOption.class})
+    @InterfaceName("RemoveIntermediateInterface")
     void alwaysRemovingIntermediate();
 
     @All({BuildOption.class})
@@ -99,17 +101,18 @@ public interface ImageDSL {
     @All({BuildOption.class})
     void withBuildArgs(String buildArgs);
 
-    @Terminal
     @All({BuildOption.class})
-    String fromDockerFile(String path);
+    void usingDockerFile(String dockerFile);
 
     @Terminal
     @All({BuildOption.class})
-    String fromRemote(String path);
+    @InterfaceName("FromPathInterface")
+    InputStream fromFolder(String folder);
 
     @Terminal
     @All({BuildOption.class})
-    String fromRemote();
+    @InterfaceName("FromPathInterface")
+    InputStream forArchive(String archive);
 
     @CreateOption
     void create();

@@ -7,6 +7,7 @@ import io.fabric8.docker.client.dsl.DockerDSL;
 import io.fabric8.docker.client.dsl.container.ContainerInterface;
 import io.fabric8.docker.client.dsl.image.ImagesInterface;
 import io.fabric8.docker.client.impl.ContainerOperationImpl;
+import io.fabric8.docker.client.impl.ImageOperationImpl;
 import io.fabric8.docker.client.utils.HttpClientUtils;
 
 import java.net.MalformedURLException;
@@ -47,6 +48,6 @@ public class DefaultDockerClient implements DockerClient {
 
     @Override
     public ImagesInterface images() {
-        return null;
+        return new ImageOperationImpl(client, configuration);
     }
 }

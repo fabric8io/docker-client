@@ -1,10 +1,13 @@
 package io.fabric8.docker.client.impl;
 
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
 import io.fabric8.docker.api.model.ContainerChange;
 import io.fabric8.docker.api.model.ContainerInfo;
 import io.fabric8.docker.api.model.ContainerProcessList;
 import io.fabric8.docker.api.model.ContainerState;
+import io.fabric8.docker.api.model.Stats;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.client.InputOutputHandle;
@@ -21,7 +24,12 @@ import java.net.URL;
 import java.util.List;
 
 public class ContainerNamedOperationImpl extends BaseContainerOperation implements
-        ContainerResourceOrLogsOrInspectOrAttachOrArhciveInterface<ContainerProcessList, List<ContainerChange>, InputStream, ContainerState, Boolean, OutputHandle, ContainerInfo, InputOutputHandle, OutputStream> {
+        ContainerResourceOrLogsOrInspectOrAttachOrArhciveInterface<ContainerProcessList,List<ContainerChange>,InputStream,Stats,Boolean,OutputHandle,ContainerInfo,InputOutputHandle,OutputStream> {
+
+    private static final String REMOVE_VOLUMES = "v";
+    private static final String TIMEOUT = "t";
+    private static final String SIGNAL = "signal";
+    private static final String SIGINIT = "SIGNIT";
 
     public ContainerNamedOperationImpl(OkHttpClient client, Config config, String name) {
         super(client, config, name, null);
@@ -62,67 +70,140 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
 
     @Override
     public InputStream export() {
-        return null;
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append(getResourceUrl());
+            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, "");
+            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), "start"));
+            return handleResponseStream(requestBuilder, 200);
+        } catch (Exception e) {
+            throw DockerClientException.launderThrowable(e);
+        }
     }
 
     @Override
-    public ContainerProcessList stats() {
-        return null;
+    public Stats stats() {
+        return stats(false);
     }
 
     @Override
-    public ContainerState stats(Boolean args) {
-        return null;
+    public Stats stats(Boolean stream) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append(URLUtils.join(getResourceUrl().toString(), "stats"));
+            sb.append("?stream=").append(stream);
+            return handleGet(new URL(sb.toString()), Stats.class);
+        } catch (Exception e) {
+            throw DockerClientException.launderThrowable(e);
+        }
     }
 
     @Override
     public Boolean resize(int h, int w) {
-        return null;
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append(getResourceUrl());
+            sb.append("?h=").append(h);
+            sb.append("&w=").append(w);
+            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, "");
+            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), "resize"));
+            handleResponse(requestBuilder, 200);
+            return true;
+        } catch (Exception e) {
+            throw DockerClientException.launderThrowable(e);
+        }
     }
 
     @Override
     public Boolean start() {
-        return null;
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append(getResourceUrl());
+            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, "");
+            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), "start"));
+            handleResponse(requestBuilder, 204);
+            return true;
+        } catch (Exception e) {
+            throw DockerClientException.launderThrowable(e);
+        }
     }
 
     @Override
     public Boolean stop() {
-        return null;
+        return stop(0);
     }
 
     @Override
     public Boolean stop(int time) {
-        return null;
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append(getResourceUrl());
+            sb.append("?").append(TIMEOUT).append("=").append(time);
+            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, "");
+            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), "stop"));
+            handleResponse(requestBuilder, 204);
+            return true;
+        } catch (Exception e) {
+            throw DockerClientException.launderThrowable(e);
+        }
     }
 
     @Override
     public Boolean restart() {
-        return null;
+        return restart(0);
     }
 
     @Override
     public Boolean restart(int time) {
-        return null;
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append(getResourceUrl());
+            sb.append("?").append(TIMEOUT).append("=").append(time);
+            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, "");
+            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), "restart"));
+            handleResponse(requestBuilder, 204);
+            return true;
+        } catch (Exception e) {
+            throw DockerClientException.launderThrowable(e);
+        }
     }
 
     @Override
     public Boolean kill() {
-        return null;
+        return kill(SIGINIT);
     }
 
     @Override
-    public Boolean kill(int signal) {
-        return null;
+    public Boolean kill(String signal) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append(getResourceUrl());
+            sb.append("?").append(SIGNAL).append("=").append(signal);
+            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, "");
+            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), "kill"));
+            handleResponse(requestBuilder, 204);
+            return true;
+        } catch (Exception e) {
+            throw DockerClientException.launderThrowable(e);
+        }
     }
 
     @Override
     public Boolean remove() {
-        return null;
+        return remove(false);
     }
 
     @Override
     public Boolean remove(Boolean removeVolumes) {
-        return null;
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append(getResourceUrl());
+            sb.append("?").append(REMOVE_VOLUMES).append(removeVolumes);
+            handleDelete(getResourceUrl());
+            return true;
+        } catch (Exception e) {
+            throw DockerClientException.launderThrowable(e);
+        }
     }
 
     @Override

@@ -30,6 +30,7 @@ import (
 	"github.com/docker/docker/pkg/stringutils"
 	"github.com/docker/docker/registry"
 	"github.com/docker/docker/runconfig"
+	"github.com/docker/docker/cliconfig"
 	"github.com/fabric8io/docker-client/generator/pkg/schemagen"
 )
 
@@ -78,6 +79,8 @@ type Schema struct {
 	NetworkCreateResponse       api.NetworkCreateResponse
 	NetworkConnect              api.NetworkConnect
 	NetworkDisconnect           api.NetworkDisconnect
+	Stats                       api.Stats
+	AuthConfig					cliconfig.AuthConfig
 	PortBinding                 nat.PortBinding
 }
 
@@ -87,6 +90,7 @@ func main() {
 		{"github.com/docker/docker/api/types/network", "io.fabric8.docker.api.model", "docker_network_"},
 		{"github.com/docker/docker/registry", "io.fabric8.docker.api.model", "docker_registry_"},
 		{"github.com/docker/docker/runconfig", "io.fabric8.docker.api.model", "docker_runconfig_"},
+		{"github.com/docker/docker/cliconfig", "io.fabric8.docker.api.model", "docker_cliconfig_"},
 		{"github.com/docker/docker/daemon/network", "io.fabric8.docker.api.model", "docker_network_"},
 		{"github.com/docker/docker/pkg/nat", "io.fabric8.docker.api.model", "docker_nat_"},
 		{"github.com/docker/docker/pkg/stringutils", "io.fabric8.docker.api.model", "docker_stringutils_"},
