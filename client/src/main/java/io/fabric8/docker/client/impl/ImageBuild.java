@@ -3,57 +3,56 @@ package io.fabric8.docker.client.impl;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.dsl.image.BuildArgsOrUsingDockerFileOrFromPathInterface;
-import io.fabric8.docker.client.dsl.image.CpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface;
-import io.fabric8.docker.client.dsl.image.CpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface;
-import io.fabric8.docker.client.dsl.image.CpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface;
-import io.fabric8.docker.client.dsl.image.CpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface;
+import io.fabric8.docker.client.ImageBuildListener;
+import io.fabric8.docker.client.OutputHandle;
+import io.fabric8.docker.client.dsl.image.BuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface;
+import io.fabric8.docker.client.dsl.image.CpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface;
+import io.fabric8.docker.client.dsl.image.CpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface;
+import io.fabric8.docker.client.dsl.image.CpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface;
+import io.fabric8.docker.client.dsl.image.CpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface;
 import io.fabric8.docker.client.dsl.image.FromPathInterface;
-import io.fabric8.docker.client.dsl.image.MemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface;
-import io.fabric8.docker.client.dsl.image.NoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface;
-import io.fabric8.docker.client.dsl.image.PullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface;
-import io.fabric8.docker.client.dsl.image.RemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface;
-import io.fabric8.docker.client.dsl.image.RepositoryNameOrSupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface;
-import io.fabric8.docker.client.dsl.image.SupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface;
-import io.fabric8.docker.client.dsl.image.SwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface;
-import io.fabric8.docker.client.dsl.image.UsingDockerFileOrFromPathInterface;
+import io.fabric8.docker.client.dsl.image.MemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface;
+import io.fabric8.docker.client.dsl.image.NoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface;
+import io.fabric8.docker.client.dsl.image.PullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface;
+import io.fabric8.docker.client.dsl.image.RemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface;
+import io.fabric8.docker.client.dsl.image.RepositoryNameOrSupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface;
+import io.fabric8.docker.client.dsl.image.SupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface;
+import io.fabric8.docker.client.dsl.image.SwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface;
+import io.fabric8.docker.client.dsl.image.UsingDockerFileOrUsingListenerOrFromPathInterface;
+import io.fabric8.docker.client.dsl.image.UsingListenerOrFromPathInterface;
 import io.fabric8.docker.client.utils.Utils;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
-import org.apache.commons.compress.utils.IOUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.concurrent.TimeUnit;
 
 public class ImageBuild extends OperationSupport implements
-        RepositoryNameOrSupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream>,
-        MemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream>,
-        RemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream>,
-        NoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream>,
-        UsingDockerFileOrFromPathInterface<InputStream>,
-        CpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream>,
-        BuildArgsOrUsingDockerFileOrFromPathInterface<InputStream>,
-        CpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream>,
-        CpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream>,
-        SwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream>,
-        PullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream>,
-        SupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream>,
-        CpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream> {
-
-
+        RepositoryNameOrSupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle>,
+        MemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle>,
+        RemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle>,
+        PullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle>,
+        NoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle>,
+        UsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle>,
+        CpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle>,
+        BuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle>,
+        CpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle>,
+        CpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle>,
+        SwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle>,
+        SupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle>,
+        CpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle>,
+        UsingListenerOrFromPathInterface<OutputHandle> {
 
     private static final String BUILD_OPERATION = "build";
 
@@ -80,6 +79,20 @@ public class ImageBuild extends OperationSupport implements
     private static final String DEFAULT_DOCKERFILE = "Dockerfile";
     private static final String DEFAULT_TEMP_DIR = System.getProperty("tmp.dir", "/tmp");
 
+    private static final ImageBuildListener NULL_LISTENER = new ImageBuildListener() {
+        @Override
+        public void onSuccess(String imagedId) {
+        }
+
+        @Override
+        public void onError(String messsage) {
+        }
+
+        @Override
+        public void onEvent(String event) {
+        }
+    };
+
     private final String dockerFile;
     private final String repositoryName;
     private final String buildArgs;
@@ -94,13 +107,14 @@ public class ImageBuild extends OperationSupport implements
     private final Integer cpus;
     private final String memorySize;
     private final String swapSize;
+    private final ImageBuildListener listener;
 
     public ImageBuild(OkHttpClient client, Config config) {
-        this(client, config, null, DEFAULT_DOCKERFILE, false, null, false, true, false, false, 0, 0, 0, 0, "0", "0");
+        this(client, config, null, DEFAULT_DOCKERFILE, false, null, false, true, false, false, 0, 0, 0, 0, "0", "0", NULL_LISTENER);
     }
 
-    public ImageBuild(OkHttpClient client, Config config, String repositoryName, String dockerFile, Boolean noCache, String buildArgs, Boolean pulling, Boolean alwaysRemoveIntermediate, Boolean removeIntermediateOnSuccess, Boolean supressingVerboseOutput, Integer cpuPeriodMicros, Integer cpuQuotaMicros, Integer cpuShares, Integer cpus, String memorySize, String swapSize) {
-        super(client, config, "/v1.20/"+BUILD_OPERATION, null, null);
+    public ImageBuild(OkHttpClient client, Config config, String repositoryName, String dockerFile, Boolean noCache, String buildArgs, Boolean pulling, Boolean alwaysRemoveIntermediate, Boolean removeIntermediateOnSuccess, Boolean supressingVerboseOutput, Integer cpuPeriodMicros, Integer cpuQuotaMicros, Integer cpuShares, Integer cpus, String memorySize, String swapSize, ImageBuildListener listener) {
+        super(client, config, BUILD_OPERATION, null, null);
         this.dockerFile = dockerFile;
         this.buildArgs = buildArgs;
         this.pulling = pulling;
@@ -115,10 +129,11 @@ public class ImageBuild extends OperationSupport implements
         this.swapSize = swapSize;
         this.repositoryName = repositoryName;
         this.noCache = noCache;
+        this.listener = listener;
     }
 
     @Override
-    public InputStream fromFolder(String path) {
+    public OutputHandle fromFolder(String path) {
         try {
             final Path root = Paths.get(path);
             File tempFile = Files.createTempFile(Paths.get(DEFAULT_TEMP_DIR), TEMP_PREFIX, TEMP_SUFFIX).toFile();
@@ -153,7 +168,7 @@ public class ImageBuild extends OperationSupport implements
     }
 
     @Override
-    public InputStream forArchive(String path) {
+    public OutputHandle forArchive(String path) {
         try {
 
             StringBuilder sb = new StringBuilder();
@@ -204,13 +219,14 @@ public class ImageBuild extends OperationSupport implements
             }
 
             RequestBody body = RequestBody.create(MEDIA_TYPE_TAR, new File(path));
-            Request.Builder requestBuilder = new Request.Builder()
+            Request request = new Request.Builder()
                     .header("X-Registry-Config", java.util.Base64.getUrlEncoder().encodeToString(JSON_MAPPER.writeValueAsString(config.getAuthConfigs()).getBytes("UTF-8")))
                     .post(body)
-                    .url(sb.toString());
+                    .url(sb.toString()).build();
 
-            Response response = handleResponse(requestBuilder, 200);
-            return response.body().byteStream();
+            ImageBuildHandle handle = new ImageBuildHandle(config.getImageBuildTimeout(), TimeUnit.MILLISECONDS, listener);
+            client.newCall(request).enqueue(handle);
+            return handle;
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
         }
@@ -218,94 +234,77 @@ public class ImageBuild extends OperationSupport implements
 
 
     @Override
-    public MemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream> alwaysRemovingIntermediate() {
-        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, true, false, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize);
+    public MemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle> alwaysRemovingIntermediate() {
+        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, true, false, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, listener);
     }
 
     @Override
-    public RemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream> pulling() {
-        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, true, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize);
+    public RemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle> pulling() {
+        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, true, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, listener);
     }
 
     @Override
-    public MemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream> removingIntermediateOnSuccess() {
-        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, false, true, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize);
+    public MemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle> removingIntermediateOnSuccess() {
+        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, false, true, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, listener);
     }
 
     @Override
-    public NoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream> supressingVerboseOutput() {
-        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, true, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize);
+    public NoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle> supressingVerboseOutput() {
+        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, true, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, listener);
     }
 
     @Override
-    public UsingDockerFileOrFromPathInterface<InputStream> withBuildArgs(String buildArgs) {
-        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize);
+    public UsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle> withBuildArgs(String buildArgs) {
+        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, listener);
     }
 
     @Override
-    public CpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream> withCpuPeriod(int cpuPeriodMicros) {
-        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize);
+    public CpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle> withCpuPeriod(int cpuPeriodMicros) {
+        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, listener);
     }
 
     @Override
-    public BuildArgsOrUsingDockerFileOrFromPathInterface<InputStream> withCpuQuota(int cpuQuotaMicros) {
-        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize);
+    public BuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle> withCpuQuota(int cpuQuotaMicros) {
+        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, listener);
     }
 
     @Override
-    public CpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream> withCpuShares(int cpuShares) {
-        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize);
+    public CpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle> withCpuShares(int cpuShares) {
+        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, listener);
     }
 
     @Override
-    public CpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream> withCpus(int cpus) {
-        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize);
+    public CpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle> withCpus(int cpus) {
+        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, listener);
     }
 
     @Override
-    public SwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream> withMemory(String memorySize) {
-        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize);
+    public SwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle> withMemory(String memorySize) {
+        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, listener);
     }
 
     @Override
-    public PullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream> withNoCache() {
-        return new ImageBuild(client, config, repositoryName, dockerFile, true, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize);
+    public PullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle> withNoCache() {
+        return new ImageBuild(client, config, repositoryName, dockerFile, true, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, listener);
     }
 
     @Override
-    public SupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream> withRepositoryName(String repositoryName) {
-        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize);
+    public SupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle> withRepositoryName(String repositoryName) {
+        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, listener);
     }
 
     @Override
-    public CpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream> withSwap(String swapSize) {
-        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize);
+    public CpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle> withSwap(String swapSize) {
+        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, listener);
     }
 
     @Override
-    public FromPathInterface<InputStream> usingDockerFile(String dockerFile) {
-        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize);
+    public UsingListenerOrFromPathInterface<OutputHandle> usingDockerFile(String dockerFile) {
+        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, listener);
     }
 
-
-    private void addFileToTar(TarArchiveOutputStream out, String path, String base)
-            throws IOException {
-        File current = new File(path);
-        String entryName = base + current.getName();
-        TarArchiveEntry tarEntry = new TarArchiveEntry(current, entryName);
-        out.putArchiveEntry(tarEntry);
-
-        if (current.isFile()) {
-            IOUtils.copy(new FileInputStream(current), out);
-            out.closeArchiveEntry();
-        } else {
-            out.closeArchiveEntry();
-            File[] children = current.listFiles();
-            if (children != null) {
-                for (File child : children) {
-                    addFileToTar(out, child.getAbsolutePath(), entryName + "/");
-                }
-            }
-        }
+    @Override
+    public FromPathInterface<OutputHandle> usingListener(ImageBuildListener listener) {
+        return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, listener);
     }
 }

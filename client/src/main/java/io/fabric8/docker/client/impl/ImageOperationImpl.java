@@ -5,13 +5,13 @@ import io.fabric8.docker.api.model.Image;
 import io.fabric8.docker.api.model.ImageDelete;
 import io.fabric8.docker.api.model.ImageHistory;
 import io.fabric8.docker.client.Config;
+import io.fabric8.docker.client.OutputHandle;
 import io.fabric8.docker.client.dsl.image.FilterOrFiltersOrAllImagesOrEndImagesInterface;
 import io.fabric8.docker.client.dsl.image.ImageInspectOrHistoryOrPushOrTagOrDeleteInterface;
 import io.fabric8.docker.client.dsl.image.ImagesInterface;
 import io.fabric8.docker.client.dsl.image.RepoOrTagOrFromImageOrFromSourceInterface;
-import io.fabric8.docker.client.dsl.image.RepositoryNameOrSupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface;
+import io.fabric8.docker.client.dsl.image.RepositoryNameOrSupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class ImageOperationImpl extends OperationSupport implements ImagesInterf
     }
 
     @Override
-    public RepositoryNameOrSupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrFromPathInterface<InputStream> build() {
+    public RepositoryNameOrSupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle> build() {
         return new ImageBuild(client, config);
     }
 

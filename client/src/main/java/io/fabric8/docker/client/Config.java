@@ -41,8 +41,7 @@ public class Config {
     private String username;
     private String password;
     private String oauthToken;
-    private int watchReconnectInterval = 1000;
-    private int watchReconnectLimit = -1;
+    private int imageBuildTimeout = 10 * 60 * 1000;
     private int connectionTimeout = 10 * 1000;
     private int requestTimeout = 10 * 1000;
     private String httpProxy;
@@ -55,7 +54,7 @@ public class Config {
     }
 
     @Buildable
-    public Config(boolean trustCerts, String masterUrl, String caCertFile, String caCertData, String clientCertFile, String clientCertData, String clientKeyFile, String clientKeyData, String clientKeyAlgo, String clientKeyPassphrase, String username, String password, String oauthToken, int watchReconnectInterval, int watchReconnectLimit, int connectionTimeout, int requestTimeout, String httpProxy, String httpsProxy, String[] noProxy, Map<String, AuthConfig> authConfigs) {
+    public Config(boolean trustCerts, String masterUrl, String caCertFile, String caCertData, String clientCertFile, String clientCertData, String clientKeyFile, String clientKeyData, String clientKeyAlgo, String clientKeyPassphrase, String username, String password, String oauthToken, int imageBuildTimeout, int connectionTimeout, int requestTimeout, String httpProxy, String httpsProxy, String[] noProxy, Map<String, AuthConfig> authConfigs) {
         this();
         this.trustCerts = trustCerts;
         this.masterUrl = masterUrl;
@@ -70,8 +69,7 @@ public class Config {
         this.username = username;
         this.password = password;
         this.oauthToken = oauthToken;
-        this.watchReconnectInterval = watchReconnectInterval;
-        this.watchReconnectLimit = watchReconnectLimit;
+        this.imageBuildTimeout = imageBuildTimeout;
         this.connectionTimeout = connectionTimeout;
         this.requestTimeout = requestTimeout;
         this.httpProxy = httpProxy;
@@ -204,20 +202,12 @@ public class Config {
         this.oauthToken = oauthToken;
     }
 
-    public int getWatchReconnectInterval() {
-        return watchReconnectInterval;
+    public int getImageBuildTimeout() {
+        return imageBuildTimeout;
     }
 
-    public void setWatchReconnectInterval(int watchReconnectInterval) {
-        this.watchReconnectInterval = watchReconnectInterval;
-    }
-
-    public int getWatchReconnectLimit() {
-        return watchReconnectLimit;
-    }
-
-    public void setWatchReconnectLimit(int watchReconnectLimit) {
-        this.watchReconnectLimit = watchReconnectLimit;
+    public void setImageBuildTimeout(int imageBuildTimeout) {
+        this.imageBuildTimeout = imageBuildTimeout;
     }
 
     public int getConnectionTimeout() {

@@ -5,7 +5,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.ws.WebSocketCall;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.InputOutputHandle;
+import io.fabric8.docker.client.InputOutputErrorHandle;
 import io.fabric8.docker.client.dsl.container.ContainerErrorOrStreamOrGetLogsInterface;
 import io.fabric8.docker.client.dsl.container.ContainerInputOrContainerOutputOrContainerErrorOrStreamOrGetLogsInterface;
 import io.fabric8.docker.client.dsl.container.ContainerOutputOrContainerErrorOrStreamOrGetLogsInterface;
@@ -19,10 +19,10 @@ import java.io.PipedOutputStream;
 import java.util.concurrent.TimeUnit;
 
 public class ContainerAttach extends BaseContainerOperation implements
-        ContainerInputOrContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputHandle>,
-        ContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputHandle>,
-        ContainerErrorOrStreamOrGetLogsInterface<InputOutputHandle>,
-        StreamOrGetLogsInterface<InputOutputHandle> {
+        ContainerInputOrContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle>,
+        ContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle>,
+        ContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle>,
+        StreamOrGetLogsInterface<InputOutputErrorHandle> {
 
     private static final String STDIN = "stdin";
     private static final String STDOUT = "stdout";
@@ -48,7 +48,7 @@ public class ContainerAttach extends BaseContainerOperation implements
         this.errPipe = errPipe;
     }
 
-    private InputOutputHandle doAttach(Boolean logs, Boolean stream) {
+    private InputOutputErrorHandle doAttach(Boolean logs, Boolean stream) {
         try {
             StringBuilder sb = new StringBuilder();
             sb.append(URLUtils.join(getOperationUrl().toString(), "ws"));
@@ -62,7 +62,7 @@ public class ContainerAttach extends BaseContainerOperation implements
             OkHttpClient clone = client.clone();
             clone.setReadTimeout(0, TimeUnit.MILLISECONDS);
             WebSocketCall webSocketCall = WebSocketCall.create(clone, r.build());
-            final ContainerInputOutputHandle handle = new ContainerInputOutputHandle(in, out, err, inPipe, outPipe, errPipe);
+            final ContainerInputOutputErrorHandle handle = new ContainerInputOutputErrorHandle(in, out, err, inPipe, outPipe, errPipe);
             webSocketCall.enqueue(handle);
             handle.waitUntilReady();
             return handle;
@@ -72,57 +72,57 @@ public class ContainerAttach extends BaseContainerOperation implements
     }
 
     @Override
-    public InputOutputHandle getLogs() {
+    public InputOutputErrorHandle getLogs() {
         return doAttach(true, false);
     }
 
     @Override
-    public InputOutputHandle stream() {
+    public InputOutputErrorHandle stream() {
         return doAttach(false,true);
     }
 
     @Override
-    public StreamOrGetLogsInterface<InputOutputHandle> readingError(PipedInputStream errPipe) {
+    public StreamOrGetLogsInterface<InputOutputErrorHandle> readingError(PipedInputStream errPipe) {
         return new ContainerAttach(client, config, name, in, out, err, inPipe, outPipe, errPipe);
     }
 
     @Override
-    public StreamOrGetLogsInterface<InputOutputHandle> writingError(OutputStream err) {
+    public StreamOrGetLogsInterface<InputOutputErrorHandle> writingError(OutputStream err) {
         return new ContainerAttach(client, config, name, in, out, err, inPipe, outPipe, errPipe);
     }
 
     @Override
-    public StreamOrGetLogsInterface<InputOutputHandle> redirectingError() {
+    public StreamOrGetLogsInterface<InputOutputErrorHandle> redirectingError() {
         return readingError(new PipedInputStream());
     }
 
     @Override
-    public ContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputHandle> readingInput(InputStream in) {
+    public ContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle> readingInput(InputStream in) {
         return new ContainerAttach(client, config, name, in, out, err, inPipe, outPipe, errPipe);
     }
 
     @Override
-    public ContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputHandle> writingInput(PipedOutputStream inPipe) {
+    public ContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle> writingInput(PipedOutputStream inPipe) {
         return new ContainerAttach(client, config, name, in, out, err, inPipe, outPipe, errPipe);
     }
 
     @Override
-    public ContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputHandle> redirectingInput() {
+    public ContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle> redirectingInput() {
         return writingInput(new PipedOutputStream());
     }
 
     @Override
-    public ContainerErrorOrStreamOrGetLogsInterface<InputOutputHandle> readingOutput(PipedInputStream outPipe) {
+    public ContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle> readingOutput(PipedInputStream outPipe) {
         return new ContainerAttach(client, config, name, in, out, err, inPipe, outPipe, errPipe);
     }
 
     @Override
-    public ContainerErrorOrStreamOrGetLogsInterface<InputOutputHandle> writingOutput(OutputStream out) {
+    public ContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle> writingOutput(OutputStream out) {
         return new ContainerAttach(client, config, name, in, out, err, inPipe, outPipe, errPipe);
     }
 
     @Override
-    public ContainerErrorOrStreamOrGetLogsInterface<InputOutputHandle> redirectingOutput() {
+    public ContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle> redirectingOutput() {
         return readingOutput(new PipedInputStream());
     }
 }

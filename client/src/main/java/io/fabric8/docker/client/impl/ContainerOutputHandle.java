@@ -6,6 +6,7 @@ import com.squareup.okhttp.ResponseBody;
 import com.squareup.okhttp.ws.WebSocket;
 import com.squareup.okhttp.ws.WebSocketListener;
 import io.fabric8.docker.client.DockerClientException;
+import io.fabric8.docker.client.OutputErrorHandle;
 import io.fabric8.docker.client.OutputHandle;
 import okio.Buffer;
 import okio.ByteString;
@@ -22,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ContainerOutputHandle implements OutputHandle, WebSocketListener {
+public class ContainerOutputHandle implements OutputErrorHandle, WebSocketListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContainerOutputHandle.class);
 

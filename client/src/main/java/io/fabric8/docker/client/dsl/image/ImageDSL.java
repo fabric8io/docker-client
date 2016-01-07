@@ -4,6 +4,9 @@ package io.fabric8.docker.client.dsl.image;
 import io.fabric8.docker.api.model.Image;
 import io.fabric8.docker.api.model.ImageDelete;
 import io.fabric8.docker.api.model.ImageHistory;
+import io.fabric8.docker.client.Callback;
+import io.fabric8.docker.client.ImageBuildListener;
+import io.fabric8.docker.client.OutputHandle;
 import io.fabric8.docker.client.dsl.annotations.CreateOption;
 import io.fabric8.docker.client.dsl.annotations.InspectOption;
 import io.fabric8.docker.client.dsl.annotations.ListOption;
@@ -21,7 +24,6 @@ import io.sundr.dsl.annotations.InterfaceName;
 import io.sundr.dsl.annotations.Multiple;
 import io.sundr.dsl.annotations.Terminal;
 
-import java.io.InputStream;
 import java.util.List;
 
 @Dsl
@@ -104,15 +106,18 @@ public interface ImageDSL {
     @All({BuildOption.class})
     void usingDockerFile(String dockerFile);
 
-    @Terminal
     @All({BuildOption.class})
-    @InterfaceName("FromPathInterface")
-    InputStream fromFolder(String folder);
+    void usingListener(ImageBuildListener listener);
 
     @Terminal
     @All({BuildOption.class})
     @InterfaceName("FromPathInterface")
-    InputStream forArchive(String archive);
+    OutputHandle fromFolder(String folder);
+
+    @Terminal
+    @All({BuildOption.class})
+    @InterfaceName("FromPathInterface")
+    OutputHandle forArchive(String archive);
 
     @CreateOption
     void create();
@@ -135,7 +140,6 @@ public interface ImageDSL {
     @Terminal
     @All({CreateOption.class})
     String fromSource();
-
 
     @HistoryOption
     @Terminal

@@ -1,16 +1,12 @@
 package io.fabric8.docker.client;
 
-import com.sun.tools.doclets.internal.toolkit.util.DocFinder;
 import io.fabric8.docker.api.model.Container;
 import io.fabric8.docker.api.model.ContainerCreateResponse;
 import io.fabric8.docker.api.model.ContainerProcessList;
-import io.fabric8.docker.client.utils.InputStreamPumper;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.Executor;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -68,19 +64,32 @@ public class DefaultDockerClientTest {
     public void testImageOps() throws IOException, InterruptedException {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         DockerClient client = new DefaultDockerClient();
-        InputStream in = client.images().build()
+        final CountDownLatch done = new CountDownLatch(1);
+
+        OutputHandle handle = client.images().build()
                 .withRepositoryName("test1")
+                .usingListener(new ImageBuildListener() {
+                    @Override
+                    public void onSuccess(String imagedId) {
+                        System.out.println("Success:" + imagedId);
+                        done.countDown();
+                    }
+
+                    @Override
+                    public void onError(String messsage) {
+                        System.err.println("Failure:" +messsage);
+                        done.countDown();
+                    }
+
+                    @Override
+                    public void onEvent(String event) {
+                        System.out.println(event);
+                    }
+                })
                 .fromFolder(getClass().getClassLoader().getResource("image1").getFile());
 
-
-        InputStreamPumper pumper = new InputStreamPumper(in, new Callback<byte[]>() {
-            @Override
-            public void call(byte[] input) {
-                System.out.println(new String(input));
-            }
-        });
-
-        executorService.submit(pumper);
+        done.await();
+        handle.close();
 
     }
 

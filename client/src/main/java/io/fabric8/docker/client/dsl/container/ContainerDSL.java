@@ -6,10 +6,9 @@ import io.fabric8.docker.api.model.ContainerCreateRequest;
 import io.fabric8.docker.api.model.ContainerCreateResponse;
 import io.fabric8.docker.api.model.ContainerInfo;
 import io.fabric8.docker.api.model.ContainerProcessList;
-import io.fabric8.docker.api.model.ContainerState;
 import io.fabric8.docker.api.model.InlineContainerCreate;
 import io.fabric8.docker.api.model.Stats;
-import io.fabric8.docker.client.InputOutputHandle;
+import io.fabric8.docker.client.InputOutputErrorHandle;
 import io.fabric8.docker.client.OutputHandle;
 import io.fabric8.docker.client.dsl.annotations.CreateOption;
 import io.fabric8.docker.client.dsl.annotations.InspectOption;
@@ -246,11 +245,11 @@ public interface ContainerDSL {
 
     @Terminal
     @All({AttachOption.class})
-    InputOutputHandle stream();
+    InputOutputErrorHandle stream();
 
     @Terminal
     @All({AttachOption.class})
-    InputOutputHandle getLogs();
+    InputOutputErrorHandle getLogs();
 
     @ArchiveOption
     @All({NamedOption.class})

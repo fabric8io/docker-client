@@ -6,11 +6,10 @@ import com.squareup.okhttp.RequestBody;
 import io.fabric8.docker.api.model.ContainerChange;
 import io.fabric8.docker.api.model.ContainerInfo;
 import io.fabric8.docker.api.model.ContainerProcessList;
-import io.fabric8.docker.api.model.ContainerState;
 import io.fabric8.docker.api.model.Stats;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.InputOutputHandle;
+import io.fabric8.docker.client.InputOutputErrorHandle;
 import io.fabric8.docker.client.OutputHandle;
 import io.fabric8.docker.client.dsl.container.ContainerInputOrContainerOutputOrContainerErrorOrStreamOrGetLogsInterface;
 import io.fabric8.docker.client.dsl.container.ContainerResourceOrLogsOrInspectOrAttachOrArhciveInterface;
@@ -24,7 +23,7 @@ import java.net.URL;
 import java.util.List;
 
 public class ContainerNamedOperationImpl extends BaseContainerOperation implements
-        ContainerResourceOrLogsOrInspectOrAttachOrArhciveInterface<ContainerProcessList,List<ContainerChange>,InputStream,Stats,Boolean,OutputHandle,ContainerInfo,InputOutputHandle,OutputStream> {
+        ContainerResourceOrLogsOrInspectOrAttachOrArhciveInterface<ContainerProcessList,List<ContainerChange>,InputStream,Stats,Boolean,OutputHandle,ContainerInfo,InputOutputErrorHandle,OutputStream> {
 
     private static final String REMOVE_VOLUMES = "v";
     private static final String TIMEOUT = "t";
@@ -222,7 +221,7 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
     }
 
     @Override
-    public ContainerInputOrContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputHandle> attach() {
+    public ContainerInputOrContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle> attach() {
         return new ContainerAttach(client, config, name, null, null, null, null, null, null);
     }
 }

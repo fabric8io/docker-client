@@ -4,17 +4,14 @@ import com.squareup.okhttp.OkHttpClient;
 import io.fabric8.docker.api.model.Container;
 import io.fabric8.docker.api.model.ContainerChange;
 import io.fabric8.docker.api.model.ContainerCreateRequest;
-import io.fabric8.docker.api.model.ContainerCreateRequestBuilder;
 import io.fabric8.docker.api.model.ContainerCreateResponse;
 import io.fabric8.docker.api.model.ContainerInfo;
 import io.fabric8.docker.api.model.ContainerProcessList;
-import io.fabric8.docker.api.model.ContainerState;
-import io.fabric8.docker.api.model.DoneableContainerCreateRequest;
 import io.fabric8.docker.api.model.InlineContainerCreate;
 import io.fabric8.docker.api.model.Stats;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.InputOutputHandle;
+import io.fabric8.docker.client.InputOutputErrorHandle;
 import io.fabric8.docker.client.OutputHandle;
 import io.fabric8.docker.client.dsl.container.ContainerInterface;
 import io.fabric8.docker.client.dsl.container.ContainerResourceOrLogsOrInspectOrAttachOrArhciveInterface;
@@ -40,7 +37,7 @@ public class ContainerOperationImpl extends OperationSupport implements Containe
     }
 
     @Override
-    public ContainerResourceOrLogsOrInspectOrAttachOrArhciveInterface<ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, OutputHandle, ContainerInfo, InputOutputHandle, OutputStream> withName(String name) {
+    public ContainerResourceOrLogsOrInspectOrAttachOrArhciveInterface<ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, OutputHandle, ContainerInfo, InputOutputErrorHandle, OutputStream> withName(String name) {
         return new ContainerNamedOperationImpl(client, config, name);
     }
 

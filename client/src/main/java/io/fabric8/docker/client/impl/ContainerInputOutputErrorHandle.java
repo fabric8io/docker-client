@@ -2,15 +2,12 @@ package io.fabric8.docker.client.impl;
 
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
 import com.squareup.okhttp.ws.WebSocket;
 import com.squareup.okhttp.ws.WebSocketListener;
 import io.fabric8.docker.client.Callback;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.InputOutputHandle;
+import io.fabric8.docker.client.InputOutputErrorHandle;
 import io.fabric8.docker.client.utils.InputStreamPumper;
-import okio.Buffer;
-import okio.ByteString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,9 +20,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class ContainerInputOutputHandle extends ContainerOutputHandle implements InputOutputHandle, WebSocketListener {
+public class ContainerInputOutputErrorHandle extends ContainerOutputHandle implements InputOutputErrorHandle, WebSocketListener {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ContainerInputOutputHandle.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ContainerInputOutputErrorHandle.class);
 
     private final InputStream in;
     private final PipedOutputStream input;
@@ -34,7 +31,7 @@ public class ContainerInputOutputHandle extends ContainerOutputHandle implements
     private final InputStreamPumper pumper;
 
 
-    public ContainerInputOutputHandle(InputStream in, OutputStream out, OutputStream err, PipedOutputStream inputPipe, PipedInputStream outputPipe, PipedInputStream errorPipe) {
+    public ContainerInputOutputErrorHandle(InputStream in, OutputStream out, OutputStream err, PipedOutputStream inputPipe, PipedInputStream outputPipe, PipedInputStream errorPipe) {
         super(out,err,outputPipe,errorPipe);
         this.in = inputStreamOrPipe(in, inputPipe);
         this.input = inputPipe;
