@@ -3,11 +3,10 @@ package io.fabric8.docker.client;
 import com.squareup.okhttp.OkHttpClient;
 import io.fabric8.docker.api.model.Info;
 import io.fabric8.docker.api.model.Version;
-import io.fabric8.docker.client.dsl.DockerDSL;
 import io.fabric8.docker.client.dsl.container.ContainerInterface;
 import io.fabric8.docker.client.dsl.image.ImageInterface;
-import io.fabric8.docker.client.dsl.image.ImageSearchInterface;
-import io.fabric8.docker.client.dsl.image.ImagesInterface;
+import io.fabric8.docker.client.dsl.network.NetworkInterface;
+import io.fabric8.docker.client.dsl.volume.VolumeInterface;
 import io.fabric8.docker.client.impl.ContainerOperationImpl;
 import io.fabric8.docker.client.impl.ImageOperationImpl;
 import io.fabric8.docker.client.utils.HttpClientUtils;
@@ -53,4 +52,13 @@ public class DefaultDockerClient implements DockerClient {
         return new ImageOperationImpl(client, configuration);
     }
 
+    @Override
+    public NetworkInterface network() {
+        return null;
+    }
+
+    @Override
+    public VolumeInterface volume() {
+        return null;
+    }
 }

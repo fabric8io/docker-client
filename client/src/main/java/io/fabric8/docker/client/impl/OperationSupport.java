@@ -56,6 +56,10 @@ public class OperationSupport {
   protected static final ObjectMapper YAML_MAPPER = new ObjectMapper(new YAMLFactory());
 
   protected static final String IMAGES_RESOURCE = "images";
+  protected static final String VOLUME_RESOURCE = "volumes";
+  protected static final String NETWORK_RESOURCE = "networks";
+
+  protected static final String JSON_OPERATION = "json";
 
   protected static final EventListener NULL_LISTENER = new EventListener() {
     @Override

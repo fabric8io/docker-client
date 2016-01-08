@@ -18,7 +18,7 @@ public class ImageList extends OperationSupport implements
 
     private static final String FILTER = "filter";
     private static final String FILTERS = "filters";
-    private static final String ALL = "filters";
+    private static final String ALL = "all";
 
     private final String filter;
     private final Map<String,String[]> filters;
