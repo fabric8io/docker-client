@@ -1,7 +1,6 @@
 package io.fabric8.docker.client.dsl.image;
 
 
-import com.sun.tools.internal.ws.wsdl.document.Import;
 import io.fabric8.docker.api.model.Image;
 import io.fabric8.docker.api.model.ImageDelete;
 import io.fabric8.docker.api.model.ImageHistory;
@@ -9,7 +8,6 @@ import io.fabric8.docker.api.model.ImageInspect;
 import io.fabric8.docker.api.model.SearchResult;
 import io.fabric8.docker.client.EventListener;
 import io.fabric8.docker.client.OutputHandle;
-import io.fabric8.docker.client.dsl.annotations.CreateOption;
 import io.fabric8.docker.client.dsl.annotations.ImportOption;
 import io.fabric8.docker.client.dsl.annotations.InspectOption;
 import io.fabric8.docker.client.dsl.annotations.ListOption;
@@ -27,7 +25,6 @@ import io.sundr.dsl.annotations.Dsl;
 import io.sundr.dsl.annotations.EntryPoint;
 import io.sundr.dsl.annotations.InterfaceName;
 import io.sundr.dsl.annotations.Multiple;
-import io.sundr.dsl.annotations.None;
 import io.sundr.dsl.annotations.Terminal;
 
 import java.util.List;

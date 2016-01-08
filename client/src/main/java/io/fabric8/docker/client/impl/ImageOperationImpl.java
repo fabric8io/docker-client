@@ -14,7 +14,7 @@ import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.client.OutputHandle;
 import io.fabric8.docker.client.dsl.image.FilterOrFiltersOrAllImagesOrEndImagesInterface;
 import io.fabric8.docker.client.dsl.image.ImageInspectOrHistoryOrPushOrTagOrDeleteInterface;
-import io.fabric8.docker.client.dsl.image.ImagesInterface;
+import io.fabric8.docker.client.dsl.image.ImageInterface;
 import io.fabric8.docker.client.dsl.image.RepositoryNameOrSupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface;
 import io.fabric8.docker.client.dsl.image.UsingListenerOrTagOrAsRepoInterface;
 import io.fabric8.docker.client.dsl.image.UsingListenerOrTagOrFromImageInterface;
@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class ImageOperationImpl extends OperationSupport implements ImagesInterface {
+public class ImageOperationImpl extends OperationSupport implements ImageInterface {
 
     private static final JavaType IMAGE_SEARCH_RESULT_LIST = JSON_MAPPER.getTypeFactory().constructCollectionType(List.class, SearchResult.class);
     private static final String SEARCH_OPERATION = "search";
