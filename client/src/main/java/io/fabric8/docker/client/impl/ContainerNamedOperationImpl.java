@@ -28,7 +28,7 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
     private static final String REMOVE_VOLUMES = "v";
     private static final String TIMEOUT = "t";
     private static final String SIGNAL = "signal";
-    private static final String SIGINIT = "SIGNIT";
+    private static final String SIGINT = "SIGINT";
 
     public ContainerNamedOperationImpl(OkHttpClient client, Config config, String name) {
         super(client, config, name, null);
@@ -169,7 +169,7 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
 
     @Override
     public Boolean kill() {
-        return kill(SIGINIT);
+        return kill(SIGINT);
     }
 
     @Override

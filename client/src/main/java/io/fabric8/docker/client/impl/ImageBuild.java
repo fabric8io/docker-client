@@ -5,7 +5,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.ImageBuildListener;
+import io.fabric8.docker.client.EventListener;
 import io.fabric8.docker.client.OutputHandle;
 import io.fabric8.docker.client.dsl.image.BuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface;
 import io.fabric8.docker.client.dsl.image.CpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface;
@@ -79,20 +79,6 @@ public class ImageBuild extends OperationSupport implements
     private static final String DEFAULT_DOCKERFILE = "Dockerfile";
     private static final String DEFAULT_TEMP_DIR = System.getProperty("tmp.dir", "/tmp");
 
-    private static final ImageBuildListener NULL_LISTENER = new ImageBuildListener() {
-        @Override
-        public void onSuccess(String imagedId) {
-        }
-
-        @Override
-        public void onError(String messsage) {
-        }
-
-        @Override
-        public void onEvent(String event) {
-        }
-    };
-
     private final String dockerFile;
     private final String repositoryName;
     private final String buildArgs;
@@ -107,13 +93,13 @@ public class ImageBuild extends OperationSupport implements
     private final Integer cpus;
     private final String memorySize;
     private final String swapSize;
-    private final ImageBuildListener listener;
+    private final EventListener listener;
 
     public ImageBuild(OkHttpClient client, Config config) {
         this(client, config, null, DEFAULT_DOCKERFILE, false, null, false, true, false, false, 0, 0, 0, 0, "0", "0", NULL_LISTENER);
     }
 
-    public ImageBuild(OkHttpClient client, Config config, String repositoryName, String dockerFile, Boolean noCache, String buildArgs, Boolean pulling, Boolean alwaysRemoveIntermediate, Boolean removeIntermediateOnSuccess, Boolean supressingVerboseOutput, Integer cpuPeriodMicros, Integer cpuQuotaMicros, Integer cpuShares, Integer cpus, String memorySize, String swapSize, ImageBuildListener listener) {
+    public ImageBuild(OkHttpClient client, Config config, String repositoryName, String dockerFile, Boolean noCache, String buildArgs, Boolean pulling, Boolean alwaysRemoveIntermediate, Boolean removeIntermediateOnSuccess, Boolean supressingVerboseOutput, Integer cpuPeriodMicros, Integer cpuQuotaMicros, Integer cpuShares, Integer cpus, String memorySize, String swapSize, EventListener listener) {
         super(client, config, BUILD_OPERATION, null, null);
         this.dockerFile = dockerFile;
         this.buildArgs = buildArgs;
@@ -304,7 +290,7 @@ public class ImageBuild extends OperationSupport implements
     }
 
     @Override
-    public FromPathInterface<OutputHandle> usingListener(ImageBuildListener listener) {
+    public FromPathInterface<OutputHandle> usingListener(EventListener listener) {
         return new ImageBuild(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, listener);
     }
 }

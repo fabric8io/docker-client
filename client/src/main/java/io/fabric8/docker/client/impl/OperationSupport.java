@@ -27,6 +27,7 @@ import io.fabric8.docker.api.model.Container;
 import io.fabric8.docker.api.model.Image;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
+import io.fabric8.docker.client.EventListener;
 import io.fabric8.docker.client.utils.URLUtils;
 import io.fabric8.docker.client.utils.Utils;
 
@@ -49,11 +50,26 @@ public class OperationSupport {
   public static final String Q = "?";
   public static final String A = "&";
   public static final String EQUALS = "=";
+  public static final String EMPTY = "";
 
   protected static final ObjectMapper JSON_MAPPER = new ObjectMapper();
   protected static final ObjectMapper YAML_MAPPER = new ObjectMapper(new YAMLFactory());
 
   protected static final String IMAGES_RESOURCE = "images";
+
+  protected static final EventListener NULL_LISTENER = new EventListener() {
+    @Override
+    public void onSuccess(String message) {
+    }
+
+    @Override
+    public void onError(String message) {
+    }
+
+    @Override
+    public void onEvent(String event) {
+    }
+  };
   
   protected final OkHttpClient client;
   protected final Config config;
@@ -143,8 +159,12 @@ public class OperationSupport {
   }
 
   protected void handleDelete(URL requestUrl) throws ExecutionException, InterruptedException, DockerClientException, IOException {
+    handleDelete(requestUrl, null);
+  }
+
+  protected <T> T handleDelete(URL requestUrl, Class<T> type) throws ExecutionException, InterruptedException, DockerClientException, IOException {
     Request.Builder requestBuilder = new Request.Builder().delete(null).url(requestUrl);
-    handleResponse(requestBuilder, 200, (Class) null);
+   return handleResponse(requestBuilder, 200, type);
   }
 
   protected <T, I> T handleCreate(I resource, Class<T> outputType, String ...dirs) throws ExecutionException, InterruptedException, DockerClientException, IOException {

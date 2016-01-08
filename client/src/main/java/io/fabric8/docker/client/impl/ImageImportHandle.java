@@ -6,17 +6,17 @@ import io.fabric8.docker.client.utils.Utils;
 
 import java.util.concurrent.TimeUnit;
 
-public class ImageBuildHandle extends EventHandle {
+public class ImageImportHandle extends EventHandle {
 
-    private static final String SUCCESSFULLY_BUILT = "Successfully built";
+    private static final String STATUS = "Status:";
 
-    public ImageBuildHandle(long duration, TimeUnit unit, EventListener listener) {
+    public ImageImportHandle(long duration, TimeUnit unit, EventListener listener) {
         super(duration, unit, listener);
     }
 
     @Override
     public boolean isSuccess(ProgressEvent event) {
-        return Utils.isNotNullOrEmpty(event.getStream()) && event.getStream().startsWith(SUCCESSFULLY_BUILT);
+        return Utils.isNotNullOrEmpty(event.getStream()) && event.getStream().startsWith(STATUS);
     }
 
     @Override

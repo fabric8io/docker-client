@@ -3,6 +3,7 @@ package io.fabric8.docker.client;
 import io.fabric8.docker.api.model.Container;
 import io.fabric8.docker.api.model.ContainerCreateResponse;
 import io.fabric8.docker.api.model.ContainerProcessList;
+import io.fabric8.docker.api.model.SearchResult;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -61,24 +62,42 @@ public class DefaultDockerClientTest {
     }
 
     @Test
-    public void testImageOps() throws IOException, InterruptedException {
+    public void testImageBuildTagPush() throws IOException, InterruptedException {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         DockerClient client = new DefaultDockerClient();
-        final CountDownLatch done = new CountDownLatch(1);
+        final CountDownLatch buildDone = new CountDownLatch(1);
+        final CountDownLatch pushDone = new CountDownLatch(1);
+
+        client.images().pull().usingListener(new EventListener() {
+            @Override
+            public void onSuccess(String message) {
+                System.out.println(message);
+            }
+
+            @Override
+            public void onError(String message) {
+                System.out.println(message);
+            }
+
+            @Override
+            public void onEvent(String event) {
+                System.out.println(event);
+            }
+        }).fromImage("maven");
 
         OutputHandle handle = client.images().build()
                 .withRepositoryName("test1")
-                .usingListener(new ImageBuildListener() {
+                .usingListener(new EventListener() {
                     @Override
-                    public void onSuccess(String imagedId) {
-                        System.out.println("Success:" + imagedId);
-                        done.countDown();
+                    public void onSuccess(String message) {
+                        System.out.println("Success:" + message);
+                        buildDone.countDown();
                     }
 
                     @Override
                     public void onError(String messsage) {
                         System.err.println("Failure:" +messsage);
-                        done.countDown();
+                        buildDone.countDown();
                     }
 
                     @Override
@@ -88,9 +107,38 @@ public class DefaultDockerClientTest {
                 })
                 .fromFolder(getClass().getClassLoader().getResource("image1").getFile());
 
-        done.await();
+        buildDone.await();
         handle.close();
 
+
+        client.images().withName("test1").tag().inRepository("172.30.128.236:5000/test1").force().withTagName("v1");
+
+        handle = client.images().withName("172.30.128.236:5000/test1").push().usingListener(new EventListener() {
+            @Override
+            public void onSuccess(String message) {
+                System.out.println("Success:" + message);
+                pushDone.countDown();
+            }
+
+            @Override
+            public void onError(String message) {
+                System.out.println("Error:" + message);
+                pushDone.countDown();
+            }
+
+            @Override
+            public void onEvent(String event) {
+                System.out.println(event);
+
+            }
+        }).toRegistry();
+
+        pushDone.await();
+        handle.close();
+
+        for (SearchResult r : client.images().search("test1")) {
+            System.out.println(r);
+        }
     }
 
 }

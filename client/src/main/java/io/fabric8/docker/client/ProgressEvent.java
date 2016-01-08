@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "errorDetail",
         "error"
 })
-public class BuildStepEvent {
+public class ProgressEvent {
 
     @JsonProperty("stream")
     private String stream;
@@ -19,10 +19,10 @@ public class BuildStepEvent {
     @JsonProperty("error")
     private String error;
 
-    public BuildStepEvent() {
+    public ProgressEvent() {
     }
 
-    public BuildStepEvent(String stream, ErrorDetail errorDetail, String error) {
+    public ProgressEvent(String stream, ErrorDetail errorDetail, String error) {
         this.stream = stream;
         this.error = error;
         this.errorDetail = errorDetail;

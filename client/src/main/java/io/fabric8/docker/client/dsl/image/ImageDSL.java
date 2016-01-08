@@ -1,16 +1,21 @@
 package io.fabric8.docker.client.dsl.image;
 
 
+import com.sun.tools.internal.ws.wsdl.document.Import;
 import io.fabric8.docker.api.model.Image;
 import io.fabric8.docker.api.model.ImageDelete;
 import io.fabric8.docker.api.model.ImageHistory;
-import io.fabric8.docker.client.Callback;
-import io.fabric8.docker.client.ImageBuildListener;
+import io.fabric8.docker.api.model.ImageInspect;
+import io.fabric8.docker.api.model.SearchResult;
+import io.fabric8.docker.client.EventListener;
 import io.fabric8.docker.client.OutputHandle;
 import io.fabric8.docker.client.dsl.annotations.CreateOption;
+import io.fabric8.docker.client.dsl.annotations.ImportOption;
 import io.fabric8.docker.client.dsl.annotations.InspectOption;
 import io.fabric8.docker.client.dsl.annotations.ListOption;
 import io.fabric8.docker.client.dsl.annotations.NamedOption;
+import io.fabric8.docker.client.dsl.annotations.PullOption;
+import io.fabric8.docker.client.dsl.annotations.SearchOption;
 import io.fabric8.docker.client.dsl.image.annotations.BuildOption;
 import io.fabric8.docker.client.dsl.image.annotations.HistoryOption;
 import io.fabric8.docker.client.dsl.image.annotations.PushOption;
@@ -22,6 +27,7 @@ import io.sundr.dsl.annotations.Dsl;
 import io.sundr.dsl.annotations.EntryPoint;
 import io.sundr.dsl.annotations.InterfaceName;
 import io.sundr.dsl.annotations.Multiple;
+import io.sundr.dsl.annotations.None;
 import io.sundr.dsl.annotations.Terminal;
 
 import java.util.List;
@@ -39,7 +45,7 @@ public interface ImageDSL {
     @Terminal
     @InspectOption
     @InterfaceName("ImageInspectInterface")
-    void inspect();
+    ImageInspect inspect();
 
     @ListOption
     void list();
@@ -106,8 +112,8 @@ public interface ImageDSL {
     @All({BuildOption.class})
     void usingDockerFile(String dockerFile);
 
-    @All({BuildOption.class})
-    void usingListener(ImageBuildListener listener);
+    @Any({BuildOption.class, PushOption.class, PullOption.class, ImportOption.class})
+    void usingListener(EventListener listener);
 
     @Terminal
     @All({BuildOption.class})
@@ -119,39 +125,33 @@ public interface ImageDSL {
     @InterfaceName("FromPathInterface")
     OutputHandle forArchive(String archive);
 
-    @CreateOption
-    void create();
+    @PullOption
+    void pull();
 
-    @All({CreateOption.class})
-    void withRepo(String repo);
-
-    @All({CreateOption.class})
+    @Any({PullOption.class, ImportOption.class, PushOption.class})
     void withTag(String tag);
 
     @Terminal
-    @All({CreateOption.class})
-    String fromImage(String image);
+    @All({PullOption.class})
+    OutputHandle fromImage(String image);
+
+    @ImportOption
+    void importFrom(String source);
 
     @Terminal
-    @All({CreateOption.class})
-    String fromSource(String src);
-
-
-    @Terminal
-    @All({CreateOption.class})
-    String fromSource();
+    @All({ImportOption.class})
+    OutputHandle asRepo(String src);
 
     @HistoryOption
     @Terminal
     List<ImageHistory> history();
 
     @PushOption
-    @Terminal
-    String push();
+    void push();
 
-    @PushOption
     @Terminal
-    String push(String tag);
+    @All({PushOption.class})
+    OutputHandle toRegistry();
 
     @TagOption
     void tag();
@@ -164,7 +164,7 @@ public interface ImageDSL {
 
     @Terminal
     @All({TagOption.class})
-    void withTagName(String tagName);
+    Boolean withTagName(String tagName);
 
     @RemoveOption
     void delete();
@@ -176,5 +176,10 @@ public interface ImageDSL {
     @Terminal
     @All({RemoveOption.class})
     ImageDelete withNoPrune();
+
+    @SearchOption
+    @Terminal
+    @InterfaceName("ImageSearchInterface")
+    List<SearchResult> search(String term);
 
 }

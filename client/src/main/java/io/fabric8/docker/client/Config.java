@@ -3,6 +3,7 @@ package io.fabric8.docker.client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.MapType;
 import io.fabric8.docker.api.model.AuthConfig;
+import io.fabric8.docker.api.model.DockerConfig;
 import io.fabric8.docker.client.utils.Utils;
 import io.sundr.builder.annotations.Buildable;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,8 +44,10 @@ public class Config {
     private String password;
     private String oauthToken;
     private int imageBuildTimeout = 10 * 60 * 1000;
+    private int imagePushTimeout = 10 * 60 * 1000;
+    private int imageSearchTimeout = 3 * 60 * 1000;
     private int connectionTimeout = 10 * 1000;
-    private int requestTimeout = 10 * 1000;
+    private int requestTimeout = 30 * 1000;
     private String httpProxy;
     private String httpsProxy;
     private String[] noProxy;
@@ -54,7 +58,7 @@ public class Config {
     }
 
     @Buildable
-    public Config(boolean trustCerts, String masterUrl, String caCertFile, String caCertData, String clientCertFile, String clientCertData, String clientKeyFile, String clientKeyData, String clientKeyAlgo, String clientKeyPassphrase, String username, String password, String oauthToken, int imageBuildTimeout, int connectionTimeout, int requestTimeout, String httpProxy, String httpsProxy, String[] noProxy, Map<String, AuthConfig> authConfigs) {
+    public Config(boolean trustCerts, String masterUrl, String caCertFile, String caCertData, String clientCertFile, String clientCertData, String clientKeyFile, String clientKeyData, String clientKeyAlgo, String clientKeyPassphrase, String username, String password, String oauthToken, int imageBuildTimeout, int imagePushTimeout, int imageSearchTimeout, int connectionTimeout, int requestTimeout, String httpProxy, String httpsProxy, String[] noProxy, Map<String, AuthConfig> authConfigs) {
         this();
         this.trustCerts = trustCerts;
         this.masterUrl = masterUrl;
@@ -70,6 +74,8 @@ public class Config {
         this.password = password;
         this.oauthToken = oauthToken;
         this.imageBuildTimeout = imageBuildTimeout;
+        this.imagePushTimeout = imagePushTimeout;
+        this.imageSearchTimeout = imageSearchTimeout;
         this.connectionTimeout = connectionTimeout;
         this.requestTimeout = requestTimeout;
         this.httpProxy = httpProxy;
@@ -84,12 +90,13 @@ public class Config {
 
     private boolean tryDockerConfig(Config config) {
         if (Utils.getSystemPropertyOrEnvVar(DOCKER_AUTH_DOCKERCFG_ENABLED, true)) {
-            String dockerConfig = Utils.getSystemPropertyOrEnvVar(DOCKER_DOCKERCFG_FILE, new File(System.getProperty("user.home", "."), ".dockercfg").toString());
+            String dockerConfig = Utils.getSystemPropertyOrEnvVar(DOCKER_DOCKERCFG_FILE, Paths.get(System.getProperty("user.home", "."), ".docker", "config.json").toFile().getAbsolutePath());
             File dockerConfigFile = new File((dockerConfig));
             boolean dockerConfigExists = Files.isRegularFile(dockerConfigFile.toPath());
             if (dockerConfigExists) {
                 try {
-                    config.setAuthConfigs((Map<String, AuthConfig>) JSON_MAPPER.readValue(dockerConfigFile, AUTHCONFIG_TYPE));
+                    DockerConfig cfg = JSON_MAPPER.readValue(dockerConfigFile, DockerConfig.class);
+                    config.setAuthConfigs(cfg.getAuths());
                 } catch (IOException e) {
                     LOGGER.error("Could not load kube config file from {}", dockerConfig, e);
                 }
@@ -208,6 +215,22 @@ public class Config {
 
     public void setImageBuildTimeout(int imageBuildTimeout) {
         this.imageBuildTimeout = imageBuildTimeout;
+    }
+
+    public int getImagePushTimeout() {
+        return imagePushTimeout;
+    }
+
+    public void setImagePushTimeout(int imagePushTimeout) {
+        this.imagePushTimeout = imagePushTimeout;
+    }
+
+    public int getImageSearchTimeout() {
+        return imageSearchTimeout;
+    }
+
+    public void setImageSearchTimeout(int imageSearchTimeout) {
+        this.imageSearchTimeout = imageSearchTimeout;
     }
 
     public int getConnectionTimeout() {

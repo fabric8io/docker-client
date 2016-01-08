@@ -5,6 +5,7 @@ import io.fabric8.docker.api.model.Info;
 import io.fabric8.docker.api.model.Version;
 import io.fabric8.docker.client.dsl.DockerDSL;
 import io.fabric8.docker.client.dsl.container.ContainerInterface;
+import io.fabric8.docker.client.dsl.image.ImageSearchInterface;
 import io.fabric8.docker.client.dsl.image.ImagesInterface;
 import io.fabric8.docker.client.impl.ContainerOperationImpl;
 import io.fabric8.docker.client.impl.ImageOperationImpl;
@@ -50,4 +51,5 @@ public class DefaultDockerClient implements DockerClient {
     public ImagesInterface images() {
         return new ImageOperationImpl(client, configuration);
     }
+
 }

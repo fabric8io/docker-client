@@ -6,11 +6,11 @@ import io.fabric8.docker.client.utils.Utils;
 
 import java.util.concurrent.TimeUnit;
 
-public class ImageBuildHandle extends EventHandle {
+public class ImagePushHandle extends EventHandle {
 
     private static final String SUCCESSFULLY_BUILT = "Successfully built";
 
-    public ImageBuildHandle(long duration, TimeUnit unit, EventListener listener) {
+    public ImagePushHandle(long duration, TimeUnit unit, EventListener listener) {
         super(duration, unit, listener);
     }
 
