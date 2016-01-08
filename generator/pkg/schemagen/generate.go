@@ -126,7 +126,7 @@ func (g *schemaGenerator) javaType(t reflect.Type) string {
 	}
 	pkgDesc, ok := g.packages[t.PkgPath()]
 	if ok {
-		return pkgDesc.JavaPackage + "." + t.Name()
+		return pkgDesc.JavaPackage + "." + capitalizeFirst(t.Name())
 	} else {
 		switch t.Kind() {
 		case reflect.Bool:
@@ -150,10 +150,11 @@ func (g *schemaGenerator) javaType(t reflect.Type) string {
 			if len(t.Name()) == 0 && t.NumField() == 0 {
 				return "Object"
 			}
-			return t.Name()
+			return capitalizeClassName(t.Name())
 		}
 	}
 }
+
 
 func (g *schemaGenerator) javaInterfaces(t reflect.Type) []string {
 	if _, ok := t.FieldByName("ObjectMeta"); t.Name() != "PodTemplateSpec" && ok {
