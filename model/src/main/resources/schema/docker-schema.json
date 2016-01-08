@@ -1630,7 +1630,7 @@
           "description": "",
           "items": {
             "$ref": "#/definitions/docker_registry_netIPNet",
-            "javaType": "io.fabric8.docker.api.model.netIPNet"
+            "javaType": "io.fabric8.docker.api.model.NetIPNet"
           }
         },
         "Mirrors": {
@@ -1659,7 +1659,7 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.netIPNet"
+      "javaType": "io.fabric8.docker.api.model.NetIPNet"
     },
     "docker_runconfig_Config": {
       "type": "object",
