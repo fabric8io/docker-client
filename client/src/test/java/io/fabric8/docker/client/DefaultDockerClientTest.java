@@ -14,6 +14,18 @@ import java.util.concurrent.Executors;
 public class DefaultDockerClientTest {
 
     @Test
+    public void miscOptions() throws IOException, InterruptedException {
+        DockerClient client = new DefaultDockerClient();
+        System.out.println(client.info());
+
+        System.out.println(client.version());
+
+        System.out.println(client.ping());
+
+        System.out.println(client.auth().withUsername("admin").withPassword("passs").done());
+    }
+
+    @Test
     public void testContainerOps() throws IOException, InterruptedException {
         DockerClient client = new DefaultDockerClient();
 

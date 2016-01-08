@@ -72,7 +72,7 @@ public class ImageOperationImpl extends OperationSupport implements ImageInterfa
                 OkHttpClient clone = client.clone();
                 clone.setReadTimeout(config.getImageSearchTimeout(), TimeUnit.MILLISECONDS);
                 response = clone.newCall(request).execute();
-                assertResponseCode(request, response, 200);
+                assertResponseCodes(request, response, 200);
             } catch (Exception e) {
                 throw requestException(request, e);
             }

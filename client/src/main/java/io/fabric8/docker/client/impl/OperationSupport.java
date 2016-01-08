@@ -23,15 +23,11 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
-import io.fabric8.docker.api.model.Container;
-import io.fabric8.docker.api.model.Image;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.client.EventListener;
 import io.fabric8.docker.client.utils.URLUtils;
-import io.fabric8.docker.client.utils.Utils;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -85,6 +81,10 @@ public class OperationSupport {
     this(null, null, null, null, null);
   }
 
+  public OperationSupport(OkHttpClient client, Config config, String resourceType) {
+    this(client, config, resourceType, null, null);
+  }
+
   public OperationSupport(OkHttpClient client, Config config, String resourceType, String name, String operationType) {
     this.client = client;
     this.config = config;
@@ -134,70 +134,52 @@ public class OperationSupport {
     }
   }
 
-  protected <T> String checkName(T item) {
-    String operationName = getName();
-
-
-    String itemName = null;
-
-    if (item instanceof Image) {
-      itemName = ((Image)item).getId();
-    } else if (item instanceof Container) {
-      itemName = ((Container)item).getId();
-    }
-
-    if (Utils.isNullOrEmpty(operationName) && Utils.isNullOrEmpty(itemName)) {
-      return null;
-    } else if (Utils.isNullOrEmpty(itemName)) {
-      return operationName;
-    } else if (Utils.isNullOrEmpty(operationName)) {
-      return itemName;
-    } else if (itemName.equals(operationName)) {
-      return itemName;
-    }
-    throw new DockerClientException("Name mismatch. Item name:" + itemName + ". Operation name:" + operationName + ".");
-  }
-
-  protected <T> void handleDelete(T resource) throws ExecutionException, InterruptedException, DockerClientException, IOException {
-    handleDelete(getResourceUrl(checkName(resource)));
-  }
-
   protected void handleDelete(URL requestUrl) throws ExecutionException, InterruptedException, DockerClientException, IOException {
     handleDelete(requestUrl, null);
   }
 
   protected <T> T handleDelete(URL requestUrl, Class<T> type) throws ExecutionException, InterruptedException, DockerClientException, IOException {
     Request.Builder requestBuilder = new Request.Builder().delete(null).url(requestUrl);
-   return handleResponse(requestBuilder, 200, type);
+   return handleResponse(requestBuilder, type);
   }
 
-  protected <T, I> T handleCreate(I resource, Class<T> outputType, String ...dirs) throws ExecutionException, InterruptedException, DockerClientException, IOException {
+  public <T> void handleCreate(T resource) throws ExecutionException, InterruptedException, DockerClientException, IOException {
+    RequestBody body = RequestBody.create(MEDIA_TYPE_JSON, JSON_MAPPER.writeValueAsString(resource));
+    Request.Builder requestBuilder = new Request.Builder().post(body).url(getResourceUrl().toString());
+    handleResponse(requestBuilder, 200, 201, 204);
+  }
+
+  public <T, I> T handleCreate(I resource, Class<T> outputType, String ...dirs) throws ExecutionException, InterruptedException, DockerClientException, IOException {
     RequestBody body = RequestBody.create(MEDIA_TYPE_JSON, JSON_MAPPER.writeValueAsString(resource));
     Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), URLUtils.join(dirs)));
-    return handleResponse(requestBuilder, 201, outputType);
+    return handleResponse(requestBuilder, outputType, 200, 201, 204);
   }
 
-  protected <T> T handleReplace(T updated, Class<T> type) throws ExecutionException, InterruptedException, DockerClientException, IOException {
-    RequestBody body = RequestBody.create(MEDIA_TYPE_JSON, JSON_MAPPER.writeValueAsString(updated));
-    Request.Builder requestBuilder = new Request.Builder().put(body).url(getResourceUrl(checkName(updated)));
-    return handleResponse(requestBuilder, 200, type);
+  public void handleGet() throws ExecutionException, InterruptedException, DockerClientException, IOException {
+    Request.Builder requestBuilder = new Request.Builder().get().url(getOperationUrl());
+    handleResponse(requestBuilder, 200);
   }
 
-  protected <T> T handleGet(URL resourceUrl, Class<T> type) throws ExecutionException, InterruptedException, DockerClientException, IOException {
+  public <T> T handleGet(Class<T> type) throws ExecutionException, InterruptedException, DockerClientException, IOException {
+    Request.Builder requestBuilder = new Request.Builder().get().url(getOperationUrl());
+    return handleResponse(requestBuilder, type, 200);
+  }
+
+  public <T> T handleGet(URL resourceUrl, Class<T> type) throws ExecutionException, InterruptedException, DockerClientException, IOException {
     Request.Builder requestBuilder = new Request.Builder().get().url(resourceUrl);
-    return handleResponse(requestBuilder, 200, type);
+    return handleResponse(requestBuilder, type, 200);
   }
 
   protected <T> List<T> handleList(URL resourceUrl, Class<T> type) throws ExecutionException, InterruptedException, DockerClientException, IOException {
     Request.Builder requestBuilder = new Request.Builder().get().url(resourceUrl);
-    return handleResponse(requestBuilder, 200, JSON_MAPPER.getTypeFactory().constructCollectionType(List.class, type));
+    return handleResponse(requestBuilder, JSON_MAPPER.getTypeFactory().constructCollectionType(List.class, type));
   }
 
-  protected <T> T handleResponse(Request.Builder requestBuilder, int successStatusCode, Class<T> type) throws ExecutionException, InterruptedException, DockerClientException, IOException {
-    return handleResponse(requestBuilder, successStatusCode, JSON_MAPPER.getTypeFactory().constructType(type));
+  protected <T> T handleResponse(Request.Builder requestBuilder, Class<T> type, int... successStatusCodes) throws ExecutionException, InterruptedException, DockerClientException, IOException {
+    return handleResponse(requestBuilder, type == null ? null : JSON_MAPPER.getTypeFactory().constructType(type), successStatusCodes);
   }
 
-  protected Response handleResponse(Request.Builder requestBuilder, int successStatusCode) throws ExecutionException, InterruptedException, DockerClientException, IOException {
+  protected Response handleResponse(Request.Builder requestBuilder, int... successStatusCodes) throws ExecutionException, InterruptedException, DockerClientException, IOException {
     Request request = requestBuilder.build();
     Response response = null;
     try {
@@ -205,11 +187,11 @@ public class OperationSupport {
     } catch (Exception e) {
       throw requestException(request, e);
     }
-    assertResponseCode(request, response, successStatusCode);
+    assertResponseCodes(request, response, successStatusCodes);
     return response;
   }
 
-  protected <T> T handleResponse(Request.Builder requestBuilder, int successStatusCode, JavaType type) throws ExecutionException, InterruptedException, DockerClientException, IOException {
+  protected <T> T handleResponse(Request.Builder requestBuilder, JavaType type, int... successStatusCodes) throws ExecutionException, InterruptedException, DockerClientException, IOException {
     Request request = requestBuilder.build();
     Response response = null;
     try {
@@ -217,7 +199,7 @@ public class OperationSupport {
     } catch (Exception e) {
       throw requestException(request, e);
     }
-    assertResponseCode(request, response, successStatusCode);
+    assertResponseCodes(request, response, successStatusCodes);
     if (type != null) {
       return JSON_MAPPER.readValue(response.body().byteStream(), type);
     } else {
@@ -225,7 +207,7 @@ public class OperationSupport {
     }
   }
 
-  protected InputStream handleResponseStream(Request.Builder requestBuilder, int successStatusCode) throws ExecutionException, InterruptedException, DockerClientException, IOException {
+  protected InputStream handleResponseStream(Request.Builder requestBuilder, int... successStatusCodes) throws ExecutionException, InterruptedException, DockerClientException, IOException {
     Request request = requestBuilder.build();
     Response response = null;
     try {
@@ -233,7 +215,7 @@ public class OperationSupport {
     } catch (Exception e) {
       throw requestException(request, e);
     }
-    assertResponseCode(request, response, successStatusCode);
+    assertResponseCodes(request, response, successStatusCodes);
     return response.body().byteStream();
   }
 
@@ -242,16 +224,18 @@ public class OperationSupport {
    *
    * @param request            The {#link Request} object.
    * @param response           The {@link Response} object.
-   * @param expectedStatusCode The expected status code.
+   * @param expectedStatusCodes The expected status codes.
    * @throws DockerClientException When the response code is not the expected.
    */
-  protected void assertResponseCode(Request request, Response response, int expectedStatusCode) {
+  protected void assertResponseCodes(Request request, Response response, int... expectedStatusCodes) {
     int statusCode = response.code();
-    if (statusCode == expectedStatusCode) {
-      return;
-    } else {
-        throw requestFailure(request, response);
+    for (int expected : expectedStatusCodes) {
+      if (statusCode == expected) {
+        return;
+      }
     }
+
+    throw requestFailure(request, response);
   }
 
   DockerClientException requestFailure(Request request, Response response) {
@@ -276,25 +260,6 @@ public class OperationSupport {
       .append(". Cause: ").append(e.getMessage());
 
     return new DockerClientException(sb.toString(), e);
-  }
-
-   protected <T> T unmarshal(InputStream is, Class<T> type) throws DockerClientException {
-    try (BufferedInputStream bis = new BufferedInputStream(is)) {
-      bis.mark(-1);
-      int intch;
-      do {
-        intch = bis.read();
-      } while (intch > -1 && Character.isWhitespace(intch));
-      bis.reset();
-
-      ObjectMapper mapper = JSON_MAPPER;
-      if (intch != '{') {
-        mapper = YAML_MAPPER;
-      }
-      return mapper.readValue(bis, type);
-    } catch (IOException e) {
-      throw DockerClientException.launderThrowable(e);
-    }
   }
 
   public Config getConfig() {
