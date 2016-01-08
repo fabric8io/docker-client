@@ -68,7 +68,7 @@ public class DefaultDockerClientTest {
         final CountDownLatch buildDone = new CountDownLatch(1);
         final CountDownLatch pushDone = new CountDownLatch(1);
 
-        client.images().pull().usingListener(new EventListener() {
+        client.image().pull().usingListener(new EventListener() {
             @Override
             public void onSuccess(String message) {
                 System.out.println(message);
@@ -85,7 +85,7 @@ public class DefaultDockerClientTest {
             }
         }).fromImage("maven");
 
-        OutputHandle handle = client.images().build()
+        OutputHandle handle = client.image().build()
                 .withRepositoryName("test1")
                 .usingListener(new EventListener() {
                     @Override
@@ -111,9 +111,9 @@ public class DefaultDockerClientTest {
         handle.close();
 
 
-        client.images().withName("test1").tag().inRepository("172.30.128.236:5000/test1").force().withTagName("v1");
+        client.image().withName("test1").tag().inRepository("172.30.128.236:5000/test1").force().withTagName("v1");
 
-        handle = client.images().withName("172.30.128.236:5000/test1").push().usingListener(new EventListener() {
+        handle = client.image().withName("172.30.128.236:5000/test1").push().usingListener(new EventListener() {
             @Override
             public void onSuccess(String message) {
                 System.out.println("Success:" + message);
@@ -136,7 +136,7 @@ public class DefaultDockerClientTest {
         pushDone.await();
         handle.close();
 
-        for (SearchResult r : client.images().search("test1")) {
+        for (SearchResult r : client.image().search("test1")) {
             System.out.println(r);
         }
     }

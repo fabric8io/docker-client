@@ -37,7 +37,7 @@ import java.util.List;
 public interface ImageDSL {
 
     @EntryPoint
-    void images();
+    void image();
 
     @NamedOption
     void withName(String name);

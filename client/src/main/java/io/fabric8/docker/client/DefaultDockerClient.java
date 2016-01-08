@@ -48,7 +48,7 @@ public class DefaultDockerClient implements DockerClient {
     }
 
     @Override
-    public ImagesInterface images() {
+    public ImagesInterface image() {
         return new ImageOperationImpl(client, configuration);
     }
 
