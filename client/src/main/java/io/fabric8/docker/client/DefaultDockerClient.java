@@ -5,14 +5,15 @@ import io.fabric8.docker.api.model.AuthConfig;
 import io.fabric8.docker.api.model.Info;
 import io.fabric8.docker.api.model.InlineAuth;
 import io.fabric8.docker.api.model.Version;
-import io.fabric8.docker.dsl.container.ContainerInterface;
-import io.fabric8.docker.dsl.image.ImageInterface;
-import io.fabric8.docker.dsl.network.NetworkInterface;
-import io.fabric8.docker.dsl.volume.VolumeInterface;
 import io.fabric8.docker.client.impl.ContainerOperationImpl;
 import io.fabric8.docker.client.impl.ImageOperationImpl;
 import io.fabric8.docker.client.impl.OperationSupport;
 import io.fabric8.docker.client.utils.HttpClientUtils;
+import io.fabric8.docker.dsl.container.ContainerInterface;
+import io.fabric8.docker.dsl.image.ImageInterface;
+import io.fabric8.docker.dsl.misc.EventsInterface;
+import io.fabric8.docker.dsl.network.NetworkInterface;
+import io.fabric8.docker.dsl.volume.VolumeInterface;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -76,6 +77,11 @@ public class DefaultDockerClient implements DockerClient {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public EventsInterface events() {
+        return null;
     }
 
     @Override

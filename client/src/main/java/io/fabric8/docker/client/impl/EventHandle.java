@@ -25,7 +25,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-public abstract class EventHandle implements OutputHandle, com.squareup.okhttp.Callback {
+public class EventHandle implements OutputHandle, com.squareup.okhttp.Callback {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventHandle.class);
 
@@ -40,6 +40,10 @@ public abstract class EventHandle implements OutputHandle, com.squareup.okhttp.C
 
     private final CountDownLatch latch = new CountDownLatch(1);
     private final Set<Closeable> closeables = new HashSet<>();
+
+    public EventHandle(long duration, TimeUnit unit) {
+        this(duration, unit, OperationSupport.NULL_LISTENER);
+    }
 
     public EventHandle(long duration, TimeUnit unit, EventListener listener) {
         this(unit.toMillis(duration), listener);
@@ -57,9 +61,14 @@ public abstract class EventHandle implements OutputHandle, com.squareup.okhttp.C
         }
     }
 
-    public abstract boolean isSuccess(ProgressEvent event);
 
-    public abstract boolean isFailure(ProgressEvent event);
+    public boolean isSuccess(ProgressEvent event) {
+        return false;
+    }
+
+    public boolean isFailure(ProgressEvent event) {
+        return false;
+    }
 
     @Override
     public void onFailure(Request request, IOException e) {
