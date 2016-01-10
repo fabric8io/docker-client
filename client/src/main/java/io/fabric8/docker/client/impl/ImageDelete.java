@@ -3,8 +3,8 @@ package io.fabric8.docker.client.impl;
 import com.squareup.okhttp.OkHttpClient;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.dsl.image.AndPruneOrNoPruneInterface;
-import io.fabric8.docker.client.dsl.image.ForceOrAndPruneOrNoPruneInterface;
+import io.fabric8.docker.dsl.image.AndPruneOrNoPruneInterface;
+import io.fabric8.docker.dsl.image.ForceOrAndPruneOrNoPruneInterface;
 
 import java.net.URL;
 

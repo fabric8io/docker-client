@@ -18,7 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>io.fabric8</groupId>
-            <artifactId>docker-model</artifactId>
+            <artifactId>docker-dsl</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

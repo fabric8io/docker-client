@@ -1,17 +1,14 @@
 package io.fabric8.docker.client.impl;
 
 import com.squareup.okhttp.OkHttpClient;
-import io.fabric8.docker.api.model.ContainerCreateRequest;
-import io.fabric8.docker.api.model.ContainerCreateResponse;
-import io.fabric8.docker.api.model.InlineContainerCreate;
 import io.fabric8.docker.api.model.InlineVolumeCreate;
 import io.fabric8.docker.api.model.Volume;
 import io.fabric8.docker.api.model.VolumeCreateRequest;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.dsl.volume.FiltersOrAllInterface;
-import io.fabric8.docker.client.dsl.volume.VolumeInspectOrDeleteInterface;
-import io.fabric8.docker.client.dsl.volume.VolumeInterface;
+import io.fabric8.docker.dsl.volume.FiltersOrAllInterface;
+import io.fabric8.docker.dsl.volume.VolumeInspectOrDeleteInterface;
+import io.fabric8.docker.dsl.volume.VolumeInterface;
 
 import java.util.List;
 

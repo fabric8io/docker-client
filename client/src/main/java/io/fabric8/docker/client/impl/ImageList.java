@@ -4,8 +4,8 @@ import com.squareup.okhttp.OkHttpClient;
 import io.fabric8.docker.api.model.Image;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.dsl.image.AllImagesOrEndImagesOrFiltersInterface;
-import io.fabric8.docker.client.dsl.image.FilterOrFiltersOrAllImagesOrEndImagesInterface;
+import io.fabric8.docker.dsl.image.AllImagesOrEndImagesOrFiltersInterface;
+import io.fabric8.docker.dsl.image.FilterOrFiltersOrAllImagesOrEndImagesInterface;
 
 import java.net.URL;
 import java.util.HashMap;

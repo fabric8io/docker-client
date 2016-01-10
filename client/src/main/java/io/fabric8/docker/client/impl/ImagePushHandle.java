@@ -1,6 +1,6 @@
 package io.fabric8.docker.client.impl;
 
-import io.fabric8.docker.client.EventListener;
+import io.fabric8.docker.dsl.EventListener;
 import io.fabric8.docker.client.ProgressEvent;
 import io.fabric8.docker.client.utils.Utils;
 

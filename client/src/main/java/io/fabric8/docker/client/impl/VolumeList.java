@@ -1,12 +1,11 @@
 package io.fabric8.docker.client.impl;
 
 import com.squareup.okhttp.OkHttpClient;
-import io.fabric8.docker.api.model.NetworkResource;
 import io.fabric8.docker.api.model.Volume;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.dsl.volume.AllInterface;
-import io.fabric8.docker.client.dsl.volume.FiltersOrAllInterface;
+import io.fabric8.docker.dsl.volume.AllInterface;
+import io.fabric8.docker.dsl.volume.FiltersOrAllInterface;
 
 import java.net.URL;
 import java.util.HashMap;

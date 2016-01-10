@@ -6,11 +6,11 @@ import com.squareup.okhttp.RequestBody;
 import io.fabric8.docker.api.model.AuthConfig;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.EventListener;
-import io.fabric8.docker.client.OutputHandle;
-import io.fabric8.docker.client.dsl.image.AsRepoInterface;
-import io.fabric8.docker.client.dsl.image.TagOrAsRepoInterface;
-import io.fabric8.docker.client.dsl.image.UsingListenerOrTagOrAsRepoInterface;
+import io.fabric8.docker.dsl.EventListener;
+import io.fabric8.docker.dsl.OutputHandle;
+import io.fabric8.docker.dsl.image.AsRepoInterface;
+import io.fabric8.docker.dsl.image.TagOrAsRepoInterface;
+import io.fabric8.docker.dsl.image.UsingListenerOrTagOrAsRepoInterface;
 import io.fabric8.docker.client.utils.RegistryUtils;
 import io.fabric8.docker.client.utils.Utils;
 

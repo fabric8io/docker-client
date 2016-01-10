@@ -6,11 +6,11 @@ import io.fabric8.docker.api.model.ImageHistory;
 import io.fabric8.docker.api.model.ImageInspect;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.OutputHandle;
-import io.fabric8.docker.client.dsl.image.ForceOrAndPruneOrNoPruneInterface;
-import io.fabric8.docker.client.dsl.image.ImageInspectOrHistoryOrPushOrTagOrDeleteInterface;
-import io.fabric8.docker.client.dsl.image.InRepositoryOrForceOrTagNameInterface;
-import io.fabric8.docker.client.dsl.image.UsingListenerOrTagOrToRegistryInterface;
+import io.fabric8.docker.dsl.OutputHandle;
+import io.fabric8.docker.dsl.image.ForceOrAndPruneOrNoPruneInterface;
+import io.fabric8.docker.dsl.image.ImageInspectOrHistoryOrPushOrTagOrDeleteInterface;
+import io.fabric8.docker.dsl.image.InRepositoryOrForceOrTagNameInterface;
+import io.fabric8.docker.dsl.image.UsingListenerOrTagOrToRegistryInterface;
 
 import java.util.List;
 

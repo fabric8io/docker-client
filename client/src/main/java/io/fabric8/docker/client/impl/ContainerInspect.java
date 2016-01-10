@@ -4,7 +4,7 @@ import com.squareup.okhttp.OkHttpClient;
 import io.fabric8.docker.api.model.ContainerInfo;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.dsl.container.InspectInterface;
+import io.fabric8.docker.dsl.container.InspectInterface;
 
 import java.net.URL;
 

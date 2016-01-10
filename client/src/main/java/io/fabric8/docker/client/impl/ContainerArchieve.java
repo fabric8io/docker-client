@@ -2,7 +2,7 @@ package io.fabric8.docker.client.impl;
 
 import com.squareup.okhttp.OkHttpClient;
 import io.fabric8.docker.client.Config;
-import io.fabric8.docker.client.dsl.container.DownloadFromOrUploadToInterface;
+import io.fabric8.docker.dsl.container.DownloadFromOrUploadToInterface;
 
 import java.io.InputStream;
 import java.io.OutputStream;

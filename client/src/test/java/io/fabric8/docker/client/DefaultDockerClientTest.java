@@ -4,6 +4,8 @@ import io.fabric8.docker.api.model.Container;
 import io.fabric8.docker.api.model.ContainerCreateResponse;
 import io.fabric8.docker.api.model.ContainerProcessList;
 import io.fabric8.docker.api.model.SearchResult;
+import io.fabric8.docker.dsl.EventListener;
+import io.fabric8.docker.dsl.OutputHandle;
 import org.junit.Test;
 
 import java.io.IOException;

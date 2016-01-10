@@ -25,7 +25,7 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.EventListener;
+import io.fabric8.docker.dsl.EventListener;
 import io.fabric8.docker.client.utils.URLUtils;
 
 import java.io.IOException;

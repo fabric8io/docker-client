@@ -5,10 +5,9 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.dsl.image.ForceOrTagNameInterface;
-import io.fabric8.docker.client.dsl.image.InRepositoryOrForceOrTagNameInterface;
-import io.fabric8.docker.client.dsl.image.WithTagNameInterface;
-import io.fabric8.docker.client.utils.URLUtils;
+import io.fabric8.docker.dsl.image.ForceOrTagNameInterface;
+import io.fabric8.docker.dsl.image.InRepositoryOrForceOrTagNameInterface;
+import io.fabric8.docker.dsl.image.WithTagNameInterface;
 import io.fabric8.docker.client.utils.Utils;
 import okio.ByteString;
 

@@ -4,11 +4,11 @@ import com.squareup.okhttp.OkHttpClient;
 import io.fabric8.docker.api.model.Container;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.dsl.container.AllOrRunningOrFiltersInterface;
-import io.fabric8.docker.client.dsl.container.BeforeOrSizeOrFiltersOrAllOrRunningInterface;
-import io.fabric8.docker.client.dsl.container.LimitOrSinceOrBeforeOrSizeOrFiltersOrAllOrRunningInterface;
-import io.fabric8.docker.client.dsl.container.SinceOrBeforeOrSizeOrFiltersOrAllOrRunningInterface;
-import io.fabric8.docker.client.dsl.container.SizeOrFiltersOrAllOrRunningInterface;
+import io.fabric8.docker.dsl.container.AllOrRunningOrFiltersInterface;
+import io.fabric8.docker.dsl.container.BeforeOrSizeOrFiltersOrAllOrRunningInterface;
+import io.fabric8.docker.dsl.container.LimitOrSinceOrBeforeOrSizeOrFiltersOrAllOrRunningInterface;
+import io.fabric8.docker.dsl.container.SinceOrBeforeOrSizeOrFiltersOrAllOrRunningInterface;
+import io.fabric8.docker.dsl.container.SizeOrFiltersOrAllOrRunningInterface;
 import io.fabric8.docker.client.utils.Utils;
 
 import java.net.URL;

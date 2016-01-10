@@ -2,16 +2,13 @@ package io.fabric8.docker.client.impl;
 
 
 import io.fabric8.docker.api.model.InlineNetworkCreate;
-import io.fabric8.docker.api.model.InlineVolumeCreate;
 import io.fabric8.docker.api.model.NetworkCreate;
 import io.fabric8.docker.api.model.NetworkCreateResponse;
 import io.fabric8.docker.api.model.NetworkResource;
-import io.fabric8.docker.api.model.Volume;
-import io.fabric8.docker.api.model.VolumeCreateRequest;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.dsl.network.FiltersOrAllInterface;
-import io.fabric8.docker.client.dsl.network.NetworkInspectOrNetworkDeleteOrConnectOrDisconnectInterface;
-import io.fabric8.docker.client.dsl.network.NetworkInterface;
+import io.fabric8.docker.dsl.network.FiltersOrAllInterface;
+import io.fabric8.docker.dsl.network.NetworkInspectOrNetworkDeleteOrConnectOrDisconnectInterface;
+import io.fabric8.docker.dsl.network.NetworkInterface;
 
 import java.util.List;
 

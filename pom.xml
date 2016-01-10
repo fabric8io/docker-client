@@ -112,6 +112,7 @@
 
     <modules>
         <module>client</module>
+        <module>dsl</module>
     </modules>
 
 

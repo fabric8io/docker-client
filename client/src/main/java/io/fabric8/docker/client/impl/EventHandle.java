@@ -2,10 +2,10 @@ package io.fabric8.docker.client.impl;
 
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-import io.fabric8.docker.client.Callback;
+import io.fabric8.docker.dsl.Callback;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.EventListener;
-import io.fabric8.docker.client.OutputHandle;
+import io.fabric8.docker.dsl.EventListener;
+import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.client.ProgressEvent;
 import io.fabric8.docker.client.utils.InputStreamPumper;
 import io.fabric8.docker.client.utils.Utils;

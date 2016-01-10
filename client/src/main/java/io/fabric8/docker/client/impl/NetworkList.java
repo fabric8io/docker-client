@@ -4,7 +4,7 @@ import com.squareup.okhttp.OkHttpClient;
 import io.fabric8.docker.api.model.NetworkResource;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.dsl.network.FiltersOrAllInterface;
+import io.fabric8.docker.dsl.network.FiltersOrAllInterface;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -45,7 +45,7 @@ public class NetworkList extends OperationSupport implements FiltersOrAllInterfa
     }
 
     @Override
-    public io.fabric8.docker.client.dsl.network.AllInterface<List<NetworkResource>> filters(String key, String value) {
+    public io.fabric8.docker.dsl.network.AllInterface<List<NetworkResource>> filters(String key, String value) {
         Map<String, String[]> newFilters = new HashMap<>(this.filters);
         newFilters.put(key, new String[]{value});
         return new NetworkList(client, config, newFilters);

@@ -7,7 +7,7 @@ import com.squareup.okhttp.RequestBody;
 import io.fabric8.docker.api.model.NetworkResource;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.dsl.network.NetworkInspectOrNetworkDeleteOrConnectOrDisconnectInterface;
+import io.fabric8.docker.dsl.network.NetworkInspectOrNetworkDeleteOrConnectOrDisconnectInterface;
 
 public class NetworkNamedOperationImpl extends OperationSupport implements NetworkInspectOrNetworkDeleteOrConnectOrDisconnectInterface<NetworkResource, Boolean>{
 

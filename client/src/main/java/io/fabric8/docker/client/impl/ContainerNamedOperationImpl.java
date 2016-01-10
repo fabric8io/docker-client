@@ -9,12 +9,12 @@ import io.fabric8.docker.api.model.ContainerProcessList;
 import io.fabric8.docker.api.model.Stats;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.InputOutputErrorHandle;
-import io.fabric8.docker.client.OutputHandle;
-import io.fabric8.docker.client.dsl.container.ContainerInputOrContainerOutputOrContainerErrorOrStreamOrGetLogsInterface;
-import io.fabric8.docker.client.dsl.container.ContainerResourceOrLogsOrInspectOrAttachOrArhciveInterface;
-import io.fabric8.docker.client.dsl.container.DownloadFromOrUploadToInterface;
-import io.fabric8.docker.client.dsl.container.SinceOrFollowOrDisplayOrContainerOutputOrContainerErrorOrTimestampsOrTailingLinesInterface;
+import io.fabric8.docker.dsl.InputOutputErrorHandle;
+import io.fabric8.docker.dsl.OutputHandle;
+import io.fabric8.docker.dsl.container.ContainerInputOrContainerOutputOrContainerErrorOrStreamOrGetLogsInterface;
+import io.fabric8.docker.dsl.container.ContainerResourceOrLogsOrInspectOrAttachOrArhciveInterface;
+import io.fabric8.docker.dsl.container.DownloadFromOrUploadToInterface;
+import io.fabric8.docker.dsl.container.SinceOrFollowOrDisplayOrContainerOutputOrContainerErrorOrTimestampsOrTailingLinesInterface;
 import io.fabric8.docker.client.utils.URLUtils;
 
 import java.io.InputStream;

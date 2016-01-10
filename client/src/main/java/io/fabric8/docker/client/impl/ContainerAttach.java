@@ -5,11 +5,11 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.ws.WebSocketCall;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.InputOutputErrorHandle;
-import io.fabric8.docker.client.dsl.container.ContainerErrorOrStreamOrGetLogsInterface;
-import io.fabric8.docker.client.dsl.container.ContainerInputOrContainerOutputOrContainerErrorOrStreamOrGetLogsInterface;
-import io.fabric8.docker.client.dsl.container.ContainerOutputOrContainerErrorOrStreamOrGetLogsInterface;
-import io.fabric8.docker.client.dsl.container.StreamOrGetLogsInterface;
+import io.fabric8.docker.dsl.InputOutputErrorHandle;
+import io.fabric8.docker.dsl.container.ContainerErrorOrStreamOrGetLogsInterface;
+import io.fabric8.docker.dsl.container.ContainerInputOrContainerOutputOrContainerErrorOrStreamOrGetLogsInterface;
+import io.fabric8.docker.dsl.container.ContainerOutputOrContainerErrorOrStreamOrGetLogsInterface;
+import io.fabric8.docker.dsl.container.StreamOrGetLogsInterface;
 import io.fabric8.docker.client.utils.URLUtils;
 
 import java.io.InputStream;

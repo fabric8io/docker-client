@@ -15,7 +15,7 @@
  */
 package io.fabric8.docker.client.utils;
 
-import io.fabric8.docker.client.Callback;
+import io.fabric8.docker.dsl.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
