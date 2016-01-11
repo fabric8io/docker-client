@@ -82,6 +82,7 @@ type Schema struct {
 	Stats                       api.Stats
 	AuthConfig					cliconfig.AuthConfig
 	PortBinding                 nat.PortBinding
+	ExecConfig					runconfig.ExecConfig
 }
 
 func main() {

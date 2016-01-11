@@ -3,6 +3,7 @@ package io.fabric8.docker.client.impl;
 import com.fasterxml.jackson.databind.JavaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import io.fabric8.docker.api.model.Image;
 import io.fabric8.docker.api.model.ImageDelete;
@@ -11,15 +12,24 @@ import io.fabric8.docker.api.model.ImageInspect;
 import io.fabric8.docker.api.model.SearchResult;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
+import io.fabric8.docker.client.utils.InputStreamPumper;
+import io.fabric8.docker.client.utils.URLUtils;
+import io.fabric8.docker.api.model.Callback;
 import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.dsl.image.FilterOrFiltersOrAllImagesOrEndImagesInterface;
-import io.fabric8.docker.dsl.image.ImageInspectOrHistoryOrPushOrTagOrDeleteInterface;
+import io.fabric8.docker.dsl.image.ImageInspectOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface;
 import io.fabric8.docker.dsl.image.ImageInterface;
 import io.fabric8.docker.dsl.image.RepositoryNameOrSupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface;
 import io.fabric8.docker.dsl.image.UsingListenerOrTagOrAsRepoInterface;
 import io.fabric8.docker.dsl.image.UsingListenerOrTagOrFromImageInterface;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -27,8 +37,9 @@ import java.util.concurrent.TimeUnit;
 public class ImageOperationImpl extends OperationSupport implements ImageInterface {
 
     private static final JavaType IMAGE_SEARCH_RESULT_LIST = JSON_MAPPER.getTypeFactory().constructCollectionType(List.class, SearchResult.class);
-    private static final String SEARCH_OPERATION = "search";
+
     private static final String TERM = "term";
+
 
     public ImageOperationImpl(OkHttpClient client, Config config) {
         super(client, config, IMAGES_RESOURCE, null, null);
@@ -45,7 +56,7 @@ public class ImageOperationImpl extends OperationSupport implements ImageInterfa
     }
 
     @Override
-    public ImageInspectOrHistoryOrPushOrTagOrDeleteInterface<ImageInspect, List<ImageHistory>, OutputHandle, Boolean, ImageDelete> withName(String name) {
+    public ImageInspectOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface<ImageInspect, List<ImageHistory>, OutputHandle, Boolean, ImageDelete, InputStream> withName(String name) {
         return new ImageNamedOperationImpl(client, config, name);
     }
 
@@ -77,6 +88,65 @@ public class ImageOperationImpl extends OperationSupport implements ImageInterfa
                 throw requestException(request, e);
             }
             return JSON_MAPPER.readValue(response.body().byteStream(), IMAGE_SEARCH_RESULT_LIST);
+        } catch (Exception e) {
+            throw DockerClientException.launderThrowable(e);
+        }
+    }
+
+    @Override
+    public InputStream get() {
+        try {
+            StringBuilder sb = new StringBuilder()
+                    .append(getOperationUrl("get"));
+            Request request = new Request.Builder()
+                    .get()
+                    .url(sb.toString()).build();
+
+            Response response = client.newCall(request).execute();
+            return response.body().byteStream();
+        } catch (Exception e) {
+            throw DockerClientException.launderThrowable(e);
+        }
+    }
+
+    public Boolean load(String path) {
+        try {
+            StringBuilder sb = new StringBuilder()
+                    .append(URLUtils.join(getRootUrl().toString(), "load").toString());
+
+
+            RequestBody body = RequestBody.create(MEDIA_TYPE_TAR, new File(path));
+            Request request = new Request.Builder()
+                    .post(body)
+                    .url(sb.toString()).build();
+            Response response = client.newCall(request).execute();
+            return response.isSuccessful();
+        } catch (Exception e) {
+            throw DockerClientException.launderThrowable(e);
+        }
+    }
+
+    @Override
+    public Boolean load(InputStream inputStream) {
+        try {
+            File tempFile = Files.createTempFile(Paths.get(DEFAULT_TEMP_DIR), TEMP_PREFIX, TEMP_SUFFIX).toFile();
+            try (final FileOutputStream fout = new FileOutputStream(tempFile)) {
+
+                InputStreamPumper pumper = new InputStreamPumper(inputStream, new Callback<byte[], Void>() {
+                    @Override
+                    public Void call(byte[] input) {
+                        try {
+                            fout.write(input);
+                        } catch (IOException e) {
+                            throw DockerClientException.launderThrowable(e);
+                        }
+                        return null;
+                    }
+                });
+                pumper.run();
+                pumper.close();
+            }
+            return load(tempFile.getAbsolutePath());
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
         }

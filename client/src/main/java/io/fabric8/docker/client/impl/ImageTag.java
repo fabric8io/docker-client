@@ -19,7 +19,6 @@ public class ImageTag extends OperationSupport implements
 
     private static final String FORCE = "force";
     private static final String REPOSITORY = "repo";
-    private static final String TAG_OPERATION = "tag";
 
     private final String repository;
     private final Boolean force;

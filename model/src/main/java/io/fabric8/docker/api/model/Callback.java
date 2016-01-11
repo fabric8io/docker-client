@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package io.fabric8.docker.dsl;
+package io.fabric8.docker.api.model;
 
-public interface Callback<T> {
+public interface Callback<I, O> {
 
-    void call(T input);
+    O call(I input);
 }

@@ -3,16 +3,20 @@ package io.fabric8.docker.client.impl;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
+import io.fabric8.docker.api.model.Callback;
 import io.fabric8.docker.api.model.ContainerChange;
+import io.fabric8.docker.api.model.ContainerExecCreateResponse;
 import io.fabric8.docker.api.model.ContainerInfo;
 import io.fabric8.docker.api.model.ContainerProcessList;
+import io.fabric8.docker.api.model.ExecConfig;
+import io.fabric8.docker.api.model.InlineExecConfig;
 import io.fabric8.docker.api.model.Stats;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.dsl.InputOutputErrorHandle;
 import io.fabric8.docker.dsl.OutputHandle;
+import io.fabric8.docker.dsl.container.ContainerExecOrContainerResourceOrLogsOrContainerExecResourceOrAttachOrArhciveInterface;
 import io.fabric8.docker.dsl.container.ContainerInputOrContainerOutputOrContainerErrorOrStreamOrGetLogsInterface;
-import io.fabric8.docker.dsl.container.ContainerResourceOrLogsOrInspectOrAttachOrArhciveInterface;
 import io.fabric8.docker.dsl.container.DownloadFromOrUploadToInterface;
 import io.fabric8.docker.dsl.container.SinceOrFollowOrDisplayOrContainerOutputOrContainerErrorOrTimestampsOrTailingLinesInterface;
 import io.fabric8.docker.client.utils.URLUtils;
@@ -23,7 +27,7 @@ import java.net.URL;
 import java.util.List;
 
 public class ContainerNamedOperationImpl extends BaseContainerOperation implements
-        ContainerResourceOrLogsOrInspectOrAttachOrArhciveInterface<ContainerProcessList,List<ContainerChange>,InputStream,Stats,Boolean,OutputHandle,ContainerInfo,InputOutputErrorHandle,OutputStream> {
+        ContainerExecOrContainerResourceOrLogsOrContainerExecResourceOrAttachOrArhciveInterface<ContainerExecCreateResponse, InlineExecConfig, ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, OutputHandle, ContainerInfo, InputOutputErrorHandle, OutputStream> {
 
     private static final String REMOVE_VOLUMES = "v";
     private static final String TIMEOUT = "t";
@@ -207,12 +211,19 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
 
     @Override
     public ContainerInfo inspect() {
-        return new ContainerInspect(client, config, name).inspect();
+        return inspect(false);
     }
 
     @Override
     public ContainerInfo inspect(Boolean withSize) {
-        return new ContainerInspect(client, config, name).inspect(withSize);
+        StringBuilder sb = new StringBuilder();
+        try {
+            sb.append(getResourceUrl());
+            sb.append("?size=" + withSize);
+            return handleGet(new URL(sb.toString()), ContainerInfo.class);
+        } catch (Exception e) {
+            throw DockerClientException.launderThrowable(e);
+        }
     }
 
     @Override
@@ -223,5 +234,32 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
     @Override
     public ContainerInputOrContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle> attach() {
         return new ContainerAttach(client, config, name, null, null, null, null, null, null);
+    }
+
+    @Override
+    public ContainerExecCreateResponse exec(ExecConfig execConfig) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append(getOperationUrl(EXEC_OPERATION));
+
+            RequestBody body = RequestBody.create(MEDIA_TYPE_JSON, JSON_MAPPER.writeValueAsString(execConfig));
+            Request.Builder builder = new Request.Builder()
+                    .post(body)
+                    .url(sb.toString());
+
+            return handleResponse(builder, ContainerExecCreateResponse.class, 200);
+        } catch (Exception e) {
+            throw DockerClientException.launderThrowable(e);
+        }
+    }
+
+    @Override
+    public InlineExecConfig execNew() {
+        return new InlineExecConfig(new Callback<ExecConfig, ContainerExecCreateResponse>() {
+            @Override
+            public ContainerExecCreateResponse call(ExecConfig input) {
+                return exec(input);
+            }
+        });
     }
 }

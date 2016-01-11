@@ -14,8 +14,10 @@
  *    limitations under the License.
  */
 
-package io.fabric8.docker.dsl.annotations;
+package io.fabric8.docker.dsl.container.annotations;
 
+import io.fabric8.docker.dsl.annotations.NamedOption;
+import io.sundr.dsl.annotations.All;
 import io.sundr.dsl.annotations.Keyword;
 import io.sundr.dsl.annotations.Only;
 
@@ -27,6 +29,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.SOURCE)
 @Keyword
-@Only(SearchOption.class)
-public @interface SearchOption {
+@Only({NamedOption.class, ExecOption.class})
+public @interface ExecOption {
 }

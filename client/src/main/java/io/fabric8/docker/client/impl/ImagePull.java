@@ -21,7 +21,7 @@ public class ImagePull extends OperationSupport implements
         UsingListenerOrTagOrFromImageInterface<OutputHandle>,
         TagOrFromImageInterface<OutputHandle> {
 
-    private static final String CREATE_OPERATION = "create";
+
     private static final String FROM_IMAGE = "fromImage";
     private static final String TAG = "tag";
 

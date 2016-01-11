@@ -5,16 +5,18 @@ import io.fabric8.docker.api.model.Container;
 import io.fabric8.docker.api.model.ContainerChange;
 import io.fabric8.docker.api.model.ContainerCreateRequest;
 import io.fabric8.docker.api.model.ContainerCreateResponse;
+import io.fabric8.docker.api.model.ContainerExecCreateResponse;
 import io.fabric8.docker.api.model.ContainerInfo;
 import io.fabric8.docker.api.model.ContainerProcessList;
 import io.fabric8.docker.api.model.InlineContainerCreate;
+import io.fabric8.docker.api.model.InlineExecConfig;
 import io.fabric8.docker.api.model.Stats;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.dsl.InputOutputErrorHandle;
 import io.fabric8.docker.dsl.OutputHandle;
+import io.fabric8.docker.dsl.container.ContainerExecOrContainerResourceOrLogsOrContainerExecResourceOrAttachOrArhciveInterface;
 import io.fabric8.docker.dsl.container.ContainerInterface;
-import io.fabric8.docker.dsl.container.ContainerResourceOrLogsOrInspectOrAttachOrArhciveInterface;
 import io.fabric8.docker.dsl.container.LimitOrSinceOrBeforeOrSizeOrFiltersOrAllOrRunningInterface;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -37,7 +39,7 @@ public class ContainerOperationImpl extends OperationSupport implements Containe
     }
 
     @Override
-    public ContainerResourceOrLogsOrInspectOrAttachOrArhciveInterface<ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, OutputHandle, ContainerInfo, InputOutputErrorHandle, OutputStream> withName(String name) {
+    public ContainerExecOrContainerResourceOrLogsOrContainerExecResourceOrAttachOrArhciveInterface<ContainerExecCreateResponse, InlineExecConfig, ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, OutputHandle, ContainerInfo, InputOutputErrorHandle, OutputStream> withName(String name) {
         return new ContainerNamedOperationImpl(client, config, name);
     }
 

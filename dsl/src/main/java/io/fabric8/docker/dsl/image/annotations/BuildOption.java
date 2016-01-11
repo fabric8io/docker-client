@@ -27,6 +27,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.SOURCE)
 @Keyword
-@Only({BuildOption.class})
+@Only(value = {BuildOption.class}, orNone = true)
 public @interface BuildOption {
 }

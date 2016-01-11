@@ -10,6 +10,7 @@ import io.fabric8.docker.client.impl.ImageOperationImpl;
 import io.fabric8.docker.client.impl.OperationSupport;
 import io.fabric8.docker.client.utils.HttpClientUtils;
 import io.fabric8.docker.dsl.container.ContainerInterface;
+import io.fabric8.docker.dsl.container.ExecInterface;
 import io.fabric8.docker.dsl.image.ImageInterface;
 import io.fabric8.docker.dsl.misc.EventsInterface;
 import io.fabric8.docker.dsl.network.NetworkInterface;
@@ -87,6 +88,11 @@ public class DefaultDockerClient implements DockerClient {
     @Override
     public ContainerInterface container() {
         return new ContainerOperationImpl(client, configuration);
+    }
+
+    @Override
+    public ExecInterface exec() {
+        return null;
     }
 
     @Override

@@ -54,8 +54,6 @@ public class ImageBuild extends OperationSupport implements
         CpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle>,
         UsingListenerOrFromPathInterface<OutputHandle> {
 
-    private static final String BUILD_OPERATION = "build";
-
     private static final String DOCKER_FILE = "dockerfile";
     private static final String REMOTE_DOCKER_FILE = "remote";
     private static final String REPOSITORY_NAME = "t";
@@ -72,12 +70,8 @@ public class ImageBuild extends OperationSupport implements
     private static final String CPU_QUOTA = "cpuquota";
     private static final String BUILD_ARGS = "buildargs";
 
-    private static final String EMPTY = "";
-    private static final String TEMP_PREFIX = "docker-";
-    private static final String TEMP_SUFFIX = ".tar.bzip2";
-
     private static final String DEFAULT_DOCKERFILE = "Dockerfile";
-    private static final String DEFAULT_TEMP_DIR = System.getProperty("tmp.dir", "/tmp");
+
 
     private final String dockerFile;
     private final String repositoryName;

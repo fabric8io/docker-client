@@ -4,7 +4,7 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ws.WebSocket;
 import com.squareup.okhttp.ws.WebSocketListener;
-import io.fabric8.docker.dsl.Callback;
+import io.fabric8.docker.api.model.Callback;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.dsl.InputOutputErrorHandle;
 import io.fabric8.docker.client.utils.InputStreamPumper;
@@ -35,14 +35,15 @@ public class ContainerInputOutputErrorHandle extends ContainerOutputHandle imple
         super(out,err,outputPipe,errorPipe);
         this.in = inputStreamOrPipe(in, inputPipe);
         this.input = inputPipe;
-        this.pumper = new InputStreamPumper(this.in, new Callback<byte[]>() {
+        this.pumper = new InputStreamPumper(this.in, new Callback<byte[], Void>() {
             @Override
-            public void call(byte[] data) {
+            public Void call(byte[] data) {
                 try {
                     send(data);
                 } catch (Exception e) {
                     //
                 }
+                return null;
             }
         });
     }

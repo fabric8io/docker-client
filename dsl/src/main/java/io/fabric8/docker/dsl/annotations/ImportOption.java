@@ -27,6 +27,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.SOURCE)
 @Keyword
-@Only({CreateOption.class, ImportOption.class})
+@Only(value = {CreateOption.class, ImportOption.class}, orNone = true)
 public @interface ImportOption {
 }

@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package io.fabric8.docker.dsl.annotations;
+package io.fabric8.docker.dsl.image.annotations;
 
 import io.sundr.dsl.annotations.Keyword;
 import io.sundr.dsl.annotations.Only;
@@ -27,6 +27,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.SOURCE)
 @Keyword
-@Only(PullOption.class)
+@Only(value = PullOption.class, orNone = true)
 public @interface PullOption {
 }

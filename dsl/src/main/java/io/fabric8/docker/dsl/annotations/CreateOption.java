@@ -27,6 +27,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.SOURCE)
 @Keyword
-@Only(CreateOption.class)
+@Only(value = CreateOption.class, orNone = true)
 public @interface CreateOption {
 }

@@ -4,9 +4,12 @@ import io.fabric8.docker.api.model.Container;
 import io.fabric8.docker.api.model.ContainerChange;
 import io.fabric8.docker.api.model.ContainerCreateRequest;
 import io.fabric8.docker.api.model.ContainerCreateResponse;
+import io.fabric8.docker.api.model.ContainerExecCreateResponse;
 import io.fabric8.docker.api.model.ContainerInfo;
 import io.fabric8.docker.api.model.ContainerProcessList;
+import io.fabric8.docker.api.model.ExecConfig;
 import io.fabric8.docker.api.model.InlineContainerCreate;
+import io.fabric8.docker.api.model.InlineExecConfig;
 import io.fabric8.docker.api.model.Stats;
 import io.fabric8.docker.dsl.InputOutputErrorHandle;
 import io.fabric8.docker.dsl.OutputHandle;
@@ -17,14 +20,17 @@ import io.fabric8.docker.dsl.annotations.NamedOption;
 import io.fabric8.docker.dsl.annotations.OtherOption;
 import io.fabric8.docker.dsl.container.annotations.ArchiveOption;
 import io.fabric8.docker.dsl.container.annotations.AttachOption;
+import io.fabric8.docker.dsl.container.annotations.ExecOption;
 import io.fabric8.docker.dsl.container.annotations.LogOption;
 import io.sundr.dsl.annotations.All;
 import io.sundr.dsl.annotations.Any;
 import io.sundr.dsl.annotations.Dsl;
 import io.sundr.dsl.annotations.EntryPoint;
 import io.sundr.dsl.annotations.InterfaceName;
+import io.sundr.dsl.annotations.MethodName;
 import io.sundr.dsl.annotations.Multiple;
-import io.sundr.dsl.annotations.None;
+import io.sundr.dsl.annotations.Only;
+import io.sundr.dsl.annotations.Or;
 import io.sundr.dsl.annotations.Terminal;
 
 import java.io.InputStream;
@@ -40,6 +46,13 @@ public interface ContainerDSL {
     @EntryPoint
     void container();
 
+    @EntryPoint
+    @ExecOption
+    void exec();
+
+    @Only({}) //Means no option at all
+    @Or //We use @Or here to tell in order to call withName, you either need no option or exec options.
+    @Any({ExecOption.class})
     @NamedOption
     void withName(String name);
 
@@ -54,7 +67,7 @@ public interface ContainerDSL {
     InlineContainerCreate createNew();
 
     @ListOption
-    @None({NamedOption.class})
+    @Only({})
     void list();
 
     @All({ListOption.class})
@@ -80,6 +93,18 @@ public interface ContainerDSL {
     @Terminal
     @All({ListOption.class})
     List<Container> running();
+
+    @Terminal
+    @OtherOption
+    @All({NamedOption.class})
+    @InterfaceName("ContainerExecInterface")
+    ContainerExecCreateResponse exec(ExecConfig execConfig);
+
+    @Terminal
+    @OtherOption
+    @All({NamedOption.class})
+    @InterfaceName("ContainerExecInterface")
+    InlineExecConfig execNew();
 
     @Terminal
     @OtherOption
@@ -118,15 +143,15 @@ public interface ContainerDSL {
     Stats stats(Boolean args);
 
     @Terminal
-    @OtherOption
-    @All({NamedOption.class})
-    @InterfaceName("ContainerResource")
+    @All(NamedOption.class)
+    @Only({NamedOption.class, ExecOption.class})
+    @InterfaceName("ContainerExecResource")
     Boolean resize(int h,int w);
 
     @Terminal
-    @OtherOption
-    @All({NamedOption.class})
-    @InterfaceName("ContainerResource")
+    @All(NamedOption.class)
+    @Only({NamedOption.class, ExecOption.class})
+    @InterfaceName("ContainerExecResource")
     Boolean start();
 
     @Terminal
@@ -232,11 +257,15 @@ public interface ContainerDSL {
     void tailingLines(int number);
 
     @Terminal
-    @InspectOption
+    @All(NamedOption.class)
+    @Any({InspectOption.class, ExecOption.class})
+    @InterfaceName("ContainerExecResource")
     ContainerInfo inspect();
 
     @Terminal
-    @InspectOption
+    @All(NamedOption.class)
+    @Any({InspectOption.class, ExecOption.class})
+    @InterfaceName("ContainerExecResource")
     ContainerInfo inspect(Boolean withSize);
 
     @AttachOption

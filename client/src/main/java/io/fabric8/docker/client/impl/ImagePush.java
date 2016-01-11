@@ -20,7 +20,6 @@ public class ImagePush extends OperationSupport implements
         UsingListenerOrTagOrToRegistryInterface<OutputHandle>,
         TagOrToRegistryInterface<OutputHandle> {
 
-    private static final String PUSH_OPERATION = "push";
     private static final String TAG = "tag";
 
     private final String tag;

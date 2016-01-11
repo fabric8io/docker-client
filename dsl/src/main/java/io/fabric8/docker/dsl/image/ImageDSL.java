@@ -12,8 +12,7 @@ import io.fabric8.docker.dsl.annotations.ImportOption;
 import io.fabric8.docker.dsl.annotations.InspectOption;
 import io.fabric8.docker.dsl.annotations.ListOption;
 import io.fabric8.docker.dsl.annotations.NamedOption;
-import io.fabric8.docker.dsl.annotations.PullOption;
-import io.fabric8.docker.dsl.annotations.SearchOption;
+import io.fabric8.docker.dsl.image.annotations.PullOption;
 import io.fabric8.docker.dsl.image.annotations.BuildOption;
 import io.fabric8.docker.dsl.image.annotations.HistoryOption;
 import io.fabric8.docker.dsl.image.annotations.PushOption;
@@ -25,8 +24,10 @@ import io.sundr.dsl.annotations.Dsl;
 import io.sundr.dsl.annotations.EntryPoint;
 import io.sundr.dsl.annotations.InterfaceName;
 import io.sundr.dsl.annotations.Multiple;
+import io.sundr.dsl.annotations.Only;
 import io.sundr.dsl.annotations.Terminal;
 
+import java.io.InputStream;
 import java.util.List;
 
 @Dsl
@@ -174,9 +175,17 @@ public interface ImageDSL {
     @All({RemoveOption.class})
     ImageDelete withNoPrune();
 
-    @SearchOption
+    @Only({})
     @Terminal
     @InterfaceName("ImageSearchInterface")
     List<SearchResult> search(String term);
 
+
+    @Only(value = {NamedOption.class}, orNone = true)
+    @Terminal
+    InputStream get();
+
+    @Only(value = {NamedOption.class}, orNone = true)
+    @Terminal
+    Boolean load(InputStream inputStream);
 }

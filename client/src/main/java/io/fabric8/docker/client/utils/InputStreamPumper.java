@@ -15,7 +15,7 @@
  */
 package io.fabric8.docker.client.utils;
 
-import io.fabric8.docker.dsl.Callback;
+import io.fabric8.docker.api.model.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,11 +30,11 @@ public class InputStreamPumper implements Runnable, Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(InputStreamReader.class);
 
     private final InputStream in;
-    private final Callback<byte[]> callback;
+    private final Callback<byte[], Void> callback;
     private boolean keepReading = true;
     private Thread thread;
 
-    public InputStreamPumper(InputStream in, Callback<byte[]> callback) {
+    public InputStreamPumper(InputStream in, Callback<byte[], Void> callback) {
         this.in = in;
         this.callback = callback;
     }

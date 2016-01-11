@@ -1800,6 +1800,54 @@
       "additionalProperties": true,
       "javaType": "io.fabric8.docker.api.model.DeviceMapping"
     },
+    "docker_runconfig_ExecConfig": {
+      "type": "object",
+      "description": "",
+      "properties": {
+        "AttachStderr": {
+          "type": "boolean",
+          "description": ""
+        },
+        "AttachStdin": {
+          "type": "boolean",
+          "description": ""
+        },
+        "AttachStdout": {
+          "type": "boolean",
+          "description": ""
+        },
+        "Cmd": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "type": "string",
+            "description": ""
+          }
+        },
+        "Container": {
+          "type": "string",
+          "description": ""
+        },
+        "Detach": {
+          "type": "boolean",
+          "description": ""
+        },
+        "Privileged": {
+          "type": "boolean",
+          "description": ""
+        },
+        "Tty": {
+          "type": "boolean",
+          "description": ""
+        },
+        "User": {
+          "type": "string",
+          "description": ""
+        }
+      },
+      "additionalProperties": true,
+      "javaType": "io.fabric8.docker.api.model.ExecConfig"
+    },
     "docker_runconfig_HostConfig": {
       "type": "object",
       "description": "",
@@ -2163,6 +2211,10 @@
     "EndpointSettings": {
       "$ref": "#/definitions/docker_network_EndpointSettings",
       "javaType": "io.fabric8.docker.api.model.EndpointSettings"
+    },
+    "ExecConfig": {
+      "$ref": "#/definitions/docker_runconfig_ExecConfig",
+      "javaType": "io.fabric8.docker.api.model.ExecConfig"
     },
     "ExecStartCheck": {
       "$ref": "#/definitions/docker_ExecStartCheck",

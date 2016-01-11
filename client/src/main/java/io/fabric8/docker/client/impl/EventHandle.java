@@ -2,7 +2,7 @@ package io.fabric8.docker.client.impl;
 
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-import io.fabric8.docker.dsl.Callback;
+import io.fabric8.docker.api.model.Callback;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.dsl.EventListener;
 import io.fabric8.docker.dsl.OutputHandle;
@@ -81,10 +81,11 @@ public class EventHandle implements OutputHandle, com.squareup.okhttp.Callback {
     public void onResponse(Response r) throws IOException {
         response.set(r);
         if (r.code() == 200) {
-            InputStreamPumper pumper = new InputStreamPumper(r.body().byteStream(), new Callback<byte[]>() {
+            InputStreamPumper pumper = new InputStreamPumper(r.body().byteStream(), new Callback<byte[], Void>() {
                 @Override
-                public void call(byte[] data) {
+                public Void call(byte[] data) {
                     onEvent(new String(data));
+                    return null;
                 }
             });
             closeables.add(pumper);
