@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2016 Original Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package io.fabric8.docker.client.impl;
 
 import com.squareup.okhttp.OkHttpClient;
@@ -33,6 +50,7 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
     private static final String TIMEOUT = "t";
     private static final String SIGNAL = "signal";
     private static final String SIGINT = "SIGINT";
+    private static final String SIZE = "size";
 
     public ContainerNamedOperationImpl(OkHttpClient client, Config config, String name) {
         super(client, config, name, null);
@@ -218,8 +236,10 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
     public ContainerInfo inspect(Boolean withSize) {
         StringBuilder sb = new StringBuilder();
         try {
-            sb.append(getResourceUrl());
-            sb.append("?size=" + withSize);
+            sb.append(getOperationUrl(JSON));
+            if (withSize) {
+                sb.append(Q).append(SIZE).append(EQUALS).append(withSize);
+            }
             return handleGet(new URL(sb.toString()), ContainerInfo.class);
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);

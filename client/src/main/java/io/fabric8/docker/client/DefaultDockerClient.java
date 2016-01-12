@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2016 Original Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package io.fabric8.docker.client;
 
 import com.squareup.okhttp.OkHttpClient;
@@ -6,6 +23,7 @@ import io.fabric8.docker.api.model.Info;
 import io.fabric8.docker.api.model.InlineAuth;
 import io.fabric8.docker.api.model.Version;
 import io.fabric8.docker.client.impl.ContainerOperationImpl;
+import io.fabric8.docker.client.impl.EventOperationImpl;
 import io.fabric8.docker.client.impl.ImageOperationImpl;
 import io.fabric8.docker.client.impl.OperationSupport;
 import io.fabric8.docker.client.utils.HttpClientUtils;
@@ -16,6 +34,7 @@ import io.fabric8.docker.dsl.misc.EventsInterface;
 import io.fabric8.docker.dsl.network.NetworkInterface;
 import io.fabric8.docker.dsl.volume.VolumeInterface;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -82,7 +101,7 @@ public class DefaultDockerClient implements DockerClient {
 
     @Override
     public EventsInterface events() {
-        return null;
+        return new EventOperationImpl(client, configuration);
     }
 
     @Override
@@ -108,5 +127,13 @@ public class DefaultDockerClient implements DockerClient {
     @Override
     public VolumeInterface volume() {
         return null;
+    }
+
+    @Override
+    public void close() {
+        if (client.getConnectionPool() != null) {
+            client.getConnectionPool().evictAll();
+        }
+        client.getDispatcher().getExecutorService().shutdown();
     }
 }

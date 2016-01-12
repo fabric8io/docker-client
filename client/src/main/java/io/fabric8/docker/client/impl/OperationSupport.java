@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2015 Red Hat, Inc.
+/*
+ * Copyright (C) 2016 Original Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
 package io.fabric8.docker.client.impl;
 
@@ -240,13 +241,14 @@ public class OperationSupport {
    */
   protected void assertResponseCodes(Request request, Response response, int... expectedStatusCodes) {
     int statusCode = response.code();
-    for (int expected : expectedStatusCodes) {
-      if (statusCode == expected) {
-        return;
+    if (expectedStatusCodes.length > 0) {
+      for (int expected : expectedStatusCodes) {
+        if (statusCode == expected) {
+          return;
+        }
       }
+      throw requestFailure(request, response);
     }
-
-    throw requestFailure(request, response);
   }
 
   DockerClientException requestFailure(Request request, Response response) {

@@ -1,27 +1,34 @@
+/*
+ * Copyright (C) 2016 Original Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package io.fabric8.docker.api.model;
 
 public class InlineNetworkCreate extends NetworkCreateFluentImpl<InlineNetworkCreate> implements Doneable<NetworkCreateResponse>, NetworkCreateFluent<InlineNetworkCreate> {
 
     private final NetworkCreateBuilder builder;
+    private final Callback<NetworkCreate, NetworkCreateResponse> callback;
 
-    public InlineNetworkCreate(NetworkCreate item) {
-        this.builder = new NetworkCreateBuilder(this, item);
-    }
-
-    public InlineNetworkCreate(NetworkCreateBuilder builder) {
-        this.builder = builder;
-    }
-
-    public InlineNetworkCreate() {
+    public InlineNetworkCreate(Callback<NetworkCreate, NetworkCreateResponse> callback) {
+        this.callback = callback;
         this.builder = new NetworkCreateBuilder(this);
     }
 
-    public NetworkCreateResponse doCreate(NetworkCreate request) {
-        throw new UnsupportedOperationException("not implemented yet");
-    }
-
     public NetworkCreateResponse done() {
-        return doCreate(builder.build());
+        return callback.call(builder.build());
     }
 
 }
