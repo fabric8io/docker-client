@@ -22,7 +22,7 @@ import io.fabric8.docker.api.model.ContainerChange;
 import io.fabric8.docker.api.model.ContainerCreateRequest;
 import io.fabric8.docker.api.model.ContainerCreateResponse;
 import io.fabric8.docker.api.model.ContainerExecCreateResponse;
-import io.fabric8.docker.api.model.ContainerInfo;
+import io.fabric8.docker.api.model.ContainerInspect;
 import io.fabric8.docker.api.model.ContainerProcessList;
 import io.fabric8.docker.api.model.ExecConfig;
 import io.fabric8.docker.api.model.InlineContainerCreate;
@@ -276,13 +276,13 @@ public interface ContainerDSL {
     @All(NamedOption.class)
     @Any({InspectOption.class, ExecOption.class})
     @InterfaceName("ContainerExecResource")
-    ContainerInfo inspect();
+    ContainerInspect inspect();
 
     @Terminal
     @All(NamedOption.class)
     @Any({InspectOption.class, ExecOption.class})
     @InterfaceName("ContainerExecResource")
-    ContainerInfo inspect(Boolean withSize);
+    ContainerInspect inspect(Boolean withSize);
 
     @AttachOption
     @All({NamedOption.class})

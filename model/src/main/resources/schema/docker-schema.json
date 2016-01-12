@@ -2272,7 +2272,7 @@
       "$ref": "#/definitions/docker_NetworkConnect",
       "javaType": "io.fabric8.docker.api.model.NetworkConnect"
     },
-    "NetworkCreate": {
+    "NetworkCreateRequest": {
       "$ref": "#/definitions/docker_NetworkCreate",
       "javaType": "io.fabric8.docker.api.model.NetworkCreate"
     },

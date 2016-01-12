@@ -18,7 +18,7 @@
 package io.fabric8.docker.client.impl;
 
 import com.squareup.okhttp.OkHttpClient;
-import io.fabric8.docker.api.model.ContainerInfo;
+import io.fabric8.docker.api.model.ContainerInspect;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.dsl.container.ContainerExecResource;
 import io.fabric8.docker.dsl.container.ExecInterface;
@@ -30,7 +30,7 @@ public class ExecOperationImpl extends OperationSupport implements ExecInterface
     }
 
     @Override
-    public ContainerExecResource<Boolean, ContainerInfo> withName(String name) {
+    public ContainerExecResource<Boolean, ContainerInspect> withName(String name) {
         return null;
     }
 }

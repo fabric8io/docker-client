@@ -23,7 +23,7 @@ import com.squareup.okhttp.RequestBody;
 import io.fabric8.docker.api.model.Callback;
 import io.fabric8.docker.api.model.ContainerChange;
 import io.fabric8.docker.api.model.ContainerExecCreateResponse;
-import io.fabric8.docker.api.model.ContainerInfo;
+import io.fabric8.docker.api.model.ContainerInspect;
 import io.fabric8.docker.api.model.ContainerProcessList;
 import io.fabric8.docker.api.model.ExecConfig;
 import io.fabric8.docker.api.model.InlineExecConfig;
@@ -44,7 +44,7 @@ import java.net.URL;
 import java.util.List;
 
 public class ContainerNamedOperationImpl extends BaseContainerOperation implements
-        ContainerExecOrContainerResourceOrLogsOrContainerExecResourceOrAttachOrArhciveInterface<ContainerExecCreateResponse, InlineExecConfig, ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, OutputHandle, ContainerInfo, InputOutputErrorHandle, OutputStream> {
+        ContainerExecOrContainerResourceOrLogsOrContainerExecResourceOrAttachOrArhciveInterface<ContainerExecCreateResponse, InlineExecConfig, ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, OutputHandle, ContainerInspect, InputOutputErrorHandle, OutputStream> {
 
     private static final String REMOVE_VOLUMES = "v";
     private static final String TIMEOUT = "t";
@@ -228,19 +228,19 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
     }
 
     @Override
-    public ContainerInfo inspect() {
+    public ContainerInspect inspect() {
         return inspect(false);
     }
 
     @Override
-    public ContainerInfo inspect(Boolean withSize) {
+    public ContainerInspect inspect(Boolean withSize) {
         StringBuilder sb = new StringBuilder();
         try {
             sb.append(getOperationUrl(JSON));
             if (withSize) {
                 sb.append(Q).append(SIZE).append(EQUALS).append(withSize);
             }
-            return handleGet(new URL(sb.toString()), ContainerInfo.class);
+            return handleGet(new URL(sb.toString()), ContainerInspect.class);
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
         }

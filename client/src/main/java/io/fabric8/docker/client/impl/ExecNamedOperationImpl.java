@@ -20,16 +20,15 @@ package io.fabric8.docker.client.impl;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
-import io.fabric8.docker.api.model.ContainerInfo;
+import io.fabric8.docker.api.model.ContainerInspect;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.client.utils.URLUtils;
 import io.fabric8.docker.dsl.container.ContainerExecResource;
-import io.fabric8.docker.dsl.container.ExecInterface;
 
 import java.net.URL;
 
-public class ExecNamedOperationImpl extends OperationSupport implements ContainerExecResource<Boolean, ContainerInfo> {
+public class ExecNamedOperationImpl extends OperationSupport implements ContainerExecResource<Boolean, ContainerInspect> {
 
     public ExecNamedOperationImpl(OkHttpClient client, Config config, String name) {
         super(client, config, EXEC_OPERATION, name, null);
@@ -66,17 +65,17 @@ public class ExecNamedOperationImpl extends OperationSupport implements Containe
     }
 
     @Override
-    public ContainerInfo inspect() {
+    public ContainerInspect inspect() {
         return inspect(false);
     }
 
     @Override
-    public ContainerInfo inspect(Boolean withSize) {
+    public ContainerInspect inspect(Boolean withSize) {
         StringBuilder sb = new StringBuilder();
         try {
             sb.append(getResourceUrl());
             sb.append("?size=" + withSize);
-            return handleGet(new URL(sb.toString()), ContainerInfo.class);
+            return handleGet(new URL(sb.toString()), ContainerInspect.class);
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
         }

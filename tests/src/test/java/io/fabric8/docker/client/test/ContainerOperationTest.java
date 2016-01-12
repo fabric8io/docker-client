@@ -19,19 +19,12 @@ package io.fabric8.docker.client.test;
 
 import io.fabric8.docker.api.model.Container;
 import io.fabric8.docker.api.model.ContainerBuilder;
-import io.fabric8.docker.api.model.ContainerInfo;
-import io.fabric8.docker.api.model.ContainerInfoBuilder;
-import io.fabric8.docker.api.model.Image;
-import io.fabric8.docker.api.model.ImageBuilder;
-import io.fabric8.docker.api.model.ImageInspect;
-import io.fabric8.docker.api.model.ImageInspectBuilder;
-import io.fabric8.docker.api.model.SearchResult;
-import io.fabric8.docker.api.model.SearchResultBuilder;
+import io.fabric8.docker.api.model.ContainerInspect;
+import io.fabric8.docker.api.model.ContainerInspectBuilder;
 import io.fabric8.docker.client.DockerClient;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -74,17 +67,15 @@ public class ContainerOperationTest extends DockerMockServerTestBase {
     @Test
     public void testInspectContainer() {
         expect().withPath("/containers/mycnt/json")
-                .andReturn(200, new ContainerInfoBuilder().withId("testid").build())
+                .andReturn(200, new ContainerInspectBuilder().withId("testid").build())
                 .once();
 
         DockerClient client = getClient();
 
-        ContainerInfo inspect = client.container().withName("mycnt").inspect();
+        ContainerInspect inspect = client.container().withName("mycnt").inspect();
         assertNotNull(inspect);
         assertEquals("testid", inspect.getId());
     }
-
-
 
     @Test
     public void testStartContainer() {

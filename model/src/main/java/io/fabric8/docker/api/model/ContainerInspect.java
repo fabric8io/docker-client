@@ -54,7 +54,7 @@ import java.util.Map;
 @ToString
 @EqualsAndHashCode
 @Buildable(editableEnabled = true, validationEnabled = true, generateBuilderPackage = true, builderPackage = "io.fabric8.docker.api.builder", inline = @Inline(type = Doneable.class, prefix = "Doneable", value = "done"))
-public class ContainerInfo extends ContainerJSONBase {
+public class ContainerInspect extends ContainerJSONBase {
 
     /**
      *
@@ -77,10 +77,10 @@ public class ContainerInfo extends ContainerJSONBase {
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    public ContainerInfo() {
+    public ContainerInspect() {
     }
 
-    public ContainerInfo(String AppArmorProfile, List<String> Args, String Created, String Driver, String ExecDriver, List<String> ExecIDs, GraphDriverData GraphDriver, io.fabric8.docker.api.model.HostConfig HostConfig, String HostnamePath, String HostsPath, String Id, String Image, String LogPath, String MountLabel, String Name, String Path, String ProcessLabel, String ResolvConfPath, Integer RestartCount, Long SizeRootFs, Long SizeRw, ContainerState State, Config config, List<MountPoint> mounts, NetworkSettings networkSettings) {
+    public ContainerInspect(String AppArmorProfile, List<String> Args, String Created, String Driver, String ExecDriver, List<String> ExecIDs, GraphDriverData GraphDriver, io.fabric8.docker.api.model.HostConfig HostConfig, String HostnamePath, String HostsPath, String Id, String Image, String LogPath, String MountLabel, String Name, String Path, String ProcessLabel, String ResolvConfPath, Integer RestartCount, Long SizeRootFs, Long SizeRw, ContainerState State, Config config, List<MountPoint> mounts, NetworkSettings networkSettings) {
         super(AppArmorProfile, Args, Created, Driver, ExecDriver, ExecIDs, GraphDriver, HostConfig, HostnamePath, HostsPath, Id, Image, LogPath, MountLabel, Name, Path, ProcessLabel, ResolvConfPath, RestartCount, SizeRootFs, SizeRw, State);
         Config = config;
         Mounts = mounts;
