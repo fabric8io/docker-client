@@ -57,7 +57,7 @@ public final class SSLUtils {
 
     public static boolean isHttpsAvailable(Config config) {
         Config sslConfig = new ConfigBuilder(config)
-                .withMasterUrl(Config.HTTPS_PROTOCOL_PREFIX + config.getMasterUrl())
+                .withMasterUrl(URLUtils.withProtocol(config.getMasterUrl(), Config.HTTPS_PROTOCOL_PREFIX))
                 .withRequestTimeout(1000)
                 .withConnectionTimeout(1000)
                 .build();

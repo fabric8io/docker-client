@@ -52,7 +52,7 @@ import java.util.Map;
 })
 @JsonDeserialize(using = com.fasterxml.jackson.databind.JsonDeserializer.None.class)
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 @Buildable(editableEnabled = true, validationEnabled = true, generateBuilderPackage = true, builderPackage = "io.fabric8.docker.api.builder", inline = @Inline(type = Doneable.class, prefix = "Doneable", value = "done"))
 public class ContainerInspect extends ContainerJSONBase {
 

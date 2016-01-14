@@ -139,7 +139,6 @@ public class ImageBuild extends OperationSupport implements
                  BufferedOutputStream bout = new BufferedOutputStream(fout);
                  //BZip2CompressorOutputStream bzout = new BZip2CompressorOutputStream(bout);
                  final TarArchiveOutputStream tout = new TarArchiveOutputStream(bout)) {
-
                     Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
                     @Override
                     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {

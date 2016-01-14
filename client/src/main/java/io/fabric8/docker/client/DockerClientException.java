@@ -47,4 +47,14 @@ public class DockerClientException extends RuntimeException {
             throw new DockerClientException("An error has occurred.", cause);
         }
     }
+
+    public static RuntimeException launderThrowable(String message, Throwable cause) {
+        if (cause instanceof RuntimeException) {
+            return ((RuntimeException) cause);
+        } else if (cause instanceof Error) {
+            throw ((Error) cause);
+        } else {
+            throw new DockerClientException(message, cause);
+        }
+    }
 }

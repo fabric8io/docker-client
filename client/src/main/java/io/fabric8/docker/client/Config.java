@@ -21,6 +21,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.MapType;
 import io.fabric8.docker.api.model.AuthConfig;
 import io.fabric8.docker.api.model.DockerConfig;
+import io.fabric8.docker.client.utils.SSLUtils;
+import io.fabric8.docker.client.utils.URLUtils;
 import io.fabric8.docker.client.utils.Utils;
 import io.sundr.builder.annotations.Buildable;
 import org.slf4j.Logger;
@@ -41,9 +43,12 @@ public class Config {
     private static final MapType AUTHCONFIG_TYPE = JSON_MAPPER.getTypeFactory().constructMapType(HashMap.class, String.class, AuthConfig.class);
 
     public static final String DOCKER_AUTH_DOCKERCFG_ENABLED = "docker.auth.dockercfg.enabled";
-    public static final String DOCKER_DOCKERCFG_FILE= "docker.auth.dockercfg.path";
+    public static final String DOCKER_DOCKERCFG_FILE = "docker.auth.dockercfg.path";
+
+    public static final String DOCKER_HOST = "docker.host";
 
 
+    public static String TCP_PROTOCOL_PREFIX = "tcp://";
     public static String HTTP_PROTOCOL_PREFIX = "http://";
     public static String HTTPS_PROTOCOL_PREFIX = "https://";
 
@@ -98,10 +103,20 @@ public class Config {
         this.httpProxy = httpProxy;
         this.httpsProxy = httpsProxy;
         this.noProxy = noProxy;
-        this.authConfigs = authConfigs;
+
+        if (authConfigs != null && !authConfigs.isEmpty()) {
+            this.authConfigs = authConfigs;
+        }
 
         if (masterUrl == null) {
-            this.masterUrl = Utils.getSystemPropertyOrEnvVar("docker.host");
+            this.masterUrl = Utils.getSystemPropertyOrEnvVar(DOCKER_HOST);
+            if (this.masterUrl != null && this.masterUrl.startsWith(TCP_PROTOCOL_PREFIX)) {
+                if (SSLUtils.isHttpsAvailable(this)) {
+                    this.masterUrl = URLUtils.withProtocol(this.masterUrl, HTTPS_PROTOCOL_PREFIX);
+                } else {
+                    this.masterUrl = URLUtils.withProtocol(this.masterUrl, HTTP_PROTOCOL_PREFIX);
+                }
+            }
         }
     }
 

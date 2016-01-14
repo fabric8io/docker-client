@@ -132,6 +132,7 @@
         <module>dsl</module>
         <module>server-mock</module>
         <module>tests</module>
+        <module>examples</module>
     </modules>
 
 

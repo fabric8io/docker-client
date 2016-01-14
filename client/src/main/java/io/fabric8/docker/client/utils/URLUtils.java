@@ -16,7 +16,13 @@
  */
 package io.fabric8.docker.client.utils;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class URLUtils {
+
+    private static final Pattern URL_PATTERN = Pattern.compile("(?<protocol>^\\w+:[//]?)[^ ]+");
+
     private URLUtils() {}
 
     public static String join(String... parts) {
@@ -36,5 +42,14 @@ public class URLUtils {
                 .replaceAll("/#", "#")
                 .replaceAll(":/", "://");
 
+    }
+
+    public static String withProtocol(String url, String protocol) {
+        Matcher m = URL_PATTERN.matcher(url);
+        if (m.matches()) {
+            String originalProtocol = m.group("protocol");
+            return protocol + url.substring(originalProtocol.length());
+        }
+        throw new IllegalArgumentException();
     }
 }
