@@ -128,7 +128,6 @@
 
     <modules>
         <module>client</module>
-        <module>dsl</module>
         <module>server-mock</module>
         <module>tests</module>
         <module>examples</module>
@@ -391,6 +390,17 @@
     <profiles>
         <profile>
             <id>release</id>
+
+            <modules>
+                <module>annotator</module>
+                <module>model</module>
+                <module>dsl</module>
+                <module>client</module>
+                <module>server-mock</module>
+                <module>tests</module>
+                <module>examples</module>
+            </modules>
+
             <build>
                 <plugins>
                     <plugin>
@@ -480,7 +490,7 @@
             <modules>
                 <module>annotator</module>
                 <module>model</module>
-                <module>client</module>
+                <module>dsl</module>
             </modules>
         </profile>
     </profiles>
