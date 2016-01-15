@@ -47,11 +47,13 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.concurrent.TimeUnit;
 
@@ -156,7 +158,7 @@ public class ImageBuild extends OperationSupport implements
                 });
                 fout.flush();
             }
-            return forArchive(tempFile.getAbsolutePath());
+            return fromTar(tempFile.getAbsolutePath());
 
         } catch (IOException e) {
             throw DockerClientException.launderThrowable(e);
@@ -164,9 +166,19 @@ public class ImageBuild extends OperationSupport implements
     }
 
     @Override
-    public OutputHandle forArchive(String path) {
+    public OutputHandle fromTar(InputStream is) {
         try {
+            File tempFile = Files.createTempFile(Paths.get(DEFAULT_TEMP_DIR), TEMP_PREFIX, TEMP_SUFFIX).toFile();
+            Files.copy(is, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            return fromTar(tempFile.getAbsolutePath());
+        } catch (Exception e) {
+            throw DockerClientException.launderThrowable(e);
+        }
+    }
 
+    @Override
+    public OutputHandle fromTar(String path) {
+        try {
             StringBuilder sb = new StringBuilder();
             sb.append(getOperationUrl());
             sb.append(Q).append(DOCKER_FILE).append(EQUALS).append(dockerFile);

@@ -138,7 +138,12 @@ public interface ImageDSL {
     @Terminal
     @All({BuildOption.class})
     @InterfaceName("FromPathInterface")
-    OutputHandle forArchive(String archive);
+    OutputHandle fromTar(String archive);
+
+    @Terminal
+    @All({BuildOption.class})
+    @InterfaceName("FromPathInterface")
+    OutputHandle fromTar(InputStream is);
 
     @PullOption
     void pull();
