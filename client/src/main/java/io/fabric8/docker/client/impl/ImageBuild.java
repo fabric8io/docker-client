@@ -22,6 +22,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
+import io.fabric8.docker.client.utils.Utils;
 import io.fabric8.docker.dsl.EventListener;
 import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.dsl.image.BuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface;
@@ -39,7 +40,6 @@ import io.fabric8.docker.dsl.image.SupressingVerboseOutputOrNoCacheOrPullingOrRe
 import io.fabric8.docker.dsl.image.SwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface;
 import io.fabric8.docker.dsl.image.UsingDockerFileOrUsingListenerOrFromPathInterface;
 import io.fabric8.docker.dsl.image.UsingListenerOrFromPathInterface;
-import io.fabric8.docker.client.utils.Utils;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 
@@ -228,12 +228,13 @@ public class ImageBuild extends OperationSupport implements
 
             RequestBody body = RequestBody.create(MEDIA_TYPE_TAR, new File(path));
             Request request = new Request.Builder()
-                    .header("X-Registry-Config", java.util.Base64.getUrlEncoder().encodeToString(JSON_MAPPER.writeValueAsString(config.getAuthConfigs()).getBytes("UTF-8")))
+                    .header("X-Registry-Config", new String(org.apache.commons.codec.binary.Base64.encodeBase64URLSafe(JSON_MAPPER.writeValueAsString(config.getAuthConfigs()).getBytes("UTF-8")), "UTF-8"))
                     .post(body)
                     .url(sb.toString()).build();
 
             ImageBuildHandle handle = new ImageBuildHandle(config.getImageBuildTimeout(), TimeUnit.MILLISECONDS, listener);
             client.newCall(request).enqueue(handle);
+
             return handle;
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);

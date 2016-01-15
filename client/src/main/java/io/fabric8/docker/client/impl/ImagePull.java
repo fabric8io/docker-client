@@ -23,15 +23,14 @@ import com.squareup.okhttp.RequestBody;
 import io.fabric8.docker.api.model.AuthConfig;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
+import io.fabric8.docker.client.utils.RegistryUtils;
+import io.fabric8.docker.client.utils.Utils;
 import io.fabric8.docker.dsl.EventListener;
 import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.dsl.image.FromImageInterface;
 import io.fabric8.docker.dsl.image.TagOrFromImageInterface;
 import io.fabric8.docker.dsl.image.UsingListenerOrTagOrFromImageInterface;
-import io.fabric8.docker.client.utils.RegistryUtils;
-import io.fabric8.docker.client.utils.Utils;
 
-import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
 public class ImagePull extends OperationSupport implements
@@ -80,7 +79,7 @@ public class ImagePull extends OperationSupport implements
                 authConfig = config.getAuthConfigs().values().iterator().next();
             }
             Request request = new Request.Builder()
-                    .header("X-Registry-Auth", Base64.getUrlEncoder().encodeToString(JSON_MAPPER.writeValueAsString(authConfig).getBytes("UTF-8")))
+                    .header("X-Registry-Auth", new String(org.apache.commons.codec.binary.Base64.encodeBase64URLSafe(JSON_MAPPER.writeValueAsString(config.getAuthConfigs()).getBytes("UTF-8")), "UTF-8"))
                     .post(RequestBody.create(MEDIA_TYPE_TEXT, EMPTY))
                     .url(sb.toString()).build();
 

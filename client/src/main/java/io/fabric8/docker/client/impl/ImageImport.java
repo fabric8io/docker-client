@@ -63,10 +63,9 @@ public class ImageImport extends OperationSupport implements
             if (Utils.isNotNullOrEmpty(tag)) {
                 sb.append(Q).append(TAG).append(EQUALS).append(tag);
             }
-
             AuthConfig authConfig = RegistryUtils.getConfigForImage(name, config);
             Request request = new Request.Builder()
-                    .header("X-Registry-Auth", java.util.Base64.getUrlEncoder().encodeToString(JSON_MAPPER.writeValueAsString(authConfig).getBytes("UTF-8")))
+                    .header("X-Registry-Auth", new String(org.apache.commons.codec.binary.Base64.encodeBase64URLSafe(JSON_MAPPER.writeValueAsString(config.getAuthConfigs()).getBytes("UTF-8")), "UTF-8"))
                     .post(RequestBody.create(MEDIA_TYPE_TEXT, EMPTY))
                     .url(sb.toString()).build();
 
