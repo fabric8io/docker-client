@@ -51,8 +51,8 @@ public class DefaultDockerClient implements DockerClient {
     public DefaultDockerClient(Config configuration) {
         this.configuration = configuration;
         try {
-            this.masterUrl = new URL(configuration.getMasterUrl());
             this.client = HttpClientUtils.createHttpClient(configuration);
+            this.masterUrl = new URL(configuration.getMasterUrl());
         } catch (MalformedURLException e) {
             throw DockerClientException.launderThrowable(e);
         }
