@@ -18,6 +18,7 @@ package io.fabric8.docker.client.utils;
 
 import com.squareup.okhttp.Authenticator;
 import com.squareup.okhttp.Challenge;
+import com.squareup.okhttp.ConnectionPool;
 import com.squareup.okhttp.Credentials;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.Interceptor;
@@ -25,9 +26,9 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
-
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
+import io.fabric8.docker.client.unix.UnixSocketFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,10 +50,19 @@ import static io.fabric8.docker.client.utils.Utils.isNotNullOrEmpty;
 
 public class HttpClientUtils {
 
+    //Let's fool okhttp to work with non http schemes!
+    //How?
+    //We pass a fake url and a custom socket factory.
+    private static final String UNIX_FAKE_URL = "http://localhost:80";
+
+    private static final String UNIX_SCHEME = "unix";
+    private static final String FILE_SCHEME = "file";
+
     public static OkHttpClient createHttpClient(final Config config) {
         try {
             OkHttpClient httpClient = new OkHttpClient();
 
+            httpClient.setConnectionPool(ConnectionPool.getDefault());
             // Follow any redirects
             httpClient.setFollowRedirects(true);
             httpClient.setFollowSslRedirects(true);
@@ -64,6 +74,12 @@ public class HttpClientUtils {
                         return true;
                     }
                 });
+            }
+
+            if (usesUnixSocket(config)) {
+                URL masterURL = new URL(config.getMasterUrl().replaceFirst(UNIX_SCHEME, FILE_SCHEME));
+                httpClient.setSocketFactory(new UnixSocketFactory(masterURL.getFile()));
+                config.setMasterUrl(UNIX_FAKE_URL);
             }
 
             TrustManager[] trustManagers = SSLUtils.trustManagers(config);
@@ -162,5 +178,9 @@ public class HttpClientUtils {
             return new URL(proxy);
         }
         return null;
+    }
+
+    private static boolean usesUnixSocket(Config config) {
+        return config.getMasterUrl().startsWith(UNIX_SCHEME);
     }
 }

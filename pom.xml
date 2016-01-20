@@ -84,10 +84,11 @@
         <jackson.version>2.6.3</jackson.version>
         <jsonschema2pojo.version>0.4.16</jsonschema2pojo.version>
         <junit.version>4.12</junit.version>
+        <junixsocket.version>2.0.4</junixsocket.version>
         <lombok.version>1.16.4</lombok.version>
         <log4j.version>2.3</log4j.version>
         <mockwebserver.version>20130706</mockwebserver.version>
-        <okhttp.version>2.6.0</okhttp.version>
+        <okhttp.version>2.7.2</okhttp.version>
         <okio.version>1.6.0</okio.version>
         <slf4j.version>1.7.12</slf4j.version>
         <snakeyaml.version>1.16</snakeyaml.version>
@@ -177,6 +178,18 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.kohlschutter.junixsocket</groupId>
+                <artifactId>junixsocket-common</artifactId>
+                <version>${junixsocket.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.kohlschutter.junixsocket</groupId>
+                <artifactId>junixsocket-native-common</artifactId>
+                <version>${junixsocket.version}</version>
             </dependency>
 
             <!-- Testing and Mocking -->
