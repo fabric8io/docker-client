@@ -42,6 +42,7 @@ import io.fabric8.docker.dsl.image.UsingDockerFileOrUsingListenerOrFromPathInter
 import io.fabric8.docker.dsl.image.UsingListenerOrFromPathInterface;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -139,8 +140,8 @@ public class ImageBuild extends OperationSupport implements
 
             try (FileOutputStream fout = new FileOutputStream(tempFile);
                  BufferedOutputStream bout = new BufferedOutputStream(fout);
-                 //BZip2CompressorOutputStream bzout = new BZip2CompressorOutputStream(bout);
-                 final TarArchiveOutputStream tout = new TarArchiveOutputStream(bout)) {
+                 BZip2CompressorOutputStream bzout = new BZip2CompressorOutputStream(bout);
+                 final TarArchiveOutputStream tout = new TarArchiveOutputStream(bzout)) {
                     Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
                     @Override
                     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
