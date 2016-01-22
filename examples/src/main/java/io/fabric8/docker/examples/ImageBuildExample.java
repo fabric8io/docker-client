@@ -45,10 +45,10 @@ public class ImageBuildExample {
         String imageFolder = args.length >= 3 ? args[2] : DEFAULT_IMAGE_PATH;
 
         Config config = new ConfigBuilder()
-                .withMasterUrl(args[0])
+                .withMasterUrl(dokcerHost)
                 .build();
 
-        DockerClient client = new DefaultDockerClient();
+        DockerClient client = new DefaultDockerClient(config);
         final CountDownLatch buildDone = new CountDownLatch(1);
         final CountDownLatch pushDone = new CountDownLatch(1);
 
@@ -102,5 +102,6 @@ public class ImageBuildExample {
 
         pushDone.await();
         handle.close();
+        client.close();
     }
 }
