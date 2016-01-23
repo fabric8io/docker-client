@@ -26,15 +26,19 @@ import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.dsl.EventListener;
 import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.dsl.image.AsRepoInterface;
+import io.fabric8.docker.dsl.image.RedirectingWritingOutputOrTagOrAsRepoInterface;
 import io.fabric8.docker.dsl.image.TagOrAsRepoInterface;
-import io.fabric8.docker.dsl.image.UsingListenerOrTagOrAsRepoInterface;
+import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrAsRepoInterface;
 import io.fabric8.docker.client.utils.RegistryUtils;
 import io.fabric8.docker.client.utils.Utils;
 
+import java.io.OutputStream;
+import java.io.PipedOutputStream;
 import java.util.concurrent.TimeUnit;
 
 public class ImageImport extends OperationSupport implements
-        UsingListenerOrTagOrAsRepoInterface<OutputHandle>,
+        UsingListenerOrRedirectingWritingOutputOrTagOrAsRepoInterface<OutputHandle>,
+        RedirectingWritingOutputOrTagOrAsRepoInterface<OutputHandle>,
         AsRepoInterface<OutputHandle>,
         TagOrAsRepoInterface<OutputHandle> {
 
@@ -43,16 +47,18 @@ public class ImageImport extends OperationSupport implements
 
     private final String tag;
     private final String source;
+    private final OutputStream out;
     private final EventListener listener;
 
     public ImageImport(OkHttpClient client, Config config, String source) {
-        this(client, config, source, null, NULL_LISTENER);
+        this(client, config, source, null, null, NULL_LISTENER);
     }
 
-    public ImageImport(OkHttpClient client, Config config, String source, String tag, EventListener listener) {
+    public ImageImport(OkHttpClient client, Config config, String source, String tag, OutputStream out, EventListener listener) {
         super(client, config, IMAGES_RESOURCE, null, CREATE_OPERATION);
         this.tag = tag;
         this.source = source;
+        this.out = out;
         this.listener = listener;
     }
 
@@ -69,7 +75,7 @@ public class ImageImport extends OperationSupport implements
                     .post(RequestBody.create(MEDIA_TYPE_TEXT, EMPTY))
                     .url(sb.toString()).build();
 
-            ImageImportHandle handle = new ImageImportHandle(config.getImagePushTimeout(), TimeUnit.MILLISECONDS, listener);
+            ImageImportHandle handle = new ImageImportHandle(out, config.getImagePushTimeout(), TimeUnit.MILLISECONDS, listener);
             client.newCall(request).enqueue(handle);
             return handle;
         } catch (Exception e) {
@@ -77,13 +83,24 @@ public class ImageImport extends OperationSupport implements
         }
     }
 
+
     @Override
-    public TagOrAsRepoInterface<OutputHandle> usingListener(EventListener listener) {
-        return new ImageImport(client, config, source, tag, listener);
+    public TagOrAsRepoInterface<OutputHandle> redirectingOutput() {
+        return new ImageImport(client, config, source, tag, new PipedOutputStream(), listener);
+    }
+
+    @Override
+    public TagOrAsRepoInterface<OutputHandle> writingOutput(OutputStream out) {
+        return new ImageImport(client, config, source, tag, out, listener);
+    }
+
+    @Override
+    public RedirectingWritingOutputOrTagOrAsRepoInterface<OutputHandle> usingListener(EventListener listener) {
+        return new ImageImport(client, config, source, tag, out, listener);
     }
 
     @Override
     public AsRepoInterface<OutputHandle> withTag(String tag) {
-        return new ImageImport(client, config, source, tag, listener);
+        return new ImageImport(client, config, source, tag, out, listener);
     }
 }

@@ -36,9 +36,9 @@ import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.dsl.image.FilterOrFiltersOrAllImagesOrEndImagesInterface;
 import io.fabric8.docker.dsl.image.ImageInspectOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface;
 import io.fabric8.docker.dsl.image.ImageInterface;
-import io.fabric8.docker.dsl.image.RepositoryNameOrSupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface;
-import io.fabric8.docker.dsl.image.UsingListenerOrTagOrAsRepoInterface;
-import io.fabric8.docker.dsl.image.UsingListenerOrTagOrFromImageInterface;
+import io.fabric8.docker.dsl.image.RepositoryNameOrSupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface;
+import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrAsRepoInterface;
+import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrFromImageInterface;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -63,7 +63,7 @@ public class ImageOperationImpl extends OperationSupport implements ImageInterfa
     }
 
     @Override
-    public RepositoryNameOrSupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrFromPathInterface<OutputHandle> build() {
+    public RepositoryNameOrSupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle> build() {
         return new ImageBuild(client, config);
     }
 
@@ -78,12 +78,12 @@ public class ImageOperationImpl extends OperationSupport implements ImageInterfa
     }
 
     @Override
-    public UsingListenerOrTagOrAsRepoInterface<OutputHandle> importFrom(String source) {
+    public UsingListenerOrRedirectingWritingOutputOrTagOrAsRepoInterface<OutputHandle> importFrom(String source) {
         return new ImageImport(client, config, source);
     }
 
     @Override
-    public UsingListenerOrTagOrFromImageInterface<OutputHandle> pull() {
+    public UsingListenerOrRedirectingWritingOutputOrTagOrFromImageInterface<OutputHandle> pull() {
         return new ImagePull(client, config);
     }
 
