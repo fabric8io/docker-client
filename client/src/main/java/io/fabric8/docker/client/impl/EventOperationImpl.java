@@ -29,6 +29,7 @@ import io.fabric8.docker.dsl.misc.FiltersOrListInterface;
 import io.fabric8.docker.dsl.misc.ListInterface;
 import io.fabric8.docker.dsl.misc.UntilOrFiltersOrListInterface;
 
+import java.io.PipedOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -76,7 +77,7 @@ public class EventOperationImpl extends OperationSupport implements
 
 
             Request request = new Request.Builder().get().url(sb.toString()).build();
-            EventHandle handle = new EventHandle(config.getRequestTimeout(), TimeUnit.MILLISECONDS);
+            EventHandle handle = new EventHandle(new PipedOutputStream(), config.getRequestTimeout(), TimeUnit.MILLISECONDS);
             client.newCall(request).enqueue(handle);
             return handle;
         } catch (Exception e) {

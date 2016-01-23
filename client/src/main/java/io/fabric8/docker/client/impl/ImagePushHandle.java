@@ -21,14 +21,15 @@ import io.fabric8.docker.dsl.EventListener;
 import io.fabric8.docker.client.ProgressEvent;
 import io.fabric8.docker.client.utils.Utils;
 
+import java.io.OutputStream;
 import java.util.concurrent.TimeUnit;
 
 public class ImagePushHandle extends EventHandle {
 
     private static final String SUCCESSFULLY_BUILT = "Successfully built";
 
-    public ImagePushHandle(long duration, TimeUnit unit, EventListener listener) {
-        super(duration, unit, listener);
+    public ImagePushHandle(OutputStream out, long duration, TimeUnit unit, EventListener listener) {
+        super(out, duration, unit, listener);
     }
 
     @Override

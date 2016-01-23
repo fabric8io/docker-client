@@ -21,6 +21,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+import io.fabric8.docker.api.model.Callback;
 import io.fabric8.docker.api.model.ImageDelete;
 import io.fabric8.docker.api.model.ImageHistory;
 import io.fabric8.docker.api.model.ImageInspect;
@@ -28,12 +29,11 @@ import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.client.utils.InputStreamPumper;
 import io.fabric8.docker.client.utils.URLUtils;
-import io.fabric8.docker.api.model.Callback;
 import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.dsl.image.ForceOrAndPruneOrNoPruneInterface;
 import io.fabric8.docker.dsl.image.ImageInspectOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface;
 import io.fabric8.docker.dsl.image.InRepositoryOrForceOrTagNameInterface;
-import io.fabric8.docker.dsl.image.UsingListenerOrTagOrToRegistryInterface;
+import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrToRegistryInterface;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -85,7 +85,7 @@ public class ImageNamedOperationImpl extends OperationSupport implements
     }
 
     @Override
-    public UsingListenerOrTagOrToRegistryInterface<OutputHandle> push() {
+    public UsingListenerOrRedirectingWritingOutputOrTagOrToRegistryInterface<OutputHandle> push() {
         return new ImagePush(client, config, name);
     }
 

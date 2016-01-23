@@ -23,32 +23,38 @@ import com.squareup.okhttp.RequestBody;
 import io.fabric8.docker.api.model.AuthConfig;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.dsl.EventListener;
-import io.fabric8.docker.dsl.OutputHandle;
-import io.fabric8.docker.dsl.image.TagOrToRegistryInterface;
-import io.fabric8.docker.dsl.image.ToRegistryInterface;
-import io.fabric8.docker.dsl.image.UsingListenerOrTagOrToRegistryInterface;
 import io.fabric8.docker.client.utils.RegistryUtils;
 import io.fabric8.docker.client.utils.Utils;
+import io.fabric8.docker.dsl.EventListener;
+import io.fabric8.docker.dsl.OutputHandle;
+import io.fabric8.docker.dsl.image.RedirectingWritingOutputOrTagOrToRegistryInterface;
+import io.fabric8.docker.dsl.image.TagOrToRegistryInterface;
+import io.fabric8.docker.dsl.image.ToRegistryInterface;
+import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrToRegistryInterface;
 
+import java.io.OutputStream;
+import java.io.PipedOutputStream;
 import java.util.concurrent.TimeUnit;
 
 public class ImagePush extends OperationSupport implements
-        UsingListenerOrTagOrToRegistryInterface<OutputHandle>,
+        UsingListenerOrRedirectingWritingOutputOrTagOrToRegistryInterface<OutputHandle>,
+        RedirectingWritingOutputOrTagOrToRegistryInterface<OutputHandle>,
         TagOrToRegistryInterface<OutputHandle> {
 
     private static final String TAG = "tag";
 
     private final String tag;
+    private final OutputStream out;
     private final EventListener listener;
 
     public ImagePush(OkHttpClient client, Config config, String name) {
-        this(client, config, name, null, NULL_LISTENER);
+        this(client, config, name, null, null, NULL_LISTENER);
     }
 
-    public ImagePush(OkHttpClient client, Config config, String name, String tag, EventListener listener) {
+    public ImagePush(OkHttpClient client, Config config, String name, String tag, OutputStream out, EventListener listener) {
         super(client, config, IMAGES_RESOURCE, name, PUSH_OPERATION);
         this.tag = tag;
+        this.out = out;
         this.listener = listener;
     }
 
@@ -66,7 +72,7 @@ public class ImagePush extends OperationSupport implements
                     .post(RequestBody.create(MEDIA_TYPE_TEXT, EMPTY))
                     .url(sb.toString()).build();
 
-            ImagePushHandle handle = new ImagePushHandle(config.getImagePushTimeout(), TimeUnit.MILLISECONDS, listener);
+            ImagePushHandle handle = new ImagePushHandle(out, config.getImagePushTimeout(), TimeUnit.MILLISECONDS, listener);
             client.newCall(request).enqueue(handle);
             return handle;
         } catch (Exception e) {
@@ -76,11 +82,21 @@ public class ImagePush extends OperationSupport implements
 
     @Override
     public ToRegistryInterface<OutputHandle> withTag(String tag) {
-        return new ImagePush(client, config, name, tag, listener);
+        return new ImagePush(client, config, name, tag, out, listener);
     }
 
     @Override
-    public TagOrToRegistryInterface<OutputHandle> usingListener(EventListener listener) {
-        return new ImagePush(client, config, name, tag, listener);
+    public RedirectingWritingOutputOrTagOrToRegistryInterface<OutputHandle> usingListener(EventListener listener) {
+        return new ImagePush(client, config, name, tag, out, listener);
+    }
+
+    @Override
+    public TagOrToRegistryInterface<OutputHandle> redirectingOutput() {
+        return new ImagePush(client, config, name, tag, new PipedOutputStream(), listener);
+    }
+
+    @Override
+    public TagOrToRegistryInterface<OutputHandle> writingOutput(OutputStream out) {
+        return new ImagePush(client, config, name, tag, out, listener);
     }
 }

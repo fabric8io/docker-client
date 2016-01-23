@@ -21,14 +21,15 @@ import io.fabric8.docker.dsl.EventListener;
 import io.fabric8.docker.client.ProgressEvent;
 import io.fabric8.docker.client.utils.Utils;
 
+import java.io.OutputStream;
 import java.util.concurrent.TimeUnit;
 
 public class ImageImportHandle extends EventHandle {
 
     private static final String STATUS = "Status:";
 
-    public ImageImportHandle(long duration, TimeUnit unit, EventListener listener) {
-        super(duration, unit, listener);
+    public ImageImportHandle(OutputStream out, long duration, TimeUnit unit, EventListener listener) {
+        super(out, duration, unit, listener);
     }
 
     @Override

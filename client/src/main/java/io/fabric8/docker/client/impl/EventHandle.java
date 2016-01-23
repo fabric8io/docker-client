@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.HashSet;
@@ -47,8 +48,9 @@ public class EventHandle implements OutputHandle, com.squareup.okhttp.Callback {
     private static final Logger LOGGER = LoggerFactory.getLogger(EventHandle.class);
 
     private final long timeoutMillis;
+
+    private final OutputStream out;
     private final PipedInputStream pin;
-    private final PipedOutputStream pout;
     private final EventListener listener;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
@@ -58,23 +60,28 @@ public class EventHandle implements OutputHandle, com.squareup.okhttp.Callback {
     private final CountDownLatch latch = new CountDownLatch(1);
     private final Set<Closeable> closeables = new HashSet<>();
 
-    public EventHandle(long duration, TimeUnit unit) {
-        this(duration, unit, OperationSupport.NULL_LISTENER);
+    public EventHandle(OutputStream out, long duration, TimeUnit unit) {
+        this(out, duration, unit, OperationSupport.NULL_LISTENER);
     }
 
-    public EventHandle(long duration, TimeUnit unit, EventListener listener) {
-        this(unit.toMillis(duration), listener);
+    public EventHandle(OutputStream out, long duration, TimeUnit unit, EventListener listener) {
+        this(out, unit.toMillis(duration), listener);
     }
 
-    public EventHandle(long timeoutMillis, EventListener listener) {
+    public EventHandle(OutputStream out, long timeoutMillis, EventListener listener) {
+        this.out = out;
         this.timeoutMillis = timeoutMillis;
         this.listener = listener;
-        this.pin = new PipedInputStream();
-        this.pout = new PipedOutputStream();
-        try {
-            this.pin.connect(pout);
-        } catch (IOException e) {
-            throw DockerClientException.launderThrowable(e);
+
+        if (out instanceof PipedOutputStream) {
+            try {
+                this.pin = new PipedInputStream();
+                this.pin.connect((PipedOutputStream) out);
+            } catch (IOException e) {
+                throw DockerClientException.launderThrowable(e);
+            }
+        } else {
+            pin = null;
         }
     }
 
@@ -125,10 +132,14 @@ public class EventHandle implements OutputHandle, com.squareup.okhttp.Callback {
                 } else {
                     listener.onEvent(stream);
                 }
-                pout.write(stream.getBytes());
+                if (out != null) {
+                    out.write(stream.getBytes());
+                }
             } else if (isFailure(event)) {
                 String error = event.getError();
-                pout.write(error.getBytes());
+                if (out != null) {
+                    out.write(error.getBytes());
+                }
                 listener.onError(error);
             }
         } catch (IOException t) {
@@ -149,6 +160,8 @@ public class EventHandle implements OutputHandle, com.squareup.okhttp.Callback {
                     throw new DockerClientException("Response not available");
                 } else if (!r.isSuccessful()) {
                     throw new DockerClientException(r.message());
+                } else if (pin == null) {
+                    throw new DockerClientException("InputStream not available. Have you used redirectingOutput()?");
                 } else {
                     return pin;
                 }

@@ -28,13 +28,17 @@ import io.fabric8.docker.client.utils.Utils;
 import io.fabric8.docker.dsl.EventListener;
 import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.dsl.image.FromImageInterface;
+import io.fabric8.docker.dsl.image.RedirectingWritingOutputOrTagOrFromImageInterface;
 import io.fabric8.docker.dsl.image.TagOrFromImageInterface;
-import io.fabric8.docker.dsl.image.UsingListenerOrTagOrFromImageInterface;
+import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrFromImageInterface;
 
+import java.io.OutputStream;
+import java.io.PipedOutputStream;
 import java.util.concurrent.TimeUnit;
 
 public class ImagePull extends OperationSupport implements
-        UsingListenerOrTagOrFromImageInterface<OutputHandle>,
+        UsingListenerOrRedirectingWritingOutputOrTagOrFromImageInterface<OutputHandle>,
+        RedirectingWritingOutputOrTagOrFromImageInterface<OutputHandle>,
         TagOrFromImageInterface<OutputHandle> {
 
 
@@ -42,26 +46,38 @@ public class ImagePull extends OperationSupport implements
     private static final String TAG = "tag";
 
     private final String tag;
+    private final OutputStream out;
     private final EventListener listener;
 
     public ImagePull(OkHttpClient client, Config config) {
-        this(client, config, null, NULL_LISTENER);
+        this(client, config, null, null, NULL_LISTENER);
     }
 
-    public ImagePull(OkHttpClient client, Config config, String tag, EventListener listener) {
+    public ImagePull(OkHttpClient client, Config config, String tag, OutputStream out, EventListener listener) {
         super(client, config, IMAGES_RESOURCE, null, CREATE_OPERATION);
         this.tag = tag;
+        this.out = out;
         this.listener = listener;
     }
 
     @Override
     public FromImageInterface<OutputHandle> withTag(String tag) {
-        return new ImagePull(client, config, tag, listener);
+        return new ImagePull(client, config, tag, out, listener);
     }
 
     @Override
-    public TagOrFromImageInterface<OutputHandle> usingListener(EventListener listener) {
-        return new ImagePull(client, config, tag, listener);
+    public RedirectingWritingOutputOrTagOrFromImageInterface<OutputHandle> usingListener(EventListener listener) {
+        return new ImagePull(client, config, tag, out, listener);
+    }
+
+    @Override
+    public TagOrFromImageInterface<OutputHandle> redirectingOutput() {
+        return new ImagePull(client, config, tag, new PipedOutputStream(), listener);
+    }
+
+    @Override
+    public TagOrFromImageInterface<OutputHandle> writingOutput(OutputStream out) {
+        return new ImagePull(client, config, tag, out, listener);
     }
 
     @Override
@@ -83,7 +99,7 @@ public class ImagePull extends OperationSupport implements
                     .post(RequestBody.create(MEDIA_TYPE_TEXT, EMPTY))
                     .url(sb.toString()).build();
 
-            ImagePullHandle handle = new ImagePullHandle(config.getImagePushTimeout(), TimeUnit.MILLISECONDS, listener);
+            ImagePullHandle handle = new ImagePullHandle(out, config.getImagePushTimeout(), TimeUnit.MILLISECONDS, listener);
             client.newCall(request).enqueue(handle);
             return handle;
         } catch (Exception e) {

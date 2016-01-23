@@ -45,6 +45,7 @@ import io.sundr.dsl.annotations.Only;
 import io.sundr.dsl.annotations.Terminal;
 
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 @Dsl
@@ -129,6 +130,14 @@ public interface ImageDSL {
 
     @Any({BuildOption.class, PushOption.class, PullOption.class, ImportOption.class})
     void usingListener(EventListener listener);
+
+    @Any({BuildOption.class, PushOption.class, PullOption.class, ImportOption.class})
+    @InterfaceName("RedirectingWritingOutput")
+    void redirectingOutput();
+
+    @Any({BuildOption.class, PushOption.class, PullOption.class, ImportOption.class})
+    @InterfaceName("RedirectingWritingOutput")
+    void writingOutput(OutputStream out);
 
     @Terminal
     @All({BuildOption.class})
