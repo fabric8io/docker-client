@@ -28,7 +28,7 @@ public class RegistryUtils {
 
     public static AuthConfig getConfigForImage(String image, Config config) {
         String registry = extractRegistry(image);
-        if (registry != null && config != null && config.getAuthConfigs().containsKey(registry)) {
+        if (registry != null && config != null && config.getAuthConfigs() != null &&  config.getAuthConfigs().containsKey(registry)) {
             return config.getAuthConfigs().get(registry);
         }
         return null;

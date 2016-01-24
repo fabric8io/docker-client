@@ -106,6 +106,8 @@ public class Config {
 
         if (authConfigs != null && !authConfigs.isEmpty()) {
             this.authConfigs = authConfigs;
+        } else {
+            this.authConfigs = new HashMap<>();
         }
 
         if (masterUrl == null) {
