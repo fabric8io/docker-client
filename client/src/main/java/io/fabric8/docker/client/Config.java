@@ -20,6 +20,7 @@ package io.fabric8.docker.client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.MapType;
 import io.fabric8.docker.api.model.AuthConfig;
+import io.fabric8.docker.api.model.AuthConfigBuilder;
 import io.fabric8.docker.api.model.DockerConfig;
 import io.fabric8.docker.client.utils.SSLUtils;
 import io.fabric8.docker.client.utils.URLUtils;
@@ -42,11 +43,15 @@ public class Config {
     private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
     private static final MapType AUTHCONFIG_TYPE = JSON_MAPPER.getTypeFactory().constructMapType(HashMap.class, String.class, AuthConfig.class);
 
+
+    public static final String DOCKER_AUTH_FALLBACK_KEY= "docker.auth.fallback.key";
     public static final String DOCKER_AUTH_DOCKERCFG_ENABLED = "docker.auth.dockercfg.enabled";
     public static final String DOCKER_DOCKERCFG_FILE = "docker.auth.dockercfg.path";
 
     public static final String DOCKER_HOST = "docker.host";
 
+    public static final String KUBERNETES_AUTH_TRYSERVICEACCOUNT_SYSTEM_PROPERTY = "kubernetes.auth.tryServiceAccount";
+    public static final String KUBERNETES_SERVICE_ACCOUNT_TOKEN_PATH = "/var/run/secrets/kubernetes.io/serviceaccount/token";
 
     public static String TCP_PROTOCOL_PREFIX = "tcp://";
     public static String HTTP_PROTOCOL_PREFIX = "http://";
@@ -77,6 +82,8 @@ public class Config {
 
     public Config() {
         tryDockerConfig(this);
+        //In case of Kubernetes / Openshift let's try to read the authconfig from service account token
+        tryServiceAccount(this);
     }
 
     @Buildable
@@ -131,9 +138,25 @@ public class Config {
                 try {
                     DockerConfig cfg = JSON_MAPPER.readValue(dockerConfigFile, DockerConfig.class);
                     config.setAuthConfigs(cfg.getAuths());
+                    return !cfg.getAuths().isEmpty();
                 } catch (IOException e) {
                     LOGGER.error("Could not load kube config file from {}", dockerConfig, e);
                 }
+            }
+        }
+        return false;
+    }
+
+    private boolean tryServiceAccount(Config config) {
+        if (Utils.getSystemPropertyOrEnvVar(KUBERNETES_AUTH_TRYSERVICEACCOUNT_SYSTEM_PROPERTY, true)) {
+            try {
+                String token = new String(Files.readAllBytes(new File(KUBERNETES_SERVICE_ACCOUNT_TOKEN_PATH).toPath()));
+                if (token != null) {
+                    config.getAuthConfigs().put(DOCKER_AUTH_FALLBACK_KEY, new AuthConfigBuilder().withAuth(token).build());
+                    return true;
+                }
+            } catch (IOException e) {
+                // No service account token available...
             }
         }
         return false;

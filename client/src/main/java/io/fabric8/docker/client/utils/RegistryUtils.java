@@ -28,8 +28,13 @@ public class RegistryUtils {
 
     public static AuthConfig getConfigForImage(String image, Config config) {
         String registry = extractRegistry(image);
-        if (registry != null && config != null && config.getAuthConfigs() != null &&  config.getAuthConfigs().containsKey(registry)) {
-            return config.getAuthConfigs().get(registry);
+
+        if (registry != null && config != null && config.getAuthConfigs() != null) {
+            if (config.getAuthConfigs().containsKey(registry)) {
+                return config.getAuthConfigs().get(registry);
+            } else if (config.getAuthConfigs().containsKey(Config.DOCKER_AUTH_FALLBACK_KEY)) {
+                return config.getAuthConfigs().get(Config.DOCKER_AUTH_FALLBACK_KEY);
+            }
         }
         return null;
     }
