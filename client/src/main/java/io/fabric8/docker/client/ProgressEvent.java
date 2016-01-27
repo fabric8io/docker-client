@@ -20,6 +20,7 @@ package io.fabric8.docker.client;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import io.fabric8.docker.client.utils.Utils;
 import io.sundr.builder.annotations.Buildable;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -31,6 +32,12 @@ import io.sundr.builder.annotations.Buildable;
 @Buildable
 public class ProgressEvent {
 
+    @JsonProperty("id")
+    private String id;
+    @JsonProperty("status")
+    private String status;
+    @JsonProperty("progressDetail")
+    private String progressDetail;
     @JsonProperty("stream")
     private String stream;
     @JsonProperty("errorDetail")
@@ -75,5 +82,34 @@ public class ProgressEvent {
         public String getMessage() {
             return message;
         }
+
+        @Override
+        public String toString() {
+            return message;
+        }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (Utils.isNotNullOrEmpty(id)) {
+            sb.append(id).append(":");
+        }
+
+        if (Utils.isNotNullOrEmpty(status)) {
+            sb.append(status);
+        }
+
+        if (Utils.isNotNullOrEmpty(stream)) {
+            sb.append(stream);
+        }
+
+        if (Utils.isNotNullOrEmpty(error)) {
+            sb.append(error);
+            if (errorDetail != null) {
+                sb.append(":").append(errorDetail);
+            }
+        }
+        return sb.toString();
     }
 }

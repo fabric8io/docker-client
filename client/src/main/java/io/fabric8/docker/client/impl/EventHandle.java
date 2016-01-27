@@ -139,31 +139,31 @@ public class EventHandle implements OutputHandle, com.squareup.okhttp.Callback {
     }
 
     private void onEvent(String line) {
+        ProgressEvent event = null;
         try {
-            ProgressEvent event = OperationSupport.JSON_MAPPER.readValue(line, ProgressEvent.class);
+            event = OperationSupport.JSON_MAPPER.readValue(line, ProgressEvent.class);
             if (event == null) {
                 //ignore
-            } else if (Utils.isNotNullOrEmpty(event.getStream())) {
-                String stream = event.getStream();
-                if (isSuccess(event) && succeded.compareAndSet(false, true)) {
-                    listener.onSuccess(stream);
-                } else {
-                    listener.onEvent(stream);
-                }
-                if (out != null) {
-                    out.write(stream.getBytes());
-                }
             } else if (isFailure(event) && failed.compareAndSet(false, true)) {
                 String error = event.getError();
-                if (out != null) {
-                    out.write(error.getBytes());
-                }
                 listener.onError(error);
-            } else {
-                listener.onEvent(line);
+            } else  {
+                if (isSuccess(event) && succeded.compareAndSet(false, true)) {
+                    listener.onSuccess(event.toString());
+                } else {
+                    listener.onEvent(event.toString());
+                }
             }
         } catch (IOException t) {
             LOGGER.debug("Error while handling event.", t);
+        } finally {
+            if (event != null && out != null) {
+                try {
+                    out.write(event.toString().getBytes());
+                } catch (IOException e) {
+                    LOGGER.debug("Error while writing event to output stream.", e);
+                }
+            }
         }
     }
 
