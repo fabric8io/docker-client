@@ -41,6 +41,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class EventHandle implements OutputHandle, com.squareup.okhttp.Callback {
@@ -59,6 +60,9 @@ public class EventHandle implements OutputHandle, com.squareup.okhttp.Callback {
 
     private final CountDownLatch latch = new CountDownLatch(1);
     private final Set<Closeable> closeables = new HashSet<>();
+
+    private final AtomicBoolean succeded = new AtomicBoolean(false);
+    private final AtomicBoolean failed = new AtomicBoolean(false);
 
     public EventHandle(OutputStream out, long duration, TimeUnit unit) {
         this(out, duration, unit, OperationSupport.NULL_LISTENER);
@@ -111,6 +115,20 @@ public class EventHandle implements OutputHandle, com.squareup.okhttp.Callback {
                     onEvent(new String(data));
                     return null;
                 }
+            }, new Callback<Boolean, Void>() {
+                @Override
+                public Void call(Boolean success) {
+                    if (success) {
+                        if (succeded.compareAndSet(false, true)) {
+                            listener.onSuccess("");
+                        }
+                    } else {
+                        if (failed.compareAndSet(false, true)) {
+                            listener.onError("");
+                        }
+                    }
+                    return null;
+                }
             });
             closeables.add(pumper);
             executorService.submit(pumper);
@@ -127,7 +145,7 @@ public class EventHandle implements OutputHandle, com.squareup.okhttp.Callback {
                 //ignore
             } else if (Utils.isNotNullOrEmpty(event.getStream())) {
                 String stream = event.getStream();
-                if (isSuccess(event)) {
+                if (isSuccess(event) && succeded.compareAndSet(false, true)) {
                     listener.onSuccess(stream);
                 } else {
                     listener.onEvent(stream);
@@ -135,12 +153,14 @@ public class EventHandle implements OutputHandle, com.squareup.okhttp.Callback {
                 if (out != null) {
                     out.write(stream.getBytes());
                 }
-            } else if (isFailure(event)) {
+            } else if (isFailure(event) && failed.compareAndSet(false, true)) {
                 String error = event.getError();
                 if (out != null) {
                     out.write(error.getBytes());
                 }
                 listener.onError(error);
+            } else {
+                listener.onEvent(line);
             }
         } catch (IOException t) {
             LOGGER.debug("Error while handling event.", t);

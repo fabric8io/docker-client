@@ -28,15 +28,21 @@ public class RegistryUtils {
 
     public static AuthConfig getConfigForImage(String image, Config config) {
         String registry = extractRegistry(image);
-
+        AuthConfig authConfig = null;
         if (registry != null && config != null && config.getAuthConfigs() != null) {
             if (config.getAuthConfigs().containsKey(registry)) {
-                return config.getAuthConfigs().get(registry);
+                authConfig =  config.getAuthConfigs().get(registry);
             } else if (config.getAuthConfigs().containsKey(Config.DOCKER_AUTH_FALLBACK_KEY)) {
-                return config.getAuthConfigs().get(Config.DOCKER_AUTH_FALLBACK_KEY);
+                authConfig = config.getAuthConfigs().get(Config.DOCKER_AUTH_FALLBACK_KEY);
             }
         }
-        return null;
+        if (authConfig != null) {
+            authConfig.setAuth("");
+            if (Utils.isNullOrEmpty(authConfig.getServeraddress())) {
+                authConfig.setServeraddress(registry);
+            }
+        }
+        return authConfig;
     }
 
     public static boolean isRegistry(String str) {

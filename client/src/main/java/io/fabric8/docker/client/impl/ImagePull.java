@@ -93,7 +93,7 @@ public class ImagePull extends OperationSupport implements
 
             AuthConfig authConfig = RegistryUtils.getConfigForImage(image, config);
             Request request = new Request.Builder()
-                    .header("X-Registry-Auth", new String(Base64.encodeBase64URLSafe(JSON_MAPPER.writeValueAsString(authConfig != null ? authConfig : new AuthConfig()).getBytes("UTF-8")), "UTF-8"))
+                    .header("X-Registry-Auth", new String(Base64.encodeBase64(JSON_MAPPER.writeValueAsString(authConfig != null ? authConfig : new AuthConfig()).getBytes("UTF-8")), "UTF-8"))
                     .post(RequestBody.create(MEDIA_TYPE_TEXT, EMPTY))
                     .url(sb.toString()).build();
 

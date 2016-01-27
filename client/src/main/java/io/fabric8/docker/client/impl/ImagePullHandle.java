@@ -26,15 +26,13 @@ import java.util.concurrent.TimeUnit;
 
 public class ImagePullHandle extends EventHandle {
 
-    private static final String STATUS = "Status:";
-
     public ImagePullHandle(OutputStream out, long duration, TimeUnit unit, EventListener listener) {
         super(out, duration, unit, listener);
     }
 
     @Override
     public boolean isSuccess(ProgressEvent event) {
-        return Utils.isNotNullOrEmpty(event.getStream()) && event.getStream().startsWith(STATUS);
+        return false;
     }
 
     @Override

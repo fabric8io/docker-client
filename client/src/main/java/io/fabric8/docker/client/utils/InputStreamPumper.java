@@ -32,12 +32,23 @@ public class InputStreamPumper implements Runnable, Closeable {
 
     private final InputStream in;
     private final Callback<byte[], Void> callback;
+    private final Callback<Boolean, Void> onFinish;
     private boolean keepReading = true;
     private Thread thread;
 
     public InputStreamPumper(InputStream in, Callback<byte[], Void> callback) {
+        this(in, callback, new Callback<Boolean, Void>() {
+            @Override
+            public Void call(Boolean input) {
+                return null;
+            }
+        });
+    }
+
+    public InputStreamPumper(InputStream in, Callback<byte[], Void> callback, Callback<Boolean, Void> onFinish) {
         this.in = in;
         this.callback = callback;
+        this.onFinish = onFinish;
     }
 
     @Override
@@ -51,9 +62,13 @@ public class InputStreamPumper implements Runnable, Closeable {
                 System.arraycopy(buffer, 0, actual, 0, length);
                 callback.call(actual);
             }
+            //To indicate that the response has been fully read.
+            onFinish.call(true);
         } catch (InterruptedIOException e) {
             LOGGER.debug("Interrupted while pumping stream.", e);
+            onFinish.call(false);
         } catch (IOException e) {
+            onFinish.call(false);
             if (!Thread.currentThread().isInterrupted()) {
                 LOGGER.error("Error while pumping stream.", e);
             } else {

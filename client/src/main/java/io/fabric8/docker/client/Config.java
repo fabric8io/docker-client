@@ -26,6 +26,7 @@ import io.fabric8.docker.client.utils.SSLUtils;
 import io.fabric8.docker.client.utils.URLUtils;
 import io.fabric8.docker.client.utils.Utils;
 import io.sundr.builder.annotations.Buildable;
+import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,13 +36,20 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Config {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Config.class);
 
+    private static final String UTF_8 = "UTF-8";
+
     private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
     private static final MapType AUTHCONFIG_TYPE = JSON_MAPPER.getTypeFactory().constructMapType(HashMap.class, String.class, AuthConfig.class);
+    private static final String USERNAME_LABEL = "username";
+    private static final String PASSWORD_LABEL = "password";
+    private static final Pattern AUTH_PATTERN = Pattern.compile("(?<username>[^ :]+):(?<password>[^ ]+)");
 
 
     public static final String DOCKER_AUTH_FALLBACK_KEY= "docker.auth.fallback.key";
@@ -51,6 +59,7 @@ public class Config {
     public static final String DOCKER_HOST = "docker.host";
 
     public static final String KUBERNETES_AUTH_TRYSERVICEACCOUNT_SYSTEM_PROPERTY = "kubernetes.auth.tryServiceAccount";
+    public static final String KUBERNETES_SERVICE_ACCOUNT_USER = "builder";
     public static final String KUBERNETES_SERVICE_ACCOUNT_TOKEN_PATH = "/var/run/secrets/kubernetes.io/serviceaccount/token";
 
     public static String TCP_PROTOCOL_PREFIX = "tcp://";
@@ -78,7 +87,7 @@ public class Config {
     private String httpProxy;
     private String httpsProxy;
     private String[] noProxy;
-    private Map<String, AuthConfig> authConfigs;
+    private Map<String, AuthConfig> authConfigs = new HashMap<>();
 
     public Config() {
         tryDockerConfig(this);
@@ -137,10 +146,28 @@ public class Config {
             if (dockerConfigExists) {
                 try {
                     DockerConfig cfg = JSON_MAPPER.readValue(dockerConfigFile, DockerConfig.class);
-                    config.setAuthConfigs(cfg.getAuths());
+                    for (Map.Entry<String, AuthConfig> entry: cfg.getAuths().entrySet()) {
+                        String serverAddress = entry.getKey();
+                        AuthConfig authConfig = entry.getValue();
+                        if (authConfig.getAuth() != null) {
+                            String auth = new String(Base64.decodeBase64(authConfig.getAuth().getBytes(UTF_8)), UTF_8);
+                            Matcher m = AUTH_PATTERN.matcher(auth);
+                            if (m.matches()) {
+                                String username = m.group(USERNAME_LABEL);
+                                String password = m.group(PASSWORD_LABEL);
+                                config.getAuthConfigs().put(serverAddress,
+                                        new AuthConfigBuilder()
+                                                .withUsername(username)
+                                                .withPassword(password)
+                                                .withServeraddress(serverAddress).build());
+                            } else {
+                                config.getAuthConfigs().put(serverAddress, authConfig);
+                            }
+                        }
+                    }
                     return !cfg.getAuths().isEmpty();
                 } catch (IOException e) {
-                    LOGGER.error("Could not load kube config file from {}", dockerConfig, e);
+                    LOGGER.error("Could not load docker config file from {}", dockerConfig, e);
                 }
             }
         }
@@ -152,7 +179,9 @@ public class Config {
             try {
                 String token = new String(Files.readAllBytes(new File(KUBERNETES_SERVICE_ACCOUNT_TOKEN_PATH).toPath()));
                 if (token != null) {
-                    config.getAuthConfigs().put(DOCKER_AUTH_FALLBACK_KEY, new AuthConfigBuilder().withAuth(token).build());
+                    config.getAuthConfigs().put(DOCKER_AUTH_FALLBACK_KEY, new AuthConfigBuilder()
+                            .withUsername(KUBERNETES_SERVICE_ACCOUNT_USER)
+                            .withPassword(token).build());
                     return true;
                 }
             } catch (IOException e) {
