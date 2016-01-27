@@ -31,6 +31,8 @@ import io.fabric8.docker.dsl.image.RedirectingWritingOutputOrTagOrToRegistryInte
 import io.fabric8.docker.dsl.image.TagOrToRegistryInterface;
 import io.fabric8.docker.dsl.image.ToRegistryInterface;
 import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrToRegistryInterface;
+import okio.ByteString;
+import org.apache.commons.codec.binary.Base64;
 
 import java.io.OutputStream;
 import java.io.PipedOutputStream;
@@ -67,9 +69,10 @@ public class ImagePush extends OperationSupport implements
             }
 
             AuthConfig authConfig = RegistryUtils.getConfigForImage(name, config);
+            RequestBody body = RequestBody.create(MEDIA_TYPE_JSON, "{}");
             Request request = new Request.Builder()
-                    .header("X-Registry-Auth", new String(org.apache.commons.codec.binary.Base64.encodeBase64URLSafe(JSON_MAPPER.writeValueAsString(config.getAuthConfigs()).getBytes("UTF-8")), "UTF-8"))
-                    .post(RequestBody.create(MEDIA_TYPE_TEXT, EMPTY))
+                    .header("X-Registry-Auth", new String(Base64.encodeBase64(JSON_MAPPER.writeValueAsString(authConfig != null ? authConfig : new AuthConfig()).getBytes("UTF-8")), "UTF-8"))
+                    .post(body)
                     .url(sb.toString()).build();
 
             ImagePushHandle handle = new ImagePushHandle(out, config.getImagePushTimeout(), TimeUnit.MILLISECONDS, listener);

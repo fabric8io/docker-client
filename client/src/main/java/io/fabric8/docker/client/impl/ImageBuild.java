@@ -41,6 +41,7 @@ import io.fabric8.docker.dsl.image.SupressingVerboseOutputOrNoCacheOrPullingOrRe
 import io.fabric8.docker.dsl.image.SwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface;
 import io.fabric8.docker.dsl.image.UsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface;
 import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrFromPathInterface;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
@@ -236,7 +237,7 @@ public class ImageBuild extends OperationSupport implements
 
             RequestBody body = RequestBody.create(MEDIA_TYPE_TAR, new File(path));
             Request request = new Request.Builder()
-                    .header("X-Registry-Config", new String(org.apache.commons.codec.binary.Base64.encodeBase64URLSafe(JSON_MAPPER.writeValueAsString(config.getAuthConfigs()).getBytes("UTF-8")), "UTF-8"))
+                    .header("X-Registry-Config", new String(Base64.encodeBase64(JSON_MAPPER.writeValueAsString(config.getAuthConfigs()).getBytes("UTF-8")), "UTF-8"))
                     .post(body)
                     .url(sb.toString()).build();
 
