@@ -59,7 +59,7 @@ public class Config {
     public static final String DOCKER_HOST = "docker.host";
 
     public static final String KUBERNETES_AUTH_TRYSERVICEACCOUNT_SYSTEM_PROPERTY = "kubernetes.auth.tryServiceAccount";
-    public static final String KUBERNETES_SERVICE_ACCOUNT_USER = "builder";
+    public static final String KUBERNETES_SERVICE_ACCOUNT_USER = "serviceaccount";
     public static final String KUBERNETES_SERVICE_ACCOUNT_TOKEN_PATH = "/var/run/secrets/kubernetes.io/serviceaccount/token";
 
     public static String TCP_PROTOCOL_PREFIX = "tcp://";
