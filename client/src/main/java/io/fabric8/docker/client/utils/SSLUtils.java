@@ -63,14 +63,21 @@ public final class SSLUtils {
                 .build();
 
         OkHttpClient client = HttpClientUtils.createHttpClient(config);
+        Response response = null;
         try {
-            Request request = new Request.Builder().get().url(sslConfig.getMasterUrl())
-                    .build();
-            Response response = client.newCall(request).execute();
+            Request request = new Request.Builder().get().url(sslConfig.getMasterUrl()).build();
+            response = client.newCall(request).execute();
             return response.isSuccessful();
         } catch (Throwable t) {
             LOG.warn("SSL handshake failed. Falling back to insecure connection.");
         } finally {
+            if (response != null) {
+                try {
+                    response.body().close();
+                } catch (IOException e) {
+                    //ignore
+                }
+            }
             if (client != null && client.getConnectionPool() != null) {
                 client.getConnectionPool().evictAll();
             }
