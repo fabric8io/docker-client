@@ -29,7 +29,7 @@ import java.util.concurrent.CountDownLatch;
 
 public class ImageBuildExample {
 
-    private static final String DEFAULT_IMAGE = "image1";
+    private static final String DEFAULT_IMAGE = "image2";
     private static final String DEFAULT_IMAGE_PATH = ImageBuildExample.class.getClassLoader().getResource(DEFAULT_IMAGE).getFile();
 
     public static void main(String args[]) throws InterruptedException, IOException {
