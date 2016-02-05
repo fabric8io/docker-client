@@ -25,7 +25,6 @@ import io.fabric8.docker.dsl.EventListener;
 import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.client.ProgressEvent;
 import io.fabric8.docker.client.utils.InputStreamPumper;
-import io.fabric8.docker.client.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -223,7 +222,7 @@ public class EventHandle implements OutputHandle, com.squareup.okhttp.Callback {
         Response r = response.get();
         if (r != null) {
             try {
-                r.body().source().close();
+                r.body().close();
             } catch (Throwable t) {
                 LOGGER.warn("Error while closing response stream:" + t.getMessage());
             }

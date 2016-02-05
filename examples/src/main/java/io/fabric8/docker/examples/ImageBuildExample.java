@@ -25,6 +25,7 @@ import io.fabric8.docker.dsl.EventListener;
 import io.fabric8.docker.dsl.OutputHandle;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.concurrent.CountDownLatch;
 
 public class ImageBuildExample {
@@ -36,13 +37,17 @@ public class ImageBuildExample {
 
         if (args.length == 0) {
             System.err.println("Usage: ImageBuildExample <docker host>");
-            System.err.println("Optionally: ImageBuildExample <docker host> <repo name> <path>");
+            System.err.println("Optionally: ImageBuildExample <docker host> <repo name> <path> <registry> <namespace>");
             return;
         }
 
         String dokcerHost = args[0];
         String image = args.length >= 2 ? args[1] : DEFAULT_IMAGE;
         String imageFolder = args.length >= 3 ? args[2] : DEFAULT_IMAGE_PATH;
+        String registry = args.length >= 4 ? args[3] : "172.30.101.121:5000";
+        String namespace = args.length >= 5 ? args[4] : "default";
+
+        String repositoryName = registry + "/" + namespace + "/" + image;
 
         Config config = new ConfigBuilder()
                 .withMasterUrl(dokcerHost)
@@ -78,9 +83,9 @@ public class ImageBuildExample {
         buildDone.await();
         handle.close();
 
-        client.image().withName(image).tag().inRepository(image).force().withTagName("v1");
+        client.image().withName(image).tag().inRepository(repositoryName).force().withTagName("v1");
 
-        handle = client.image().withName(image).push().usingListener(new EventListener() {
+        handle = client.image().withName(repositoryName).push().usingListener(new EventListener() {
             @Override
             public void onSuccess(String message) {
                 System.out.println("Success:" + message);

@@ -22,6 +22,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
+import io.fabric8.docker.client.utils.DockerIgnorePathMatcher;
 import io.fabric8.docker.client.utils.Utils;
 import io.fabric8.docker.dsl.EventListener;
 import io.fabric8.docker.dsl.OutputHandle;
@@ -53,6 +54,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedOutputStream;
+import java.nio.charset.Charset;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -60,6 +62,8 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class ImageBuild extends OperationSupport implements
@@ -97,6 +101,8 @@ public class ImageBuild extends OperationSupport implements
     private static final String BUILD_ARGS = "buildargs";
 
     private static final String DEFAULT_DOCKERFILE = "Dockerfile";
+    private static final String DOCKER_IGNORE = ".dockerignore";
+    private static final Charset UTF_8 = Charset.forName("UTF-8");
 
 
     private final String dockerFile;
@@ -144,15 +150,29 @@ public class ImageBuild extends OperationSupport implements
     public OutputHandle fromFolder(String path) {
         try {
             final Path root = Paths.get(path);
+            final Path dockerIgnore = root.resolve(DOCKER_IGNORE);
+            final List<String> ignorePatterns = new ArrayList<>();
+            if (dockerIgnore.toFile().exists()) {
+                for (String p : Files.readAllLines(dockerIgnore, UTF_8)) {
+                    ignorePatterns.add(path.endsWith(File.separator) ? path + p : path + File.separator + p);
+                }
+            }
+
+            final DockerIgnorePathMatcher dockerIgnorePathMatcher = new DockerIgnorePathMatcher(ignorePatterns);
+
             File tempFile = Files.createTempFile(Paths.get(DEFAULT_TEMP_DIR), TEMP_PREFIX, TEMP_SUFFIX).toFile();
 
             try (FileOutputStream fout = new FileOutputStream(tempFile);
                  BufferedOutputStream bout = new BufferedOutputStream(fout);
                  BZip2CompressorOutputStream bzout = new BZip2CompressorOutputStream(bout);
                  final TarArchiveOutputStream tout = new TarArchiveOutputStream(bzout)) {
-                Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
+                 Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
                     @Override
                     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                        if (dockerIgnorePathMatcher.matches(file)) {
+                            return FileVisitResult.SKIP_SUBTREE;
+                        }
+
                         final Path relativePath = root.relativize(file);
                         final TarArchiveEntry entry = new TarArchiveEntry(file.toFile());
                         entry.setName(relativePath.toString());
