@@ -20,8 +20,10 @@ package io.fabric8.docker.client;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import io.fabric8.docker.api.model.Doneable;
 import io.fabric8.docker.client.utils.Utils;
 import io.sundr.builder.annotations.Buildable;
+import io.sundr.builder.annotations.Inline;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -29,7 +31,7 @@ import io.sundr.builder.annotations.Buildable;
         "errorDetail",
         "error"
 })
-@Buildable
+@Buildable(editableEnabled = true, validationEnabled = true, generateBuilderPackage = false, builderPackage = "io.fabric8.docker.api.builder", inline = @Inline(type = Doneable.class, prefix = "Doneable", value = "done"))
 public class ProgressEvent {
 
     @JsonProperty("id")

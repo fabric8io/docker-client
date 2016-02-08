@@ -22,10 +22,12 @@ import com.fasterxml.jackson.databind.type.MapType;
 import io.fabric8.docker.api.model.AuthConfig;
 import io.fabric8.docker.api.model.AuthConfigBuilder;
 import io.fabric8.docker.api.model.DockerConfig;
+import io.fabric8.docker.api.model.Doneable;
 import io.fabric8.docker.client.utils.SSLUtils;
 import io.fabric8.docker.client.utils.URLUtils;
 import io.fabric8.docker.client.utils.Utils;
 import io.sundr.builder.annotations.Buildable;
+import io.sundr.builder.annotations.Inline;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +41,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Buildable(editableEnabled = true, validationEnabled = true, generateBuilderPackage = false, builderPackage = "io.fabric8.docker.api.builder", inline = @Inline(type = Doneable.class, prefix = "Doneable", value = "done"))
 public class Config {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Config.class);
@@ -61,6 +64,17 @@ public class Config {
     public static final String KUBERNETES_AUTH_TRYSERVICEACCOUNT_SYSTEM_PROPERTY = "kubernetes.auth.tryServiceAccount";
     public static final String KUBERNETES_SERVICE_ACCOUNT_USER = "serviceaccount";
     public static final String KUBERNETES_SERVICE_ACCOUNT_TOKEN_PATH = "/var/run/secrets/kubernetes.io/serviceaccount/token";
+
+    public static final String DOCKER_REQUEST_TIMEOUT_SYSTEM_PROPERTY = "docker.request.timeout";
+    public static final String DOCKER_CONNECTION_TIMEOUT_SYSTEM_PROPERTY = "docker.connection.timeout";
+    public static final String DOCKER_BUILD_TIMEOUT_SYSTEM_PROPERTY = "docker.build.timeout";
+    public static final String DOCKER_PUSH_TIMEOUT_SYSTEM_PROPERTY = "docker.push.timeout";
+    public static final String DOCKER_SEARCH_TIMEOUT_SYSTEM_PROPERTY = "docker.search.timeout";
+
+    public static final String DOCKER_HTTP_PROXY = "http.proxy";
+    public static final String DOCKER_HTTPS_PROXY = "https.proxy";
+    public static final String DOCKER_ALL_PROXY = "all.proxy";
+    public static final String DOCKER_NO_PROXY = "no.proxy";
 
     public static String TCP_PROTOCOL_PREFIX = "tcp://";
     public static String HTTP_PROTOCOL_PREFIX = "http://";
@@ -95,7 +109,6 @@ public class Config {
         tryServiceAccount(this);
     }
 
-    @Buildable
     public Config(boolean trustCerts, String masterUrl, String caCertFile, String caCertData, String clientCertFile, String clientCertData, String clientKeyFile, String clientKeyData, String clientKeyAlgo, String clientKeyPassphrase, String username, String password, String oauthToken, int imageBuildTimeout, int imagePushTimeout, int imageSearchTimeout, int connectionTimeout, int requestTimeout, String httpProxy, String httpsProxy, String[] noProxy, Map<String, AuthConfig> authConfigs) {
         this();
         this.trustCerts = trustCerts;
@@ -128,12 +141,13 @@ public class Config {
 
         if (masterUrl == null) {
             this.masterUrl = Utils.getSystemPropertyOrEnvVar(DOCKER_HOST);
-            if (this.masterUrl != null && this.masterUrl.startsWith(TCP_PROTOCOL_PREFIX)) {
-                if (SSLUtils.isHttpsAvailable(this)) {
-                    this.masterUrl = URLUtils.withProtocol(this.masterUrl, HTTPS_PROTOCOL_PREFIX);
-                } else {
-                    this.masterUrl = URLUtils.withProtocol(this.masterUrl, HTTP_PROTOCOL_PREFIX);
-                }
+        }
+
+        if (this.masterUrl != null && this.masterUrl.startsWith(TCP_PROTOCOL_PREFIX)) {
+            if (SSLUtils.isHttpsAvailable(this)) {
+                this.masterUrl = URLUtils.withProtocol(this.masterUrl, HTTPS_PROTOCOL_PREFIX);
+            } else {
+                this.masterUrl = URLUtils.withProtocol(this.masterUrl, HTTP_PROTOCOL_PREFIX);
             }
         }
     }

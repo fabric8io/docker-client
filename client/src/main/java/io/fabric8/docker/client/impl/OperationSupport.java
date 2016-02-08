@@ -18,7 +18,6 @@ package io.fabric8.docker.client.impl;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -50,7 +49,6 @@ public class OperationSupport {
   public static final String EMPTY = "";
 
   protected static final ObjectMapper JSON_MAPPER = new ObjectMapper();
-  protected static final ObjectMapper YAML_MAPPER = new ObjectMapper(new YAMLFactory());
 
   protected static final String IMAGES_RESOURCE = "images";
   protected static final String VOLUME_RESOURCE = "volumes";
