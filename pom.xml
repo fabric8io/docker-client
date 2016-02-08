@@ -135,6 +135,7 @@
         <module>server-mock</module>
         <module>tests</module>
         <module>examples</module>
+        <module>platforms</module>
     </modules>
 
 
