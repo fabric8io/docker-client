@@ -32,10 +32,15 @@
     <packaging>bundle</packaging>
 
     <properties>
-        <osgi.import>*</osgi.import>
+        <osgi.import>
+            !io.fabric8.docker.api.builder,
+            !io.fabric8.docker.api.model.*,
+            *
+        </osgi.import>
         <osgi.export>
             io.fabric8.docker.api.builder,
             io.fabric8.docker.api.model,
+            io.fabric8.docker.api.model.serialize,
             io.fabric8.docker.api.model.blkiodev,
             io.fabric8.docker.api.model.nat,
             io.fabric8.docker.api.model.network,
