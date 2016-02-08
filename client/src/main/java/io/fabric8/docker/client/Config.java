@@ -141,12 +141,13 @@ public class Config {
 
         if (masterUrl == null) {
             this.masterUrl = Utils.getSystemPropertyOrEnvVar(DOCKER_HOST);
-            if (this.masterUrl != null && this.masterUrl.startsWith(TCP_PROTOCOL_PREFIX)) {
-                if (SSLUtils.isHttpsAvailable(this)) {
-                    this.masterUrl = URLUtils.withProtocol(this.masterUrl, HTTPS_PROTOCOL_PREFIX);
-                } else {
-                    this.masterUrl = URLUtils.withProtocol(this.masterUrl, HTTP_PROTOCOL_PREFIX);
-                }
+        }
+
+        if (this.masterUrl != null && this.masterUrl.startsWith(TCP_PROTOCOL_PREFIX)) {
+            if (SSLUtils.isHttpsAvailable(this)) {
+                this.masterUrl = URLUtils.withProtocol(this.masterUrl, HTTPS_PROTOCOL_PREFIX);
+            } else {
+                this.masterUrl = URLUtils.withProtocol(this.masterUrl, HTTP_PROTOCOL_PREFIX);
             }
         }
     }
