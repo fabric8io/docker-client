@@ -22,6 +22,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+import io.fabric8.docker.api.model.Callback;
 import io.fabric8.docker.api.model.Image;
 import io.fabric8.docker.api.model.ImageDelete;
 import io.fabric8.docker.api.model.ImageHistory;
@@ -31,14 +32,12 @@ import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.client.utils.InputStreamPumper;
 import io.fabric8.docker.client.utils.URLUtils;
-import io.fabric8.docker.api.model.Callback;
 import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.dsl.image.FilterOrFiltersOrAllImagesOrEndImagesInterface;
-import io.fabric8.docker.dsl.image.ImageInspectOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface;
+import io.fabric8.docker.dsl.image.ImageInspectOrPullOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface;
 import io.fabric8.docker.dsl.image.ImageInterface;
 import io.fabric8.docker.dsl.image.RepositoryNameOrSupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface;
 import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrAsRepoInterface;
-import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrFromImageInterface;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -73,18 +72,13 @@ public class ImageOperationImpl extends OperationSupport implements ImageInterfa
     }
 
     @Override
-    public ImageInspectOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface<ImageInspect, List<ImageHistory>, OutputHandle, Boolean, ImageDelete, InputStream> withName(String name) {
+    public ImageInspectOrPullOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface<ImageInspect, OutputHandle, List<ImageHistory>, Boolean, ImageDelete, InputStream> withName(String name) {
         return new ImageNamedOperationImpl(client, config, name);
     }
 
     @Override
     public UsingListenerOrRedirectingWritingOutputOrTagOrAsRepoInterface<OutputHandle> importFrom(String source) {
         return new ImageImport(client, config, source);
-    }
-
-    @Override
-    public UsingListenerOrRedirectingWritingOutputOrTagOrFromImageInterface<OutputHandle> pull() {
-        return new ImagePull(client, config);
     }
 
     @Override

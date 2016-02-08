@@ -17,6 +17,8 @@
 
 package io.fabric8.docker.dsl.image.annotations;
 
+import io.fabric8.docker.dsl.annotations.NamedOption;
+import io.sundr.dsl.annotations.All;
 import io.sundr.dsl.annotations.Keyword;
 import io.sundr.dsl.annotations.Only;
 
@@ -28,6 +30,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.SOURCE)
 @Keyword
-@Only(value = PullOption.class, orNone = true)
+@All({NamedOption.class})
+@Only({NamedOption.class, PushOption.class})
 public @interface PullOption {
 }

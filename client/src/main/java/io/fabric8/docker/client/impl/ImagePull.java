@@ -27,10 +27,10 @@ import io.fabric8.docker.client.utils.RegistryUtils;
 import io.fabric8.docker.client.utils.Utils;
 import io.fabric8.docker.dsl.EventListener;
 import io.fabric8.docker.dsl.OutputHandle;
-import io.fabric8.docker.dsl.image.FromImageInterface;
-import io.fabric8.docker.dsl.image.RedirectingWritingOutputOrTagOrFromImageInterface;
-import io.fabric8.docker.dsl.image.TagOrFromImageInterface;
-import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrFromImageInterface;
+import io.fabric8.docker.dsl.image.FromRegistryInterface;
+import io.fabric8.docker.dsl.image.RedirectingWritingOutputOrTagOrFromRegistryInterface;
+import io.fabric8.docker.dsl.image.TagOrFromRegistryInterface;
+import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrFromRegistryInterface;
 import org.apache.commons.codec.binary.Base64;
 
 import java.io.OutputStream;
@@ -38,60 +38,62 @@ import java.io.PipedOutputStream;
 import java.util.concurrent.TimeUnit;
 
 public class ImagePull extends OperationSupport implements
-        UsingListenerOrRedirectingWritingOutputOrTagOrFromImageInterface<OutputHandle>,
-        RedirectingWritingOutputOrTagOrFromImageInterface<OutputHandle>,
-        TagOrFromImageInterface<OutputHandle> {
+        UsingListenerOrRedirectingWritingOutputOrTagOrFromRegistryInterface<OutputHandle>,
+        RedirectingWritingOutputOrTagOrFromRegistryInterface<OutputHandle>,
+        TagOrFromRegistryInterface<OutputHandle> {
 
 
     private static final String FROM_IMAGE = "fromImage";
     private static final String TAG = "tag";
 
+    private final String name;
     private final String tag;
     private final OutputStream out;
     private final EventListener listener;
 
-    public ImagePull(OkHttpClient client, Config config) {
-        this(client, config, null, null, NULL_LISTENER);
+    public ImagePull(OkHttpClient client, Config config, String name) {
+        this(client, config, name, null, null, NULL_LISTENER);
     }
 
-    public ImagePull(OkHttpClient client, Config config, String tag, OutputStream out, EventListener listener) {
+    public ImagePull(OkHttpClient client, Config config, String name, String tag, OutputStream out, EventListener listener) {
         super(client, config, IMAGES_RESOURCE, null, CREATE_OPERATION);
+        this.name = name;
         this.tag = tag;
         this.out = out;
         this.listener = listener;
     }
 
     @Override
-    public FromImageInterface<OutputHandle> withTag(String tag) {
-        return new ImagePull(client, config, tag, out, listener);
+    public FromRegistryInterface<OutputHandle> withTag(String tag) {
+        return new ImagePull(client, config, name, tag, out, listener);
     }
 
     @Override
-    public RedirectingWritingOutputOrTagOrFromImageInterface<OutputHandle> usingListener(EventListener listener) {
-        return new ImagePull(client, config, tag, out, listener);
+    public RedirectingWritingOutputOrTagOrFromRegistryInterface<OutputHandle> usingListener(EventListener listener) {
+        return new ImagePull(client, config, name, tag, out, listener);
     }
 
     @Override
-    public TagOrFromImageInterface<OutputHandle> redirectingOutput() {
-        return new ImagePull(client, config, tag, new PipedOutputStream(), listener);
+    public TagOrFromRegistryInterface<OutputHandle> redirectingOutput() {
+        return new ImagePull(client, config, name, tag, new PipedOutputStream(), listener);
     }
 
     @Override
-    public TagOrFromImageInterface<OutputHandle> writingOutput(OutputStream out) {
-        return new ImagePull(client, config, tag, out, listener);
+    public TagOrFromRegistryInterface<OutputHandle> writingOutput(OutputStream out) {
+        return new ImagePull(client, config, name, tag, out, listener);
     }
 
     @Override
-    public OutputHandle fromImage(String image) {
+    public OutputHandle fromRegistry() {
         try {
             StringBuilder sb = new StringBuilder().append(getOperationUrl(CREATE_OPERATION))
-                    .append(Q).append(FROM_IMAGE).append(EQUALS).append(image);
+                    .append(Q).append(FROM_IMAGE).append(EQUALS).append(name);
 
             if (Utils.isNotNullOrEmpty(tag)) {
                 sb.append(A).append(TAG).append(EQUALS).append(tag);
             }
 
-            AuthConfig authConfig = RegistryUtils.getConfigForImage(image, config);
+            AuthConfig authConfig = RegistryUtils.getConfigForImage(name, config);
             Request request = new Request.Builder()
                     .header("X-Registry-Auth", new String(Base64.encodeBase64(JSON_MAPPER.writeValueAsString(authConfig != null ? authConfig : new AuthConfig()).getBytes("UTF-8")), "UTF-8"))
                     .post(RequestBody.create(MEDIA_TYPE_TEXT, EMPTY))

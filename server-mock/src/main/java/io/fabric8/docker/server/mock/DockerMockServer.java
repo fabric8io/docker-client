@@ -58,7 +58,7 @@ public class DockerMockServer {
 
   public DockerClient createClient() {
     Config config = new ConfigBuilder()
-            .withMasterUrl(server.getUrl("/").toString())
+            .withDockerUrl(server.getUrl("/").toString())
             .withTrustCerts(true)
             .build();
     return new DefaultDockerClient(config);
