@@ -34,7 +34,6 @@ import io.fabric8.docker.dsl.misc.EventsInterface;
 import io.fabric8.docker.dsl.network.NetworkInterface;
 import io.fabric8.docker.dsl.volume.VolumeInterface;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -52,7 +51,7 @@ public class DefaultDockerClient implements DockerClient {
         this.configuration = configuration;
         try {
             this.client = HttpClientUtils.createHttpClient(configuration);
-            this.masterUrl = new URL(configuration.getMasterUrl());
+            this.masterUrl = new URL(configuration.getDockerUrl());
         } catch (MalformedURLException e) {
             throw DockerClientException.launderThrowable(e);
         }

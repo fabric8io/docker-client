@@ -81,7 +81,7 @@ public class Config {
     public static String HTTPS_PROTOCOL_PREFIX = "https://";
 
     private boolean trustCerts;
-    private String masterUrl;
+    private String dockerUrl;
     private String caCertFile;
     private String caCertData;
     private String clientCertFile;
@@ -109,10 +109,10 @@ public class Config {
         tryServiceAccount(this);
     }
 
-    public Config(boolean trustCerts, String masterUrl, String caCertFile, String caCertData, String clientCertFile, String clientCertData, String clientKeyFile, String clientKeyData, String clientKeyAlgo, String clientKeyPassphrase, String username, String password, String oauthToken, int imageBuildTimeout, int imagePushTimeout, int imageSearchTimeout, int connectionTimeout, int requestTimeout, String httpProxy, String httpsProxy, String[] noProxy, Map<String, AuthConfig> authConfigs) {
+    public Config(boolean trustCerts, String dockerUrl, String caCertFile, String caCertData, String clientCertFile, String clientCertData, String clientKeyFile, String clientKeyData, String clientKeyAlgo, String clientKeyPassphrase, String username, String password, String oauthToken, int imageBuildTimeout, int imagePushTimeout, int imageSearchTimeout, int connectionTimeout, int requestTimeout, String httpProxy, String httpsProxy, String[] noProxy, Map<String, AuthConfig> authConfigs) {
         this();
         this.trustCerts = trustCerts;
-        this.masterUrl = masterUrl;
+        this.dockerUrl = dockerUrl;
         this.caCertFile = caCertFile;
         this.caCertData = caCertData;
         this.clientCertFile = clientCertFile;
@@ -139,15 +139,15 @@ public class Config {
             this.authConfigs = new HashMap<>();
         }
 
-        if (masterUrl == null) {
-            this.masterUrl = Utils.getSystemPropertyOrEnvVar(DOCKER_HOST);
+        if (dockerUrl == null) {
+            this.dockerUrl = Utils.getSystemPropertyOrEnvVar(DOCKER_HOST);
         }
 
-        if (this.masterUrl != null && this.masterUrl.startsWith(TCP_PROTOCOL_PREFIX)) {
+        if (this.dockerUrl != null && this.dockerUrl.startsWith(TCP_PROTOCOL_PREFIX)) {
             if (SSLUtils.isHttpsAvailable(this)) {
-                this.masterUrl = URLUtils.withProtocol(this.masterUrl, HTTPS_PROTOCOL_PREFIX);
+                this.dockerUrl = URLUtils.withProtocol(this.dockerUrl, HTTPS_PROTOCOL_PREFIX);
             } else {
-                this.masterUrl = URLUtils.withProtocol(this.masterUrl, HTTP_PROTOCOL_PREFIX);
+                this.dockerUrl = URLUtils.withProtocol(this.dockerUrl, HTTP_PROTOCOL_PREFIX);
             }
         }
     }
@@ -213,12 +213,12 @@ public class Config {
         this.trustCerts = trustCerts;
     }
 
-    public String getMasterUrl() {
-        return masterUrl;
+    public String getDockerUrl() {
+        return dockerUrl;
     }
 
-    public void setMasterUrl(String masterUrl) {
-        this.masterUrl = masterUrl;
+    public void setDockerUrl(String dockerUrl) {
+        this.dockerUrl = dockerUrl;
     }
 
     public String getCaCertFile() {

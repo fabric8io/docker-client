@@ -71,7 +71,7 @@ public class ManagedDockerClient implements DockerClient {
         String[] noProxy = noProxyProperty != null ? noProxyProperty.split(",") : null;
 
         Config config = new ConfigBuilder()
-                .withMasterUrl(dockerHost)
+                .withDockerUrl(dockerHost)
                 .withRequestTimeout(requestTimeout)
                 .withHttpProxy((String) properties.get(DOCKER_HTTP_PROXY))
                 .withHttpsProxy((String) properties.get(DOCKER_HTTPS_PROXY))
