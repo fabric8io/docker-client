@@ -119,11 +119,11 @@ public class EventHandle implements OutputHandle, com.squareup.okhttp.Callback {
                 public Void call(Boolean success) {
                     if (success) {
                         if (succeded.compareAndSet(false, true)) {
-                            listener.onSuccess("");
+                            listener.onSuccess("Done.");
                         }
                     } else {
                         if (failed.compareAndSet(false, true)) {
-                            listener.onError("");
+                            listener.onError("Failed.");
                         }
                     }
                     return null;
