@@ -114,7 +114,7 @@ public class OperationSupport {
 
   public URL getRootUrl() {
     try {
-      return new URL(URLUtils.join(config.getMasterUrl().toString()));
+      return new URL(URLUtils.join(config.getDockerUrl().toString()));
     } catch (MalformedURLException e) {
       throw DockerClientException.launderThrowable(e);
     }

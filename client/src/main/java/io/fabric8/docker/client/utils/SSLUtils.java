@@ -57,7 +57,7 @@ public final class SSLUtils {
 
     public static boolean isHttpsAvailable(Config config) {
         Config sslConfig = new ConfigBuilder(config)
-                .withMasterUrl(URLUtils.withProtocol(config.getMasterUrl(), Config.HTTPS_PROTOCOL_PREFIX))
+                .withDockerUrl(URLUtils.withProtocol(config.getDockerUrl(), Config.HTTPS_PROTOCOL_PREFIX))
                 .withRequestTimeout(1000)
                 .withConnectionTimeout(1000)
                 .build();
@@ -65,7 +65,7 @@ public final class SSLUtils {
         OkHttpClient client = HttpClientUtils.createHttpClient(config);
         Response response = null;
         try {
-            Request request = new Request.Builder().get().url(sslConfig.getMasterUrl()).build();
+            Request request = new Request.Builder().get().url(sslConfig.getDockerUrl()).build();
             response = client.newCall(request).execute();
             return response.isSuccessful();
         } catch (Throwable t) {

@@ -50,7 +50,7 @@ public class ImageBuildExample {
         String repositoryName = registry + "/" + namespace + "/" + image;
 
         Config config = new ConfigBuilder()
-                .withMasterUrl(dokcerHost)
+                .withDockerUrl(dokcerHost)
                 .build();
 
         DockerClient client = new DefaultDockerClient(config);

@@ -31,8 +31,9 @@ import io.fabric8.docker.client.utils.InputStreamPumper;
 import io.fabric8.docker.client.utils.URLUtils;
 import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.dsl.image.ForceOrAndPruneOrNoPruneInterface;
-import io.fabric8.docker.dsl.image.ImageInspectOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface;
+import io.fabric8.docker.dsl.image.ImageInspectOrPullOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface;
 import io.fabric8.docker.dsl.image.InRepositoryOrForceOrTagNameInterface;
+import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrFromRegistryInterface;
 import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrToRegistryInterface;
 
 import java.io.File;
@@ -44,7 +45,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class ImageNamedOperationImpl extends OperationSupport implements
-        ImageInspectOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface<ImageInspect, List<ImageHistory>, OutputHandle, Boolean, ImageDelete, InputStream> {
+        ImageInspectOrPullOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface<ImageInspect, OutputHandle, List<ImageHistory>, Boolean, ImageDelete, InputStream> {
 
     private static final String HISTORY_OPERATION = "history";
     private static final String INSPECT_OPERATION = "inspect";
@@ -145,5 +146,10 @@ public class ImageNamedOperationImpl extends OperationSupport implements
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
         }
+    }
+
+    @Override
+    public UsingListenerOrRedirectingWritingOutputOrTagOrFromRegistryInterface<OutputHandle> pull() {
+        return new ImagePull(client,config,name);
     }
 }

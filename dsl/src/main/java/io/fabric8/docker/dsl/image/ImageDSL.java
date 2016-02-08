@@ -162,7 +162,7 @@ public interface ImageDSL {
 
     @Terminal
     @All({PullOption.class})
-    OutputHandle fromImage(String image);
+    OutputHandle fromRegistry();
 
     @ImportOption
     void importFrom(String source);

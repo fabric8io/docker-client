@@ -77,9 +77,9 @@ public class HttpClientUtils {
             }
 
             if (usesUnixSocket(config)) {
-                URL masterURL = new URL(config.getMasterUrl().replaceFirst(UNIX_SCHEME, FILE_SCHEME));
+                URL masterURL = new URL(config.getDockerUrl().replaceFirst(UNIX_SCHEME, FILE_SCHEME));
                 httpClient.setSocketFactory(new UnixSocketFactory(masterURL.getFile()));
-                config.setMasterUrl(UNIX_FAKE_URL);
+                config.setDockerUrl(UNIX_FAKE_URL);
             }
 
             TrustManager[] trustManagers = SSLUtils.trustManagers(config);
@@ -145,7 +145,7 @@ public class HttpClientUtils {
             }
 
             // Only check proxy if it's a full URL with protocol
-            if (config.getMasterUrl().toLowerCase().startsWith(Config.HTTP_PROTOCOL_PREFIX) || config.getMasterUrl().startsWith(Config.HTTPS_PROTOCOL_PREFIX)) {
+            if (config.getDockerUrl().toLowerCase().startsWith(Config.HTTP_PROTOCOL_PREFIX) || config.getDockerUrl().startsWith(Config.HTTPS_PROTOCOL_PREFIX)) {
                 try {
                     URL proxyUrl = getProxyUrl(config);
                     if (proxyUrl != null) {
@@ -163,7 +163,7 @@ public class HttpClientUtils {
     }
 
     private static URL getProxyUrl(Config config) throws MalformedURLException {
-        URL master = new URL(config.getMasterUrl());
+        URL master = new URL(config.getDockerUrl());
         String host = master.getHost();
         for (String noProxy : config.getNoProxy()) {
             if (host.endsWith(noProxy)) {
@@ -181,6 +181,6 @@ public class HttpClientUtils {
     }
 
     private static boolean usesUnixSocket(Config config) {
-        return config.getMasterUrl().startsWith(UNIX_SCHEME);
+        return config.getDockerUrl().startsWith(UNIX_SCHEME);
     }
 }
