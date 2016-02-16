@@ -12,7 +12,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.AuthResponse"
+      "javaType": "io.fabric8.docker.api.model.AuthResponse",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_BlkioStatEntry": {
       "type": "object",
@@ -39,7 +42,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.BlkioStatEntry"
+      "javaType": "io.fabric8.docker.api.model.BlkioStatEntry",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_BlkioStats": {
       "type": "object",
@@ -111,7 +117,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.BlkioStats"
+      "javaType": "io.fabric8.docker.api.model.BlkioStats",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_CPUStats": {
       "type": "object",
@@ -132,7 +141,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.CPUStats"
+      "javaType": "io.fabric8.docker.api.model.CPUStats",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_CPUUsage": {
       "type": "object",
@@ -164,7 +176,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.CPUUsage"
+      "javaType": "io.fabric8.docker.api.model.CPUUsage",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_ContainerChange": {
       "type": "object",
@@ -180,7 +195,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.ContainerChange"
+      "javaType": "io.fabric8.docker.api.model.ContainerChange",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_ContainerCommitResponse": {
       "type": "object",
@@ -192,7 +210,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.ContainerCommitResponse"
+      "javaType": "io.fabric8.docker.api.model.ContainerCommitResponse",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_ContainerCreateResponse": {
       "type": "object",
@@ -212,7 +233,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.ContainerCreateResponse"
+      "javaType": "io.fabric8.docker.api.model.ContainerCreateResponse",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_ContainerExecCreateResponse": {
       "type": "object",
@@ -224,7 +248,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.ContainerExecCreateResponse"
+      "javaType": "io.fabric8.docker.api.model.ContainerExecCreateResponse",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_ContainerJSONBase": {
       "type": "object",
@@ -330,7 +357,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.ContainerJSONBase"
+      "javaType": "io.fabric8.docker.api.model.ContainerJSONBase",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_ContainerPathStat": {
       "type": "object",
@@ -359,7 +389,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.ContainerPathStat"
+      "javaType": "io.fabric8.docker.api.model.ContainerPathStat",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_ContainerProcessList": {
       "type": "object",
@@ -387,7 +420,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.ContainerProcessList"
+      "javaType": "io.fabric8.docker.api.model.ContainerProcessList",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_ContainerState": {
       "type": "object",
@@ -439,7 +475,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.ContainerState"
+      "javaType": "io.fabric8.docker.api.model.ContainerState",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_ContainerWaitResponse": {
       "type": "object",
@@ -451,7 +490,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.ContainerWaitResponse"
+      "javaType": "io.fabric8.docker.api.model.ContainerWaitResponse",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_CopyConfig": {
       "type": "object",
@@ -463,7 +505,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.CopyConfig"
+      "javaType": "io.fabric8.docker.api.model.CopyConfig",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_DefaultNetworkSettings": {
       "type": "object",
@@ -503,7 +548,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.DefaultNetworkSettings"
+      "javaType": "io.fabric8.docker.api.model.DefaultNetworkSettings",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_EndpointResource": {
       "type": "object",
@@ -527,7 +575,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.EndpointResource"
+      "javaType": "io.fabric8.docker.api.model.EndpointResource",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_ExecStartCheck": {
       "type": "object",
@@ -543,7 +594,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.ExecStartCheck"
+      "javaType": "io.fabric8.docker.api.model.ExecStartCheck",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_GraphDriverData": {
       "type": "object",
@@ -564,7 +618,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.GraphDriverData"
+      "javaType": "io.fabric8.docker.api.model.GraphDriverData",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_Image": {
       "type": "object",
@@ -620,7 +677,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.Image"
+      "javaType": "io.fabric8.docker.api.model.Image",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_ImageDelete": {
       "type": "object",
@@ -636,7 +696,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.ImageDelete"
+      "javaType": "io.fabric8.docker.api.model.ImageDelete",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_ImageHistory": {
       "type": "object",
@@ -674,7 +737,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.ImageHistory"
+      "javaType": "io.fabric8.docker.api.model.ImageHistory",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_ImageInspect": {
       "type": "object",
@@ -756,7 +822,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.ImageInspect"
+      "javaType": "io.fabric8.docker.api.model.ImageInspect",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_Info": {
       "type": "object",
@@ -922,7 +991,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.Info"
+      "javaType": "io.fabric8.docker.api.model.Info",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_MemoryStats": {
       "type": "object",
@@ -960,7 +1032,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.MemoryStats"
+      "javaType": "io.fabric8.docker.api.model.MemoryStats",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_MountPoint": {
       "type": "object",
@@ -992,7 +1067,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.MountPoint"
+      "javaType": "io.fabric8.docker.api.model.MountPoint",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_NetworkConnect": {
       "type": "object",
@@ -1004,7 +1082,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.NetworkConnect"
+      "javaType": "io.fabric8.docker.api.model.NetworkConnect",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_NetworkCreate": {
       "type": "object",
@@ -1037,7 +1118,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.NetworkCreate"
+      "javaType": "io.fabric8.docker.api.model.NetworkCreate",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_NetworkCreateResponse": {
       "type": "object",
@@ -1053,7 +1137,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.NetworkCreateResponse"
+      "javaType": "io.fabric8.docker.api.model.NetworkCreateResponse",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_NetworkDisconnect": {
       "type": "object",
@@ -1065,7 +1152,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.NetworkDisconnect"
+      "javaType": "io.fabric8.docker.api.model.NetworkDisconnect",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_NetworkResource": {
       "type": "object",
@@ -1111,7 +1201,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.NetworkResource"
+      "javaType": "io.fabric8.docker.api.model.NetworkResource",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_NetworkSettings": {
       "type": "object",
@@ -1136,7 +1229,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.NetworkSettings"
+      "javaType": "io.fabric8.docker.api.model.NetworkSettings",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_NetworkSettingsBase": {
       "type": "object",
@@ -1197,7 +1293,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.NetworkSettingsBase"
+      "javaType": "io.fabric8.docker.api.model.NetworkSettingsBase",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_Port": {
       "type": "object",
@@ -1221,7 +1320,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.Port"
+      "javaType": "io.fabric8.docker.api.model.Port",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_Stats": {
       "type": "object",
@@ -1249,7 +1351,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.Stats"
+      "javaType": "io.fabric8.docker.api.model.Stats",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_ThrottlingData": {
       "type": "object",
@@ -1272,7 +1377,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.ThrottlingData"
+      "javaType": "io.fabric8.docker.api.model.ThrottlingData",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_Version": {
       "type": "object",
@@ -1316,7 +1424,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.Version"
+      "javaType": "io.fabric8.docker.api.model.Version",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_Volume": {
       "type": "object",
@@ -1336,7 +1447,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.Volume"
+      "javaType": "io.fabric8.docker.api.model.Volume",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_VolumeCreateRequest": {
       "type": "object",
@@ -1361,7 +1475,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.VolumeCreateRequest"
+      "javaType": "io.fabric8.docker.api.model.VolumeCreateRequest",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_VolumesListResponse": {
       "type": "object",
@@ -1377,7 +1494,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.VolumesListResponse"
+      "javaType": "io.fabric8.docker.api.model.VolumesListResponse",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_cliconfig_AuthConfig": {
       "type": "object",
@@ -1405,7 +1525,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.AuthConfig"
+      "javaType": "io.fabric8.docker.api.model.AuthConfig",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_nat_PortBinding": {
       "type": "object",
@@ -1421,7 +1544,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.PortBinding"
+      "javaType": "io.fabric8.docker.api.model.PortBinding",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_network_Address": {
       "type": "object",
@@ -1437,7 +1563,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.Address"
+      "javaType": "io.fabric8.docker.api.model.Address",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_network_EndpointSettings": {
       "type": "object",
@@ -1477,7 +1606,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.EndpointSettings"
+      "javaType": "io.fabric8.docker.api.model.EndpointSettings",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_network_IPAM": {
       "type": "object",
@@ -1497,7 +1629,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.IPAM"
+      "javaType": "io.fabric8.docker.api.model.IPAM",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_network_IPAMConfig": {
       "type": "object",
@@ -1526,7 +1661,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.IPAMConfig"
+      "javaType": "io.fabric8.docker.api.model.IPAMConfig",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_registry_IndexInfo": {
       "type": "object",
@@ -1554,7 +1692,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.IndexInfo"
+      "javaType": "io.fabric8.docker.api.model.IndexInfo",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_registry_SearchResult": {
       "type": "object",
@@ -1586,7 +1727,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.SearchResult"
+      "javaType": "io.fabric8.docker.api.model.SearchResult",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_registry_SearchResults": {
       "type": "object",
@@ -1610,7 +1754,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.SearchResults"
+      "javaType": "io.fabric8.docker.api.model.SearchResults",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_registry_ServiceConfig": {
       "type": "object",
@@ -1643,7 +1790,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.ServiceConfig"
+      "javaType": "io.fabric8.docker.api.model.ServiceConfig",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_registry_netIPNet": {
       "type": "object",
@@ -1659,7 +1809,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.NetIPNet"
+      "javaType": "io.fabric8.docker.api.model.NetIPNet",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_runconfig_Config": {
       "type": "object",
@@ -1678,16 +1831,24 @@
           "description": ""
         },
         "Cmd": {
-          "$ref": "#/definitions/docker_stringutils_StrSlice",
-          "javaType": "io.fabric8.docker.api.model.StrSlice"
+          "type": "array",
+          "description": "",
+          "items": {
+            "type": "string",
+            "description": ""
+          }
         },
         "Domainname": {
           "type": "string",
           "description": ""
         },
         "Entrypoint": {
-          "$ref": "#/definitions/docker_stringutils_StrSlice",
-          "javaType": "io.fabric8.docker.api.model.StrSlice"
+          "type": "array",
+          "description": "",
+          "items": {
+            "type": "string",
+            "description": ""
+          }
         },
         "Env": {
           "type": "array",
@@ -1778,7 +1939,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.Config"
+      "javaType": "io.fabric8.docker.api.model.Config",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_runconfig_DeviceMapping": {
       "type": "object",
@@ -1798,7 +1962,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.DeviceMapping"
+      "javaType": "io.fabric8.docker.api.model.DeviceMapping",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_runconfig_ExecConfig": {
       "type": "object",
@@ -1846,7 +2013,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.ExecConfig"
+      "javaType": "io.fabric8.docker.api.model.ExecConfig",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_runconfig_HostConfig": {
       "type": "object",
@@ -1865,12 +2035,20 @@
           "description": ""
         },
         "CapAdd": {
-          "$ref": "#/definitions/docker_stringutils_StrSlice",
-          "javaType": "io.fabric8.docker.api.model.StrSlice"
+          "type": "array",
+          "description": "",
+          "items": {
+            "type": "string",
+            "description": ""
+          }
         },
         "CapDrop": {
-          "$ref": "#/definitions/docker_stringutils_StrSlice",
-          "javaType": "io.fabric8.docker.api.model.StrSlice"
+          "type": "array",
+          "description": "",
+          "items": {
+            "type": "string",
+            "description": ""
+          }
         },
         "CgroupParent": {
           "type": "string",
@@ -2072,7 +2250,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.HostConfig"
+      "javaType": "io.fabric8.docker.api.model.HostConfig",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_runconfig_LogConfig": {
       "type": "object",
@@ -2093,13 +2274,19 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.LogConfig"
+      "javaType": "io.fabric8.docker.api.model.LogConfig",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_runconfig_LxcConfig": {
       "type": "object",
       "description": "",
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.LxcConfig"
+      "javaType": "io.fabric8.docker.api.model.LxcConfig",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_runconfig_RestartPolicy": {
       "type": "object",
@@ -2115,13 +2302,19 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.RestartPolicy"
+      "javaType": "io.fabric8.docker.api.model.RestartPolicy",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_stringutils_StrSlice": {
       "type": "object",
       "description": "",
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.StrSlice"
+      "javaType": "io.fabric8.docker.api.model.StrSlice",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     },
     "docker_ulimit_Ulimit": {
       "type": "object",
@@ -2143,7 +2336,10 @@
         }
       },
       "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.Ulimit"
+      "javaType": "io.fabric8.docker.api.model.Ulimit",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
     }
   },
   "type": "object",
@@ -2272,7 +2468,7 @@
       "$ref": "#/definitions/docker_NetworkConnect",
       "javaType": "io.fabric8.docker.api.model.NetworkConnect"
     },
-    "NetworkCreateRequest": {
+    "NetworkCreate": {
       "$ref": "#/definitions/docker_NetworkCreate",
       "javaType": "io.fabric8.docker.api.model.NetworkCreate"
     },
@@ -2321,8 +2517,12 @@
       "javaType": "io.fabric8.docker.api.model.Stats"
     },
     "StrSlice": {
-      "$ref": "#/definitions/docker_stringutils_StrSlice",
-      "javaType": "io.fabric8.docker.api.model.StrSlice"
+      "type": "array",
+      "description": "",
+      "items": {
+        "type": "string",
+        "description": ""
+      }
     },
     "Version": {
       "$ref": "#/definitions/docker_Version",

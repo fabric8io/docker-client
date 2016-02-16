@@ -24,11 +24,16 @@ import io.sundr.builder.annotations.Inline;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @JsonDeserialize(using = com.fasterxml.jackson.databind.JsonDeserializer.None.class)
 @ToString
 @EqualsAndHashCode
 @Buildable(editableEnabled = true, validationEnabled = true, generateBuilderPackage = true, builderPackage = "io.fabric8.docker.api.builder", inline = @Inline(type = Doneable.class, prefix = "Doneable", value = "done"))
-public class ContainerHostConfig {
+public class ContainerHostConfig implements Serializable {
+
+    private static final long serialVersionUID = 5403772495640734827L;
+
     @JsonProperty("NetworkMode")
     private String networkMode;
 

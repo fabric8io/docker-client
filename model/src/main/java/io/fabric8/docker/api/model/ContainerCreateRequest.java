@@ -29,6 +29,7 @@ import io.sundr.builder.annotations.Inline;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -72,8 +73,9 @@ import java.util.Map;
 @ToString
 @EqualsAndHashCode
 @Buildable(editableEnabled = true, validationEnabled = true, generateBuilderPackage = true, builderPackage = "io.fabric8.docker.api.builder", inline = @Inline(type = Doneable.class, prefix = "Doneable", value = "done"))
-public class ContainerCreateRequest {
+public class ContainerCreateRequest implements Serializable {
 
+    private static final long serialVersionUID = 5464523908891656210L;
 
     @JsonProperty("Hostname")
     private String hostname;
