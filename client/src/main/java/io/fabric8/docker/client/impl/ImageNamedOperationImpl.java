@@ -48,7 +48,7 @@ public class ImageNamedOperationImpl extends OperationSupport implements
         ImageInspectOrPullOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface<ImageInspect, OutputHandle, List<ImageHistory>, Boolean, ImageDelete, InputStream> {
 
     private static final String HISTORY_OPERATION = "history";
-    private static final String INSPECT_OPERATION = "inspect";
+    private static final String INSPECT_OPERATION = "json";
     private static final String GET_OPERATION = "get";
     private static final String LOAD_OPERATION = "load";
 
