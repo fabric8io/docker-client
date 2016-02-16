@@ -43,7 +43,7 @@ public class ImageDelete extends OperationSupport implements
         this.force = force;
     }
 
-    private io.fabric8.docker.api.model.ImageDelete doDelete(Boolean noprune) {
+    public io.fabric8.docker.api.model.ImageDelete andPrune(Boolean noprune) {
         try {
             return handleDelete(new URL(new StringBuilder().append(getResourceUrl())
                     .append(Q).append(FORCE).append(EQUALS).append(force)
@@ -55,16 +55,21 @@ public class ImageDelete extends OperationSupport implements
 
     @Override
     public io.fabric8.docker.api.model.ImageDelete andPrune() {
-        return doDelete(true);
+        return andPrune(true);
     }
 
     @Override
     public AndPruneOrNoPruneInterface<io.fabric8.docker.api.model.ImageDelete> force() {
-        return new ImageDelete(client, config, name, true);
+        return force(true);
+    }
+
+    @Override
+    public AndPruneOrNoPruneInterface<io.fabric8.docker.api.model.ImageDelete> force(Boolean force) {
+        return new ImageDelete(client, config, name, force);
     }
 
     @Override
     public io.fabric8.docker.api.model.ImageDelete withNoPrune() {
-        return doDelete(true);
+        return andPrune(false);
     }
 }

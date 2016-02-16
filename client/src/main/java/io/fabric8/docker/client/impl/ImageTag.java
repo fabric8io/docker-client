@@ -52,7 +52,12 @@ public class ImageTag extends OperationSupport implements
 
     @Override
     public WithTagNameInterface<Boolean> force() {
-        return new ImageTag(client, config, name, repository, true);
+        return force(true);
+    }
+
+    @Override
+    public WithTagNameInterface<Boolean> force(Boolean force) {
+        return new ImageTag(client, config, name, repository, force);
     }
 
     @Override

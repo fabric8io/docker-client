@@ -19,10 +19,13 @@ package io.fabric8.docker.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DockerConfig {
+public class DockerConfig implements Serializable {
+
+    private static final long serialVersionUID = 2816086115721306958L;
 
     @JsonProperty private Map<String, AuthConfig> auths;
 

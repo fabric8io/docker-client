@@ -45,8 +45,9 @@ public class RegistryUtils {
         return authConfig;
     }
 
-    public static boolean isRegistry(String str) {
-        return str.contains(DOT) || str.contains(COLON);
+    public static boolean hasRegistry(String image) {
+        String registry = extractRegistry(image);
+        return registry != null && !registry.isEmpty();
     }
 
     public static String extractRegistry(String image) {
@@ -56,5 +57,8 @@ public class RegistryUtils {
         } else {
             return null;
         }
+    }
+    public static boolean isRegistry(String str) {
+        return str.contains(DOT) || str.contains(COLON);
     }
 }

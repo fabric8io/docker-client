@@ -93,7 +93,7 @@ public class ImageOperationsTest extends DockerMockServerTestBase {
 
     @Test
     public void testInspectImage() {
-        expect().withPath("/images/myimage/inspect")
+        expect().withPath("/images/myimage/json")
                 .andReturn(200, new ImageInspectBuilder().withId("testid").build())
                 .once();
 

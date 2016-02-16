@@ -157,16 +157,7 @@ func (g *schemaGenerator) javaType(t reflect.Type) string {
 
 
 func (g *schemaGenerator) javaInterfaces(t reflect.Type) []string {
-	if _, ok := t.FieldByName("ObjectMeta"); t.Name() != "PodTemplateSpec" && ok {
-		return []string{"io.fabric8.kubernetes.api.model.HasMetadata"}
-	}
-
-	_, hasItems := t.FieldByName("Items")
-	_, hasListMeta := t.FieldByName("ListMeta")
-	if hasItems && hasListMeta {
-		return []string{"io.fabric8.kubernetes.api.model.KubernetesResource", "io.fabric8.kubernetes.api.model.KubernetesResourceList"}
-	}
-	return nil
+		return []string{"java.io.Serializable"}
 }
 
 func (g *schemaGenerator) generate(t reflect.Type) (*JSONSchema, error) {
@@ -293,6 +284,21 @@ func (g *schemaGenerator) getPropertyDescriptor(t reflect.Type, desc string) JSO
 			g.types[t] = &JSONObjectDescriptor{}
 			definedType = g.generateObjectDescriptor(t)
 			g.types[t] = definedType
+		}
+		//Let's replace StrSlice with something more java-ish
+		if (g.qualifiedName(t) == "docker_stringutils_StrSlice") {
+			return JSONPropertyDescriptor {
+				JSONDescriptor: &JSONDescriptor{
+					Type: "array",
+				},
+				JSONArrayDescriptor: &JSONArrayDescriptor{
+					Items: JSONPropertyDescriptor{
+						JSONDescriptor: &JSONDescriptor{
+							Type: "string",
+						},
+					},
+				},
+			}
 		}
 		return JSONPropertyDescriptor{
 			JSONReferenceDescriptor: &JSONReferenceDescriptor{

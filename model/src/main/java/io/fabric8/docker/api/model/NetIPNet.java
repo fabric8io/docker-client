@@ -30,6 +30,7 @@ import io.sundr.builder.annotations.Inline;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -49,7 +50,7 @@ import java.util.regex.Pattern;
 @ToString
 @EqualsAndHashCode
 @Buildable(editableEnabled = true, validationEnabled = true, generateBuilderPackage = true, builderPackage = "io.fabric8.docker.api.builder", inline = @Inline(type = Doneable.class, prefix = "Doneable", value = "done"))
-public class NetIPNet {
+public class NetIPNet implements Serializable {
 
     private static final String IP = "ip";
     private static final String MASK = "mask";
