@@ -191,6 +191,9 @@ public interface ImageDSL {
     @Any({TagOption.class, RemoveOption.class})
     void force();
 
+    @Any({TagOption.class, RemoveOption.class})
+    void force(Boolean force);
+
     @Terminal
     @All({TagOption.class})
     Boolean withTagName(String tagName);
@@ -201,6 +204,10 @@ public interface ImageDSL {
     @Terminal
     @All({RemoveOption.class})
     ImageDelete andPrune();
+
+    @Terminal
+    @All({RemoveOption.class})
+    ImageDelete andPrune(Boolean prune);
 
     @Terminal
     @All({RemoveOption.class})
