@@ -17,7 +17,7 @@
 
 package io.fabric8.docker.client.utils;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.nio.file.Path;

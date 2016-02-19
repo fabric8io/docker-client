@@ -20,6 +20,10 @@ package io.fabric8.docker.client.utils;
 import io.fabric8.docker.api.model.AuthConfig;
 import io.fabric8.docker.client.Config;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Map;
+
 public class RegistryUtils {
 
     private static final String DOT = ".";
@@ -30,11 +34,8 @@ public class RegistryUtils {
         String registry = extractRegistry(image);
         AuthConfig authConfig = null;
         if (registry != null && config != null && config.getAuthConfigs() != null) {
-            if (config.getAuthConfigs().containsKey(registry)) {
-                authConfig =  config.getAuthConfigs().get(registry);
-            } else if (config.getAuthConfigs().containsKey(Config.DOCKER_AUTH_FALLBACK_KEY)) {
-                authConfig = config.getAuthConfigs().get(Config.DOCKER_AUTH_FALLBACK_KEY);
-            }
+            String registryKey = getRegistryKey(registry, config);
+            authConfig = config.getAuthConfigs().get(registryKey);
         }
         if (authConfig != null) {
             authConfig.setAuth("");
@@ -55,10 +56,54 @@ public class RegistryUtils {
         if (isRegistry(parts[0])) {
             return parts[0];
         } else {
-            return null;
+            return Config.DEFAULT_INDEX;
         }
     }
+
     public static boolean isRegistry(String str) {
         return str.contains(DOT) || str.contains(COLON);
+    }
+
+    public static String getRegistryKey(String registry, Config config) {
+        if (config != null && config.getAuthConfigs() != null) {
+
+            //1st the happy path
+            if (config.getAuthConfigs().containsKey(registry)) {
+                return registry;
+            }
+
+            //2nd try to match using hostname
+            for (Map.Entry<String, AuthConfig> entry : config.getAuthConfigs().entrySet()) {
+                String key = entry.getKey();
+                if (convertToHostName(key).equals(registry)) {
+                    return key;
+                }
+            }
+
+            //3rd try to match using domainname
+            for (Map.Entry<String, AuthConfig> entry : config.getAuthConfigs().entrySet()) {
+                String key = entry.getKey();
+                if (convertToHostName(key).endsWith(registry)) {
+                    return key;
+                }
+            }
+        }
+        return Config.DOCKER_AUTH_FALLBACK_KEY;
+    }
+
+
+    /**
+     * Equivalent of docker's convert to hostname:
+     * https://github.com/docker/docker/blob/master/registry/auth.go#L232
+     * @param str The string to convert to hostname.
+     * @return
+     */
+    private static String convertToHostName(String str) {
+        try {
+            URL u = new URL(str);
+            return u.getHost();
+        } catch (MalformedURLException e) {
+            return str;
+        }
     }
 }

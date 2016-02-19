@@ -55,6 +55,8 @@ public class Config {
     private static final Pattern AUTH_PATTERN = Pattern.compile("(?<username>[^ :]+):(?<password>[^ ]+)");
 
 
+    public static final String DEFAULT_INDEX="docker.io";
+    public static final String DEFAULT_INDEX_SERVER="https://index.docker.io/v1/";
     public static final String DOCKER_AUTH_FALLBACK_KEY= "docker.auth.fallback.key";
     public static final String DOCKER_AUTH_DOCKERCFG_ENABLED = "docker.auth.dockercfg.enabled";
     public static final String DOCKER_DOCKERCFG_FILE = "docker.auth.dockercfg.path";
