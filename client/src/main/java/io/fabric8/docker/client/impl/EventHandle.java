@@ -118,7 +118,7 @@ public class EventHandle implements OutputHandle, com.squareup.okhttp.Callback {
                 @Override
                 public Void call(Boolean success) {
                     if (success) {
-                        if (succeded.compareAndSet(false, true)) {
+                        if (succeded.compareAndSet(false, true) && !failed.get()) {
                             listener.onSuccess("Done.");
                         }
                     } else {

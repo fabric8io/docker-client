@@ -34,7 +34,7 @@ import io.fabric8.docker.dsl.image.ForceOrAndPruneOrNoPruneInterface;
 import io.fabric8.docker.dsl.image.ImageInspectOrPullOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface;
 import io.fabric8.docker.dsl.image.InRepositoryOrForceOrTagNameInterface;
 import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrFromRegistryInterface;
-import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrToRegistryInterface;
+import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrToRegistryOrForceInterface;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -86,7 +86,7 @@ public class ImageNamedOperationImpl extends OperationSupport implements
     }
 
     @Override
-    public UsingListenerOrRedirectingWritingOutputOrTagOrToRegistryInterface<OutputHandle> push() {
+    public UsingListenerOrRedirectingWritingOutputOrTagOrToRegistryOrForceInterface<OutputHandle> push() {
         return new ImagePush(client, config, name);
     }
 
