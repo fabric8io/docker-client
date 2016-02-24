@@ -68,11 +68,9 @@ public class ImagePush extends OperationSupport implements
     public OutputHandle toRegistry() {
         try {
             StringBuilder sb = new StringBuilder().append(getOperationUrl(PUSH_OPERATION));
+            sb.append(Q).append(FORCE).append(EQUALS).append(force);
             if (Utils.isNotNullOrEmpty(tag)) {
-                sb.append(Q).append(TAG).append(EQUALS).append(tag);
-            }
-            if (force) {
-                sb.append(A).append(TAG).append(EQUALS).append(force);
+                sb.append(A).append(TAG).append(EQUALS).append(tag);
             }
             AuthConfig authConfig = RegistryUtils.getConfigForImage(name, config);
             RequestBody body = RequestBody.create(MEDIA_TYPE_JSON, "{}");
