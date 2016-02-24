@@ -28,6 +28,7 @@ public class RegistryUtils {
 
     private static final String DOT = ".";
     private static final String COLON = ":";
+    private static final String LOCALHOST = "localhost";
     private static final String SEPARATOR = "/";
 
     public static AuthConfig getConfigForImage(String image, Config config) {
@@ -61,7 +62,7 @@ public class RegistryUtils {
     }
 
     public static boolean isRegistry(String str) {
-        return str.contains(DOT) || str.contains(COLON);
+        return str.contains(DOT) || str.contains(COLON) || LOCALHOST.equals(str);
     }
 
     public static String getRegistryKey(String registry, Config config) {
