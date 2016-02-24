@@ -188,10 +188,10 @@ public interface ImageDSL {
     @All({TagOption.class})
     void inRepository(String repository);
 
-    @Any({TagOption.class, RemoveOption.class})
+    @Any({TagOption.class, RemoveOption.class, PushOption.class})
     void force();
 
-    @Any({TagOption.class, RemoveOption.class})
+    @Any({TagOption.class, RemoveOption.class, PushOption.class})
     void force(Boolean force);
 
     @Terminal

@@ -27,11 +27,11 @@ import io.fabric8.docker.client.utils.RegistryUtils;
 import io.fabric8.docker.client.utils.Utils;
 import io.fabric8.docker.dsl.EventListener;
 import io.fabric8.docker.dsl.OutputHandle;
-import io.fabric8.docker.dsl.image.RedirectingWritingOutputOrTagOrToRegistryInterface;
-import io.fabric8.docker.dsl.image.TagOrToRegistryInterface;
+import io.fabric8.docker.dsl.image.RedirectingWritingOutputOrTagOrToRegistryOrForceInterface;
+import io.fabric8.docker.dsl.image.TagOrToRegistryOrForceInterface;
 import io.fabric8.docker.dsl.image.ToRegistryInterface;
-import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrToRegistryInterface;
-import okio.ByteString;
+import io.fabric8.docker.dsl.image.ToRegistryOrForceInterface;
+import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrToRegistryOrForceInterface;
 import org.apache.commons.codec.binary.Base64;
 
 import java.io.OutputStream;
@@ -39,23 +39,27 @@ import java.io.PipedOutputStream;
 import java.util.concurrent.TimeUnit;
 
 public class ImagePush extends OperationSupport implements
-        UsingListenerOrRedirectingWritingOutputOrTagOrToRegistryInterface<OutputHandle>,
-        RedirectingWritingOutputOrTagOrToRegistryInterface<OutputHandle>,
-        TagOrToRegistryInterface<OutputHandle> {
+        UsingListenerOrRedirectingWritingOutputOrTagOrToRegistryOrForceInterface<OutputHandle>,
+        RedirectingWritingOutputOrTagOrToRegistryOrForceInterface<OutputHandle>,
+        TagOrToRegistryOrForceInterface<OutputHandle>,
+        ToRegistryOrForceInterface<OutputHandle> {
 
     private static final String TAG = "tag";
+    private static final String FORCE = "force";
 
     private final String tag;
+    private final Boolean force;
     private final OutputStream out;
     private final EventListener listener;
 
     public ImagePush(OkHttpClient client, Config config, String name) {
-        this(client, config, name, null, null, NULL_LISTENER);
+        this(client, config, name, null, false, null, NULL_LISTENER);
     }
 
-    public ImagePush(OkHttpClient client, Config config, String name, String tag, OutputStream out, EventListener listener) {
+    public ImagePush(OkHttpClient client, Config config, String name, String tag, Boolean force, OutputStream out, EventListener listener) {
         super(client, config, IMAGES_RESOURCE, name, PUSH_OPERATION);
         this.tag = tag;
+        this.force = force;
         this.out = out;
         this.listener = listener;
     }
@@ -67,7 +71,9 @@ public class ImagePush extends OperationSupport implements
             if (Utils.isNotNullOrEmpty(tag)) {
                 sb.append(Q).append(TAG).append(EQUALS).append(tag);
             }
-
+            if (force) {
+                sb.append(A).append(TAG).append(EQUALS).append(force);
+            }
             AuthConfig authConfig = RegistryUtils.getConfigForImage(name, config);
             RequestBody body = RequestBody.create(MEDIA_TYPE_JSON, "{}");
             Request request = new Request.Builder()
@@ -84,22 +90,32 @@ public class ImagePush extends OperationSupport implements
     }
 
     @Override
-    public ToRegistryInterface<OutputHandle> withTag(String tag) {
-        return new ImagePush(client, config, name, tag, out, listener);
+    public ToRegistryOrForceInterface<OutputHandle> withTag(String tag) {
+        return new ImagePush(client, config, name, tag, force, out, listener);
     }
 
     @Override
-    public RedirectingWritingOutputOrTagOrToRegistryInterface<OutputHandle> usingListener(EventListener listener) {
-        return new ImagePush(client, config, name, tag, out, listener);
+    public RedirectingWritingOutputOrTagOrToRegistryOrForceInterface<OutputHandle> usingListener(EventListener listener) {
+        return new ImagePush(client, config, name, tag, force, out, listener);
     }
 
     @Override
-    public TagOrToRegistryInterface<OutputHandle> redirectingOutput() {
-        return new ImagePush(client, config, name, tag, new PipedOutputStream(), listener);
+    public TagOrToRegistryOrForceInterface<OutputHandle> redirectingOutput() {
+        return new ImagePush(client, config, name, tag, force, new PipedOutputStream(), listener);
     }
 
     @Override
-    public TagOrToRegistryInterface<OutputHandle> writingOutput(OutputStream out) {
-        return new ImagePush(client, config, name, tag, out, listener);
+    public TagOrToRegistryOrForceInterface<OutputHandle> writingOutput(OutputStream out) {
+        return new ImagePush(client, config, name, tag, force, out, listener);
+    }
+
+    @Override
+    public ToRegistryInterface<OutputHandle> force() {
+        return force(true);
+    }
+
+    @Override
+    public ToRegistryInterface<OutputHandle> force(Boolean force) {
+        return new ImagePush(client, config, name, tag, force, out, listener);
     }
 }
