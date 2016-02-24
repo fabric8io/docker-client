@@ -171,10 +171,12 @@ public class Config {
                             if (m.matches()) {
                                 String username = m.group(USERNAME_LABEL);
                                 String password = m.group(PASSWORD_LABEL);
+                                String email = authConfig.getEmail();
                                 config.getAuthConfigs().put(serverAddress,
                                         new AuthConfigBuilder()
                                                 .withUsername(username)
                                                 .withPassword(password)
+                                                .withEmail(email)
                                                 .withServeraddress(serverAddress).build());
                             } else {
                                 config.getAuthConfigs().put(serverAddress, authConfig);
