@@ -20,7 +20,6 @@ package io.fabric8.docker.client.impl;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
-import io.fabric8.docker.api.model.Callback;
 import io.fabric8.docker.api.model.ContainerChange;
 import io.fabric8.docker.api.model.ContainerExecCreateResponse;
 import io.fabric8.docker.api.model.ContainerInspect;
@@ -275,9 +274,9 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
 
     @Override
     public InlineExecConfig execNew() {
-        return new InlineExecConfig(new Callback<ExecConfig, ContainerExecCreateResponse>() {
+        return new InlineExecConfig(new io.fabric8.docker.api.builder.Function<ExecConfig, ContainerExecCreateResponse>() {
             @Override
-            public ContainerExecCreateResponse call(ExecConfig input) {
+            public ContainerExecCreateResponse apply(ExecConfig input) {
                 return exec(input);
             }
         });

@@ -59,17 +59,16 @@ public class DefaultDockerClient implements DockerClient {
 
     @Override
     public InlineAuth auth() {
-        return new InlineAuth() {
-            @Override
-            public Boolean doAuth(AuthConfig authConfig) {
+        return new InlineAuth(new io.fabric8.docker.api.builder.Function<AuthConfig, Boolean>() {
+            public Boolean apply(AuthConfig authConfig) {
                 try {
-                     new OperationSupport(client, configuration, "auth", null, null).handleCreate(authConfig);
-                     return true;
+                    new OperationSupport(client, configuration, "auth", null, null).handleCreate(authConfig);
+                    return true;
                 } catch (Exception e) {
                     throw DockerClientException.launderThrowable(e);
                 }
             }
-        };
+        });
     }
 
     public Info info() {
