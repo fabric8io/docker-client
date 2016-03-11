@@ -18,7 +18,6 @@
 package io.fabric8.docker.client.impl;
 
 import com.squareup.okhttp.OkHttpClient;
-import io.fabric8.docker.api.model.Callback;
 import io.fabric8.docker.api.model.InlineVolumeCreate;
 import io.fabric8.docker.api.model.Volume;
 import io.fabric8.docker.api.model.VolumeCreateRequest;
@@ -59,9 +58,9 @@ public class VolumeOperationImpl extends OperationSupport implements VolumeInter
 
     @Override
     public InlineVolumeCreate createNew() {
-        return new InlineVolumeCreate(new Callback<VolumeCreateRequest, Volume>() {
+        return new InlineVolumeCreate(new io.fabric8.docker.api.builder.Function<VolumeCreateRequest, Volume>() {
             @Override
-            public Volume call(VolumeCreateRequest input) {
+            public Volume apply(VolumeCreateRequest input) {
                 return create(input);
             }
         });

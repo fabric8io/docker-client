@@ -18,7 +18,6 @@
 package io.fabric8.docker.client.impl;
 
 import com.squareup.okhttp.OkHttpClient;
-import io.fabric8.docker.api.model.Callback;
 import io.fabric8.docker.api.model.Container;
 import io.fabric8.docker.api.model.ContainerChange;
 import io.fabric8.docker.api.model.ContainerCreateRequest;
@@ -72,9 +71,9 @@ public class ContainerOperationImpl extends OperationSupport implements Containe
 
     @Override
     public InlineContainerCreate createNew() {
-        return new InlineContainerCreate(new Callback<ContainerCreateRequest, ContainerCreateResponse>() {
+        return new InlineContainerCreate(new io.fabric8.docker.api.builder.Function<ContainerCreateRequest, ContainerCreateResponse>() {
             @Override
-            public ContainerCreateResponse call(ContainerCreateRequest input) {
+            public ContainerCreateResponse apply(ContainerCreateRequest input) {
                 return create(input);
             }
         });

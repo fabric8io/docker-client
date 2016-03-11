@@ -18,7 +18,6 @@
 package io.fabric8.docker.client.impl;
 
 
-import io.fabric8.docker.api.model.Callback;
 import io.fabric8.docker.api.model.InlineNetworkCreate;
 import io.fabric8.docker.api.model.NetworkCreate;
 import io.fabric8.docker.api.model.NetworkCreateResponse;
@@ -48,9 +47,9 @@ public class NetworkOperationImpl extends OperationSupport implements NetworkInt
 
     @Override
     public InlineNetworkCreate createNew() {
-        return new InlineNetworkCreate(new Callback<NetworkCreate, NetworkCreateResponse>() {
+        return new InlineNetworkCreate(new io.fabric8.docker.api.builder.Function<NetworkCreate, NetworkCreateResponse>() {
             @Override
-            public NetworkCreateResponse call(NetworkCreate input) {
+            public NetworkCreateResponse apply(NetworkCreate input) {
                 return create(input);
             }
         });

@@ -72,7 +72,12 @@ import java.util.Map;
 @JsonDeserialize(using = com.fasterxml.jackson.databind.JsonDeserializer.None.class)
 @ToString
 @EqualsAndHashCode
-@Buildable(editableEnabled = true, validationEnabled = true, generateBuilderPackage = true, builderPackage = "io.fabric8.docker.api.builder", inline = @Inline(type = Doneable.class, prefix = "Doneable", value = "done"))
+@Buildable(editableEnabled = true, validationEnabled = true, generateBuilderPackage = true, builderPackage = "io.fabric8.docker.api.builder",
+        inline = {
+                @Inline(type = Doneable.class, prefix = "Doneable", value = "done"),
+                @Inline(name = "InlineContainerCreate", type = Doneable.class, returnType = ContainerCreateResponse.class, value = "done")
+        }
+)
 public class ContainerCreateRequest implements Serializable {
 
     private static final long serialVersionUID = 5464523908891656210L;

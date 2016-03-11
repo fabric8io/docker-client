@@ -19,6 +19,8 @@ package io.fabric8.docker.model.annotator;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.sun.codemodel.JAnnotationArrayMember;
+import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
@@ -41,18 +43,56 @@ public class DockerTypeAnnotator extends Jackson2Annotator {
         clazz.annotate(ToString.class);
         clazz.annotate(EqualsAndHashCode.class);
         try {
-            clazz.annotate(Buildable.class)
+            JAnnotationArrayMember inlines = clazz.annotate(Buildable.class)
                     .param("editableEnabled", true)
                     .param("validationEnabled", true)
                     .param("generateBuilderPackage", true)
                     .param("builderPackage", "io.fabric8.docker.api.builder")
-                    .annotationParam("inline", Inline.class)
+                    .paramArray("inline");
+
+            inlines.annotate(Inline.class)
                     .param("type", new JCodeModel()._class("io.fabric8.docker.api.model.Doneable"))
                     .param("prefix", "Doneable")
                     .param("value", "done");
+
+            //Let's get our hands dirty and add annotations so that we generate custom Inline methods
+            if (clazz.name().equals("NetworkCreate")) {
+                inlines.annotate(Inline.class)
+                        .param("type", new JCodeModel()._class("io.fabric8.docker.api.model.Doneable"))
+                        .param("returnType", new JCodeModel()._class("io.fabric8.docker.api.model.NetworkCreateResponse"))
+                        .param("name", "InlineNetworkCreate")
+                        .param("value", "done");
+            }
+
+
+            if (clazz.name().equals("AuthConfig")) {
+                addInline(inlines, "InlineAuth", "java.lang.Boolean");
+            }
+
+            if (clazz.name().equals("NetworkCreate")) {
+                addInline(inlines, "InlineNetworkCreate", "io.fabric8.docker.api.model.NetworkCreateResponse");
+            }
+
+            if (clazz.name().equals("VolumeCreateRequest")) {
+                addInline(inlines, "InlineVolumeCreate", "io.fabric8.docker.api.model.Volume");
+            }
+
+            if (clazz.name().equals("ExecConfig")) {
+                addInline(inlines, "InlineExecConfig", "io.fabric8.docker.api.model.ContainerExecCreateResponse");
+            }
+
+
         } catch (JClassAlreadyExistsException e) {
             e.printStackTrace();
         }
+    }
+
+    private void addInline(JAnnotationArrayMember inlines, String name, String returnType) throws JClassAlreadyExistsException {
+        inlines.annotate(Inline.class)
+                .param("type", new JCodeModel()._class("io.fabric8.docker.api.model.Doneable"))
+                .param("returnType", new JCodeModel()._class(returnType))
+                .param("name", name)
+                .param("value", "done");
     }
 
     @Override
