@@ -29,16 +29,17 @@ import io.fabric8.docker.dsl.volume.VolumeInterface;
 
 import java.util.List;
 
-public class VolumeOperationImpl extends OperationSupport implements VolumeInterface {
+public class VolumeOperationImpl extends BaseVolumeOperation implements VolumeInterface {
 
+    private static final String CREATE_OPERATION = "create";
 
     public VolumeOperationImpl(OkHttpClient client, Config config) {
-        super(client, config, VOLUME_RESOURCE, null, null);
+        super(client, config, null, null);
     }
 
     @Override
     public FiltersOrAllInterface<List<Volume>> list() {
-        return new VolumeList(client, config);
+        return new ListVolume(client, config);
     }
 
 
@@ -50,7 +51,7 @@ public class VolumeOperationImpl extends OperationSupport implements VolumeInter
     @Override
     public Volume create(VolumeCreateRequest container) {
         try {
-            return handleCreate(container, Volume.class, "create");
+            return handleCreate(container, Volume.class, CREATE_OPERATION);
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
         }

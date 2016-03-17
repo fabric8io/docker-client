@@ -23,12 +23,12 @@ import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.dsl.volume.VolumeInspectOrDeleteInterface;
 
-public class VolumeNamedOperationImpl extends OperationSupport implements VolumeInspectOrDeleteInterface<Volume, Boolean> {
+public class VolumeNamedOperationImpl extends BaseVolumeOperation implements VolumeInspectOrDeleteInterface<Volume, Boolean> {
 
     private static final String INSPECT_OPERATION = "inspect";
 
     public VolumeNamedOperationImpl(OkHttpClient client, Config config, String name) {
-        super(client, config, VOLUME_RESOURCE, name, null);
+        super(client, config, name, null);
     }
 
     @Override

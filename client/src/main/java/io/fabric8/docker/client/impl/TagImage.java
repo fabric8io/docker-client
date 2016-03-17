@@ -30,22 +30,23 @@ import okio.ByteString;
 
 import java.net.URL;
 
-public class ImageTag extends OperationSupport implements
+public class TagImage extends BaseImageOperation implements
         InRepositoryOrForceOrTagNameInterface<Boolean>,
         ForceOrTagNameInterface<Boolean> {
 
+    private static final String TAG_OPERATION = "tag";
     private static final String FORCE = "force";
     private static final String REPOSITORY = "repo";
 
     private final String repository;
     private final Boolean force;
 
-    public ImageTag(OkHttpClient client, Config config, String name) {
+    public TagImage(OkHttpClient client, Config config, String name) {
         this(client, config, name, null, false);
     }
 
-    public ImageTag(OkHttpClient client, Config config, String name, String repository, Boolean force) {
-        super(client, config, IMAGES_RESOURCE, name, TAG_OPERATION);
+    public TagImage(OkHttpClient client, Config config, String name, String repository, Boolean force) {
+        super(client, config, name, TAG_OPERATION);
         this.repository = repository;
         this.force = force;
     }
@@ -57,12 +58,12 @@ public class ImageTag extends OperationSupport implements
 
     @Override
     public WithTagNameInterface<Boolean> force(Boolean force) {
-        return new ImageTag(client, config, name, repository, force);
+        return new TagImage(client, config, name, repository, force);
     }
 
     @Override
     public ForceOrTagNameInterface<Boolean> inRepository(String repository) {
-        return new ImageTag(client, config, name, repository, force);
+        return new TagImage(client, config, name, repository, force);
     }
 
     @Override

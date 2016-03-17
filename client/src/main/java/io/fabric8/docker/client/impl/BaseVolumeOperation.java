@@ -17,26 +17,14 @@
 
 package io.fabric8.docker.client.impl;
 
-import io.fabric8.docker.dsl.EventListener;
-import io.fabric8.docker.client.ProgressEvent;
-import io.fabric8.docker.client.utils.Utils;
+import com.squareup.okhttp.OkHttpClient;
+import io.fabric8.docker.client.Config;
 
-import java.io.OutputStream;
-import java.util.concurrent.TimeUnit;
+public class BaseVolumeOperation extends OperationSupport {
 
-public class ImagePullHandle extends EventHandle {
+    protected static final String VOLUME_RESOURCE = "volumes";
 
-    public ImagePullHandle(OutputStream out, long duration, TimeUnit unit, EventListener listener) {
-        super(out, duration, unit, listener);
-    }
-
-    @Override
-    public boolean isSuccess(ProgressEvent event) {
-        return false;
-    }
-
-    @Override
-    public boolean isFailure(ProgressEvent event) {
-        return Utils.isNotNullOrEmpty(event.getError());
+    public BaseVolumeOperation(OkHttpClient client, Config config, String name, String operationType) {
+        super(client, config, VOLUME_RESOURCE, name, operationType);
     }
 }

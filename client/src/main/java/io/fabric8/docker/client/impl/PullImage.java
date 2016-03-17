@@ -37,12 +37,13 @@ import java.io.OutputStream;
 import java.io.PipedOutputStream;
 import java.util.concurrent.TimeUnit;
 
-public class ImagePull extends OperationSupport implements
+public class PullImage extends BaseImageOperation implements
         UsingListenerOrRedirectingWritingOutputOrTagOrFromRegistryInterface<OutputHandle>,
         RedirectingWritingOutputOrTagOrFromRegistryInterface<OutputHandle>,
         TagOrFromRegistryInterface<OutputHandle> {
 
 
+    private static final String CREATE_OPERATION = "create";
     private static final String FROM_IMAGE = "fromImage";
     private static final String TAG = "tag";
 
@@ -51,12 +52,12 @@ public class ImagePull extends OperationSupport implements
     private final OutputStream out;
     private final EventListener listener;
 
-    public ImagePull(OkHttpClient client, Config config, String name) {
+    public PullImage(OkHttpClient client, Config config, String name) {
         this(client, config, name, null, null, NULL_LISTENER);
     }
 
-    public ImagePull(OkHttpClient client, Config config, String name, String tag, OutputStream out, EventListener listener) {
-        super(client, config, IMAGES_RESOURCE, null, CREATE_OPERATION);
+    public PullImage(OkHttpClient client, Config config, String name, String tag, OutputStream out, EventListener listener) {
+        super(client, config, null, CREATE_OPERATION);
         this.name = name;
         this.tag = tag;
         this.out = out;
@@ -65,22 +66,22 @@ public class ImagePull extends OperationSupport implements
 
     @Override
     public FromRegistryInterface<OutputHandle> withTag(String tag) {
-        return new ImagePull(client, config, name, tag, out, listener);
+        return new PullImage(client, config, name, tag, out, listener);
     }
 
     @Override
     public RedirectingWritingOutputOrTagOrFromRegistryInterface<OutputHandle> usingListener(EventListener listener) {
-        return new ImagePull(client, config, name, tag, out, listener);
+        return new PullImage(client, config, name, tag, out, listener);
     }
 
     @Override
     public TagOrFromRegistryInterface<OutputHandle> redirectingOutput() {
-        return new ImagePull(client, config, name, tag, new PipedOutputStream(), listener);
+        return new PullImage(client, config, name, tag, new PipedOutputStream(), listener);
     }
 
     @Override
     public TagOrFromRegistryInterface<OutputHandle> writingOutput(OutputStream out) {
-        return new ImagePull(client, config, name, tag, out, listener);
+        return new PullImage(client, config, name, tag, out, listener);
     }
 
     @Override
@@ -99,7 +100,7 @@ public class ImagePull extends OperationSupport implements
                     .post(RequestBody.create(MEDIA_TYPE_TEXT, EMPTY))
                     .url(sb.toString()).build();
 
-            ImagePullHandle handle = new ImagePullHandle(out, config.getImagePushTimeout(), TimeUnit.MILLISECONDS, listener);
+            PullImageHandle handle = new PullImageHandle(out, config.getImagePushTimeout(), TimeUnit.MILLISECONDS, listener);
             client.newCall(request).enqueue(handle);
             return handle;
         } catch (Exception e) {

@@ -45,6 +45,16 @@ import java.util.List;
 public class ContainerNamedOperationImpl extends BaseContainerOperation implements
         ContainerExecOrContainerResourceOrLogsOrContainerExecResourceOrAttachOrArhciveInterface<ContainerExecCreateResponse, InlineExecConfig, ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, OutputHandle, ContainerInspect, InputOutputErrorHandle, OutputStream> {
 
+    private static final String EXEC_OPERATION = "exec";
+    private static final String TOP_OPERATION = "top";
+    private static final String CHANGES_OPERATION = "changes";
+    private static final String EXPORT_OPERATION = "export";
+    private static final String STATS_OPERATION = "stats";
+    private static final String START_OPERATION = "start";
+    private static final String STOP_OPERATION = "stop";
+    private static final String KILL_OPERATION = "kill";
+    private static final String RESTART_OPERATION = "restart";
+    private static final String RESIZE_OPERATION = "resize";
     private static final String REMOVE_VOLUMES = "v";
     private static final String TIMEOUT = "t";
     private static final String SIGNAL = "signal";
@@ -57,7 +67,7 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
 
     @Override
     public DownloadFromOrUploadToInterface<InputStream, OutputStream> arhcive() {
-        return new ContainerArchieve(client, config, name);
+        return new ArchieveContainer(client, config, name);
     }
 
     @Override
@@ -69,7 +79,7 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
     public ContainerProcessList top(String args) {
         try {
             StringBuilder sb = new StringBuilder();
-            sb.append(URLUtils.join(getResourceUrl().toString(), "top"));
+            sb.append(URLUtils.join(getResourceUrl().toString(), TOP_OPERATION));
             if (args != null && !args.isEmpty()) {
                 sb.append("?ps_args=").append(args);
             }
@@ -82,7 +92,7 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
     @Override
     public List<ContainerChange> changes() {
         try {
-            return handleList(new URL(URLUtils.join(getResourceUrl().toString(), "changes")), ContainerChange.class);
+            return handleList(new URL(URLUtils.join(getResourceUrl().toString(), CHANGES_OPERATION)), ContainerChange.class);
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
         }
@@ -93,8 +103,8 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
         try {
             StringBuilder sb = new StringBuilder();
             sb.append(getResourceUrl());
-            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, "");
-            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), "start"));
+            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, EMPTY);
+            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), EXPORT_OPERATION));
             return handleResponseStream(requestBuilder, 200);
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
@@ -110,8 +120,8 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
     public Stats stats(Boolean stream) {
         try {
             StringBuilder sb = new StringBuilder();
-            sb.append(URLUtils.join(getResourceUrl().toString(), "stats"));
-            sb.append("?stream=").append(stream);
+            sb.append(URLUtils.join(getResourceUrl().toString(), STATS_OPERATION));
+            sb.append(Q).append("stream").append(EQUALS).append(stream);
             return handleGet(new URL(sb.toString()), Stats.class);
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
@@ -123,10 +133,10 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
         try {
             StringBuilder sb = new StringBuilder();
             sb.append(getResourceUrl());
-            sb.append("?h=").append(h);
-            sb.append("&w=").append(w);
-            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, "");
-            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), "resize"));
+            sb.append(Q).append("h").append(EQUALS).append(h);
+            sb.append(A).append("w").append(EQUALS).append(w);
+            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, EMPTY);
+            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), RESIZE_OPERATION));
             handleResponse(requestBuilder, 200);
             return true;
         } catch (Exception e) {
@@ -139,8 +149,8 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
         try {
             StringBuilder sb = new StringBuilder();
             sb.append(getResourceUrl());
-            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, "");
-            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), "start"));
+            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, EMPTY);
+            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), START_OPERATION));
             handleResponse(requestBuilder, 204);
             return true;
         } catch (Exception e) {
@@ -158,9 +168,9 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
         try {
             StringBuilder sb = new StringBuilder();
             sb.append(getResourceUrl());
-            sb.append("?").append(TIMEOUT).append("=").append(time);
-            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, "");
-            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), "stop"));
+            sb.append(Q).append(TIMEOUT).append(EQUALS).append(time);
+            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, EMPTY);
+            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), STOP_OPERATION));
             handleResponse(requestBuilder, 204);
             return true;
         } catch (Exception e) {
@@ -178,9 +188,9 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
         try {
             StringBuilder sb = new StringBuilder();
             sb.append(getResourceUrl());
-            sb.append("?").append(TIMEOUT).append("=").append(time);
-            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, "");
-            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), "restart"));
+            sb.append(Q).append(TIMEOUT).append(EQUALS).append(time);
+            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, EMPTY);
+            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), RESTART_OPERATION));
             handleResponse(requestBuilder, 204);
             return true;
         } catch (Exception e) {
@@ -198,9 +208,9 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
         try {
             StringBuilder sb = new StringBuilder();
             sb.append(getResourceUrl());
-            sb.append("?").append(SIGNAL).append("=").append(signal);
-            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, "");
-            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), "kill"));
+            sb.append(Q).append(SIGNAL).append(EQUALS).append(signal);
+            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, EMPTY);
+            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), KILL_OPERATION));
             handleResponse(requestBuilder, 204);
             return true;
         } catch (Exception e) {
@@ -235,7 +245,7 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
     public ContainerInspect inspect(Boolean withSize) {
         StringBuilder sb = new StringBuilder();
         try {
-            sb.append(getOperationUrl(JSON));
+            sb.append(getOperationUrl(JSON_OPERATION));
             if (withSize) {
                 sb.append(Q).append(SIZE).append(EQUALS).append(withSize);
             }
@@ -247,12 +257,12 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
 
     @Override
     public SinceOrFollowOrDisplayOrContainerOutputOrContainerErrorOrTimestampsOrTailingLinesInterface<OutputHandle> logs() {
-        return new ContainerLog(client, config, name, null, null, null, null, null, 0, false);
+        return new GetLogsOfContainer(client, config, name, null, null, null, null, null, 0, false);
     }
 
     @Override
     public ContainerInputOrContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle> attach() {
-        return new ContainerAttach(client, config, name, null, null, null, null, null, null);
+        return new AttachContainer(client, config, name, null, null, null, null, null, null);
     }
 
     @Override

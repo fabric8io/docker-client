@@ -19,8 +19,7 @@ package io.fabric8.docker.client.impl;
 
 import com.squareup.okhttp.OkHttpClient;
 import io.fabric8.docker.api.model.NetworkResource;
-import io.fabric8.docker.client.Config;
-import io.fabric8.docker.client.DockerClientException;
+import io.fabric8.docker.client.*;
 import io.fabric8.docker.dsl.network.FiltersOrAllInterface;
 
 import java.net.URL;
@@ -28,19 +27,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NetworkList extends OperationSupport implements FiltersOrAllInterface<List<NetworkResource>> {
+public class ListNetwork extends BaseNetworkOperation implements FiltersOrAllInterface<List<NetworkResource>> {
 
     private static final String FILTERS = "filters";
     private static final String ALL = "all";
 
     private final Map<String,String[]> filters;
 
-    public NetworkList(OkHttpClient client, Config config) {
+    public ListNetwork(OkHttpClient client, Config config) {
         this(client, config, null);
     }
 
-    public NetworkList(OkHttpClient client, Config config, Map<String, String[]> filters) {
-        super(client, config, NETWORK_RESOURCE, null, JSON_OPERATION);
+    public ListNetwork(OkHttpClient client, Config config, Map<String, String[]> filters) {
+        super(client, config, null, JSON_OPERATION);
         this.filters = filters;
     }
 
@@ -65,7 +64,7 @@ public class NetworkList extends OperationSupport implements FiltersOrAllInterfa
     public io.fabric8.docker.dsl.network.AllInterface<List<NetworkResource>> filters(String key, String value) {
         Map<String, String[]> newFilters = new HashMap<>(this.filters);
         newFilters.put(key, new String[]{value});
-        return new NetworkList(client, config, newFilters);
+        return new ListNetwork(client, config, newFilters);
     }
 
     @Override

@@ -33,7 +33,7 @@ public class NetworkOperationImpl extends OperationSupport implements NetworkInt
 
     @Override
     public FiltersOrAllInterface<List<NetworkResource>> list() {
-        return new NetworkList(client, config);
+        return new ListNetwork(client, config);
     }
 
     @Override

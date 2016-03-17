@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ContainerList extends BaseContainerOperation implements
+public class ListContainer extends BaseContainerOperation implements
         LimitOrSinceOrBeforeOrSizeOrFiltersOrAllOrRunningInterface<List<Container>>,
         SizeOrFiltersOrAllOrRunningInterface<List<Container>>,
         BeforeOrSizeOrFiltersOrAllOrRunningInterface<List<Container>>,
@@ -47,8 +47,8 @@ public class ContainerList extends BaseContainerOperation implements
     private final int limit;
 
 
-    public ContainerList(OkHttpClient client, Config config, String before, String since, String size, Map<String, String[]> filters, int limit) {
-        super(client, config, null, JSON);
+    public ListContainer(OkHttpClient client, Config config, String before, String since, String size, Map<String, String[]> filters, int limit) {
+        super(client, config, null, JSON_OPERATION);
         this.before = before;
         this.since = since;
         this.size = size;
@@ -109,28 +109,28 @@ public class ContainerList extends BaseContainerOperation implements
 
     @Override
     public SizeOrFiltersOrAllOrRunningInterface<List<Container>> before(String before) {
-        return new ContainerList(client, config, before, since, size, filters, limit);
+        return new ListContainer(client, config, before, since, size, filters, limit);
     }
 
     @Override
     public AllOrRunningOrFiltersInterface<List<Container>> filters(String key, String value) {
         Map<String, String[]> newFilters = new HashMap<>(this.filters);
         newFilters.put(key, new String[]{value});
-        return new ContainerList(client, config, before, since, size, newFilters, limit);
+        return new ListContainer(client, config, before, since, size, newFilters, limit);
     }
 
     @Override
     public SinceOrBeforeOrSizeOrFiltersOrAllOrRunningInterface<List<Container>> limit(int limit) {
-        return new ContainerList(client, config, before, since, size, filters, limit);
+        return new ListContainer(client, config, before, since, size, filters, limit);
     }
 
     @Override
     public BeforeOrSizeOrFiltersOrAllOrRunningInterface<List<Container>> since(String since) {
-        return new ContainerList(client, config, before, since, size, filters, limit);
+        return new ListContainer(client, config, before, since, size, filters, limit);
     }
 
     @Override
     public AllOrRunningOrFiltersInterface<List<Container>> size(String id) {
-        return new ContainerList(client, config, before, since, size, filters, limit);
+        return new ListContainer(client, config, before, since, size, filters, limit);
     }
 }

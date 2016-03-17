@@ -29,19 +29,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ImageList extends OperationSupport implements
+public class ListImage extends BaseImageOperation implements
         FilterOrFiltersOrAllImagesOrEndImagesInterface<List<Image>>,
         AllImagesOrEndImagesOrFiltersInterface<List<Image>> {
 
     private static final String FILTER = "filter";
     private static final String FILTERS = "filters";
     private static final String ALL = "all";
+    private static final String JSON = "json";
 
     private final String filter;
     private final Map<String,String[]> filters;
 
-    public ImageList(OkHttpClient client, Config config,  String filter, Map<String, String[]> filters) {
-        super(client, config, "images", null, "json");
+    public ListImage(OkHttpClient client, Config config, String filter, Map<String, String[]> filters) {
+        super(client, config, null, JSON);
         this.filter = filter;
         this.filters = filters;
     }
@@ -79,14 +80,14 @@ public class ImageList extends OperationSupport implements
 
     @Override
     public AllImagesOrEndImagesOrFiltersInterface<List<Image>> filter(String filter) {
-        return new ImageList(client, config, filter, filters);
+        return new ListImage(client, config, filter, filters);
     }
 
     @Override
     public AllImagesOrEndImagesOrFiltersInterface<List<Image>> filters(String key, String value) {
         Map<String, String[]> newFilters = new HashMap<>(this.filters);
         newFilters.put(key, new String[]{value});
-        return new ImageList(client, config, filter, newFilters);
+        return new ListImage(client, config, filter, newFilters);
     }
 
 }

@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class VolumeList extends OperationSupport implements
+public class ListVolume extends BaseVolumeOperation implements
         FiltersOrAllInterface<List<Volume>> {
 
     private static final String FILTERS = "filters";
@@ -37,12 +37,12 @@ public class VolumeList extends OperationSupport implements
 
     private final Map<String,String[]> filters;
 
-    public VolumeList(OkHttpClient client, Config config) {
+    public ListVolume(OkHttpClient client, Config config) {
         this(client, config, null);
     }
 
-    public VolumeList(OkHttpClient client, Config config, Map<String, String[]> filters) {
-        super(client, config, VOLUME_RESOURCE, null, JSON_OPERATION);
+    public ListVolume(OkHttpClient client, Config config, Map<String, String[]> filters) {
+        super(client, config, null, JSON_OPERATION);
         this.filters = filters;
     }
 
@@ -67,7 +67,7 @@ public class VolumeList extends OperationSupport implements
     public AllInterface<List<Volume>> filters(String key, String value) {
         Map<String, String[]> newFilters = new HashMap<>(this.filters);
         newFilters.put(key, new String[]{value});
-        return new VolumeList(client, config, newFilters);
+        return new ListVolume(client, config, newFilters);
     }
 
     @Override

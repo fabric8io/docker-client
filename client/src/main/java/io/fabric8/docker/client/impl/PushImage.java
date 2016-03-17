@@ -38,12 +38,13 @@ import java.io.OutputStream;
 import java.io.PipedOutputStream;
 import java.util.concurrent.TimeUnit;
 
-public class ImagePush extends OperationSupport implements
+public class PushImage extends BaseImageOperation implements
         UsingListenerOrRedirectingWritingOutputOrTagOrToRegistryOrForceInterface<OutputHandle>,
         RedirectingWritingOutputOrTagOrToRegistryOrForceInterface<OutputHandle>,
         TagOrToRegistryOrForceInterface<OutputHandle>,
         ToRegistryOrForceInterface<OutputHandle> {
 
+    private static final String PUSH_OPERATION = "push";
     private static final String TAG = "tag";
     private static final String FORCE = "force";
 
@@ -52,12 +53,12 @@ public class ImagePush extends OperationSupport implements
     private final OutputStream out;
     private final EventListener listener;
 
-    public ImagePush(OkHttpClient client, Config config, String name) {
+    public PushImage(OkHttpClient client, Config config, String name) {
         this(client, config, name, null, false, null, NULL_LISTENER);
     }
 
-    public ImagePush(OkHttpClient client, Config config, String name, String tag, Boolean force, OutputStream out, EventListener listener) {
-        super(client, config, IMAGES_RESOURCE, name, PUSH_OPERATION);
+    public PushImage(OkHttpClient client, Config config, String name, String tag, Boolean force, OutputStream out, EventListener listener) {
+        super(client, config, name, PUSH_OPERATION);
         this.tag = tag;
         this.force = force;
         this.out = out;
@@ -79,7 +80,7 @@ public class ImagePush extends OperationSupport implements
                     .post(body)
                     .url(sb.toString()).build();
 
-            ImagePushHandle handle = new ImagePushHandle(out, config.getImagePushTimeout(), TimeUnit.MILLISECONDS, listener);
+            PushImageHandle handle = new PushImageHandle(out, config.getImagePushTimeout(), TimeUnit.MILLISECONDS, listener);
             client.newCall(request).enqueue(handle);
             return handle;
         } catch (Exception e) {
@@ -89,22 +90,22 @@ public class ImagePush extends OperationSupport implements
 
     @Override
     public ToRegistryOrForceInterface<OutputHandle> withTag(String tag) {
-        return new ImagePush(client, config, name, tag, force, out, listener);
+        return new PushImage(client, config, name, tag, force, out, listener);
     }
 
     @Override
     public RedirectingWritingOutputOrTagOrToRegistryOrForceInterface<OutputHandle> usingListener(EventListener listener) {
-        return new ImagePush(client, config, name, tag, force, out, listener);
+        return new PushImage(client, config, name, tag, force, out, listener);
     }
 
     @Override
     public TagOrToRegistryOrForceInterface<OutputHandle> redirectingOutput() {
-        return new ImagePush(client, config, name, tag, force, new PipedOutputStream(), listener);
+        return new PushImage(client, config, name, tag, force, new PipedOutputStream(), listener);
     }
 
     @Override
     public TagOrToRegistryOrForceInterface<OutputHandle> writingOutput(OutputStream out) {
-        return new ImagePush(client, config, name, tag, force, out, listener);
+        return new PushImage(client, config, name, tag, force, out, listener);
     }
 
     @Override
@@ -114,6 +115,6 @@ public class ImagePush extends OperationSupport implements
 
     @Override
     public ToRegistryInterface<OutputHandle> force(Boolean force) {
-        return new ImagePush(client, config, name, tag, force, out, listener);
+        return new PushImage(client, config, name, tag, force, out, listener);
     }
 }
