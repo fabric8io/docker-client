@@ -203,15 +203,15 @@ public interface ImageDSL {
 
     @Terminal
     @All({RemoveOption.class})
-    ImageDelete andPrune();
+    List<ImageDelete> andPrune();
 
     @Terminal
     @All({RemoveOption.class})
-    ImageDelete andPrune(Boolean prune);
+    List<ImageDelete> andPrune(Boolean prune);
 
     @Terminal
     @All({RemoveOption.class})
-    ImageDelete withNoPrune();
+    List<ImageDelete> withNoPrune();
 
     @Only({})
     @Terminal

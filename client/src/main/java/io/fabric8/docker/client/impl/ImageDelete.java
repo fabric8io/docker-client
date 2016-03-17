@@ -24,10 +24,11 @@ import io.fabric8.docker.dsl.image.AndPruneOrNoPruneInterface;
 import io.fabric8.docker.dsl.image.ForceOrAndPruneOrNoPruneInterface;
 
 import java.net.URL;
+import java.util.List;
 
 public class ImageDelete extends OperationSupport implements
-        ForceOrAndPruneOrNoPruneInterface<io.fabric8.docker.api.model.ImageDelete>,
-        AndPruneOrNoPruneInterface<io.fabric8.docker.api.model.ImageDelete> {
+        ForceOrAndPruneOrNoPruneInterface<List<io.fabric8.docker.api.model.ImageDelete>>,
+        AndPruneOrNoPruneInterface<List<io.fabric8.docker.api.model.ImageDelete>> {
 
     private static final String FORCE = "force";
     private static final String NOPRUNE = "noprune";
@@ -43,33 +44,34 @@ public class ImageDelete extends OperationSupport implements
         this.force = force;
     }
 
-    public io.fabric8.docker.api.model.ImageDelete andPrune(Boolean noprune) {
+    public List<io.fabric8.docker.api.model.ImageDelete> andPrune(Boolean noprune) {
         try {
             return handleDelete(new URL(new StringBuilder().append(getResourceUrl())
                     .append(Q).append(FORCE).append(EQUALS).append(force)
-                    .append(A).append(NOPRUNE).append(EQUALS).append(noprune).toString()), io.fabric8.docker.api.model.ImageDelete.class);
+                    .append(A).append(NOPRUNE).append(EQUALS).append(noprune).toString()),
+                    JSON_MAPPER.getTypeFactory().constructCollectionType(List.class, io.fabric8.docker.api.model.ImageDelete.class));
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
         }
     }
 
     @Override
-    public io.fabric8.docker.api.model.ImageDelete andPrune() {
+    public List<io.fabric8.docker.api.model.ImageDelete> andPrune() {
         return andPrune(true);
     }
 
     @Override
-    public AndPruneOrNoPruneInterface<io.fabric8.docker.api.model.ImageDelete> force() {
+    public AndPruneOrNoPruneInterface<List<io.fabric8.docker.api.model.ImageDelete>> force() {
         return force(true);
     }
 
     @Override
-    public AndPruneOrNoPruneInterface<io.fabric8.docker.api.model.ImageDelete> force(Boolean force) {
+    public AndPruneOrNoPruneInterface<List<io.fabric8.docker.api.model.ImageDelete>> force(Boolean force) {
         return new ImageDelete(client, config, name, force);
     }
 
     @Override
-    public io.fabric8.docker.api.model.ImageDelete withNoPrune() {
+    public List<io.fabric8.docker.api.model.ImageDelete> withNoPrune() {
         return andPrune(false);
     }
 }

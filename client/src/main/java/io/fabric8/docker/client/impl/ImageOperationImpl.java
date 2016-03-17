@@ -72,7 +72,7 @@ public class ImageOperationImpl extends OperationSupport implements ImageInterfa
     }
 
     @Override
-    public ImageInspectOrPullOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface<ImageInspect, OutputHandle, List<ImageHistory>, Boolean, ImageDelete, InputStream> withName(String name) {
+    public ImageInspectOrPullOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface<ImageInspect, OutputHandle, List<ImageHistory>, Boolean, List<ImageDelete>, InputStream> withName(String name) {
         return new ImageNamedOperationImpl(client, config, name);
     }
 

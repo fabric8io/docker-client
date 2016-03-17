@@ -45,7 +45,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class ImageNamedOperationImpl extends OperationSupport implements
-        ImageInspectOrPullOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface<ImageInspect, OutputHandle, List<ImageHistory>, Boolean, ImageDelete, InputStream> {
+        ImageInspectOrPullOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface<ImageInspect, OutputHandle, List<ImageHistory>, Boolean, List<ImageDelete>, InputStream> {
 
     private static final String HISTORY_OPERATION = "history";
     private static final String INSPECT_OPERATION = "json";
@@ -57,7 +57,7 @@ public class ImageNamedOperationImpl extends OperationSupport implements
     }
 
     @Override
-    public ForceOrAndPruneOrNoPruneInterface<ImageDelete> delete() {
+    public ForceOrAndPruneOrNoPruneInterface<List<ImageDelete>> delete() {
         return new io.fabric8.docker.client.impl.ImageDelete(client, config, name);
     }
 

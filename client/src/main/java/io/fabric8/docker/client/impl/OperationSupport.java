@@ -145,12 +145,17 @@ public class OperationSupport {
   }
 
   protected void handleDelete(URL requestUrl) throws ExecutionException, InterruptedException, DockerClientException, IOException {
-    handleDelete(requestUrl, null);
+    handleDelete(requestUrl, (Class) null);
   }
 
   protected <T> T handleDelete(URL requestUrl, Class<T> type) throws ExecutionException, InterruptedException, DockerClientException, IOException {
     Request.Builder requestBuilder = new Request.Builder().delete(null).url(requestUrl);
-   return handleResponse(requestBuilder, type);
+   return handleResponse(requestBuilder, type, 200);
+  }
+
+  protected <T> T handleDelete(URL requestUrl, JavaType type) throws ExecutionException, InterruptedException, DockerClientException, IOException {
+    Request.Builder requestBuilder = new Request.Builder().delete(null).url(requestUrl);
+    return handleResponse(requestBuilder, type, 200);
   }
 
   public <T> void handleCreate(T resource) throws ExecutionException, InterruptedException, DockerClientException, IOException {
