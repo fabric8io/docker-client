@@ -50,7 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class ImageOperationImpl extends OperationSupport implements ImageInterface {
+public class ImageOperationImpl extends BaseImageOperation implements ImageInterface {
 
     private static final JavaType IMAGE_SEARCH_RESULT_LIST = JSON_MAPPER.getTypeFactory().constructCollectionType(List.class, SearchResult.class);
 
@@ -58,27 +58,27 @@ public class ImageOperationImpl extends OperationSupport implements ImageInterfa
 
 
     public ImageOperationImpl(OkHttpClient client, Config config) {
-        super(client, config, IMAGES_RESOURCE, null, null);
+        super(client, config, null, null);
     }
 
     @Override
     public RepositoryNameOrSupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle> build() {
-        return new ImageBuild(client, config);
+        return new BuildImage(client, config);
     }
 
     @Override
     public FilterOrFiltersOrAllImagesOrEndImagesInterface<List<Image>> list() {
-        return new ImageList(client,config, null, new HashMap<String,String[]>());
+        return new ListImage(client,config, null, new HashMap<String,String[]>());
     }
 
     @Override
-    public ImageInspectOrPullOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface<ImageInspect, OutputHandle, List<ImageHistory>, Boolean, ImageDelete, InputStream> withName(String name) {
+    public ImageInspectOrPullOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface<ImageInspect, OutputHandle, List<ImageHistory>, Boolean, List<ImageDelete>, InputStream> withName(String name) {
         return new ImageNamedOperationImpl(client, config, name);
     }
 
     @Override
     public UsingListenerOrRedirectingWritingOutputOrTagOrAsRepoInterface<OutputHandle> importFrom(String source) {
-        return new ImageImport(client, config, source);
+        return new ImportImage(client, config, source);
     }
 
     @Override
@@ -140,7 +140,7 @@ public class ImageOperationImpl extends OperationSupport implements ImageInterfa
     @Override
     public Boolean load(InputStream inputStream) {
         try {
-            File tempFile = Files.createTempFile(Paths.get(DEFAULT_TEMP_DIR), TEMP_PREFIX, TEMP_SUFFIX).toFile();
+            File tempFile = Files.createTempFile(Paths.get(DEFAULT_TEMP_DIR), DOCKER_PREFIX, BZIP2_SUFFIX).toFile();
             try (final FileOutputStream fout = new FileOutputStream(tempFile)) {
 
                 InputStreamPumper pumper = new InputStreamPumper(inputStream, new Callback<byte[], Void>() {

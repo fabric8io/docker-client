@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 
 import static io.fabric8.docker.client.utils.Utils.isNotNullOrEmpty;
 
-public class ContainerLog extends BaseContainerOperation implements
+public class GetLogsOfContainer extends BaseContainerOperation implements
         SinceOrFollowOrDisplayOrContainerOutputOrContainerErrorOrTimestampsOrTailingLinesInterface<OutputHandle>,
         FollowOrDisplayOrTimestampsOrTailingLinesInterface<OutputHandle>,
         FollowOrDisplayOrContainerErrorOrTimestampsOrTailingLinesInterface<OutputHandle>,
@@ -64,7 +64,7 @@ public class ContainerLog extends BaseContainerOperation implements
     private final Boolean timestampsEnabled;
 
 
-    public ContainerLog(OkHttpClient client, Config config, String name, OutputStream out, OutputStream err, PipedInputStream outPipe, PipedInputStream errPipe, String since, int lines, Boolean timestampsEnabled) {
+    public GetLogsOfContainer(OkHttpClient client, Config config, String name, OutputStream out, OutputStream err, PipedInputStream outPipe, PipedInputStream errPipe, String since, int lines, Boolean timestampsEnabled) {
         super(client, config, name, LOG);
         this.out = out;
         this.err = err;
@@ -122,12 +122,12 @@ public class ContainerLog extends BaseContainerOperation implements
 
     @Override
     public FollowOrDisplayOrTimestampsOrTailingLinesInterface<OutputHandle> readingError(PipedInputStream errPipe) {
-        return new ContainerLog(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled);
+        return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled);
     }
 
     @Override
     public FollowOrDisplayOrTimestampsOrTailingLinesInterface<OutputHandle> writingError(OutputStream err) {
-        return new ContainerLog(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled);
+        return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled);
     }
 
     @Override
@@ -138,12 +138,12 @@ public class ContainerLog extends BaseContainerOperation implements
 
     @Override
     public FollowOrDisplayOrContainerErrorOrTimestampsOrTailingLinesInterface<OutputHandle> readingOutput(PipedInputStream outPipe) {
-        return new ContainerLog(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled);
+        return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled);
     }
 
     @Override
     public FollowOrDisplayOrContainerErrorOrTimestampsOrTailingLinesInterface<OutputHandle> writingOutput(OutputStream out) {
-        return new ContainerLog(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled);
+        return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled);
     }
 
     @Override
@@ -158,11 +158,11 @@ public class ContainerLog extends BaseContainerOperation implements
 
     @Override
     public FollowOrDisplayInterface<OutputHandle> tailingLines(int lines) {
-        return new ContainerLog(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled);
+        return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled);
     }
 
     @Override
     public FollowOrDisplayOrTailingLinesInterface<OutputHandle> withTimestamps() {
-        return new ContainerLog(client, config, name, out, err, outPipe, errPipe, since, lines, true);
+        return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, true);
     }
 }

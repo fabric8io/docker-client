@@ -50,22 +50,8 @@ public class OperationSupport {
 
   protected static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
-  protected static final String IMAGES_RESOURCE = "images";
-  protected static final String VOLUME_RESOURCE = "volumes";
-  protected static final String NETWORK_RESOURCE = "networks";
-  protected static final String BUILD_OPERATION = "build";
-  protected static final String CREATE_OPERATION = "create";
-  protected static final String PUSH_OPERATION = "push";
-  protected static final String TAG_OPERATION = "tag";
-  protected static final String EXEC_OPERATION = "exec";
-
   protected static final String JSON_OPERATION = "json";
   protected static final String SEARCH_OPERATION = "search";
-
-  protected static final String DEFAULT_TEMP_DIR = System.getProperty("tmp.dir", "/tmp");
-  protected static final String TEMP_PREFIX = "docker-";
-  protected static final String TEMP_SUFFIX = ".tar.bzip2";
-
 
   protected static final EventListener NULL_LISTENER = new EventListener() {
     @Override
@@ -145,12 +131,17 @@ public class OperationSupport {
   }
 
   protected void handleDelete(URL requestUrl) throws ExecutionException, InterruptedException, DockerClientException, IOException {
-    handleDelete(requestUrl, null);
+    handleDelete(requestUrl, (Class) null);
   }
 
   protected <T> T handleDelete(URL requestUrl, Class<T> type) throws ExecutionException, InterruptedException, DockerClientException, IOException {
     Request.Builder requestBuilder = new Request.Builder().delete(null).url(requestUrl);
-   return handleResponse(requestBuilder, type);
+   return handleResponse(requestBuilder, type, 200);
+  }
+
+  protected <T> T handleDelete(URL requestUrl, JavaType type) throws ExecutionException, InterruptedException, DockerClientException, IOException {
+    Request.Builder requestBuilder = new Request.Builder().delete(null).url(requestUrl);
+    return handleResponse(requestBuilder, type, 200);
   }
 
   public <T> void handleCreate(T resource) throws ExecutionException, InterruptedException, DockerClientException, IOException {

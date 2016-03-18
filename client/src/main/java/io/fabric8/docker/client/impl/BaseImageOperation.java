@@ -19,26 +19,21 @@ package io.fabric8.docker.client.impl;
 
 import com.squareup.okhttp.OkHttpClient;
 import io.fabric8.docker.client.Config;
-import io.fabric8.docker.dsl.container.DownloadFromOrUploadToInterface;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+public class BaseImageOperation extends OperationSupport {
 
-public class ContainerArchieve extends BaseContainerOperation  implements DownloadFromOrUploadToInterface<InputStream, OutputStream> {
+    protected static final String IMAGES_RESOURCE = "images";
 
-    private static final String ARCHIVE = "archive";
+    protected static final String DEFAULT_TEMP_DIR = System.getProperty("tmp.dir", "/tmp");
+    protected static final String DOCKER_PREFIX = "docker-";
+    protected static final String BZIP2_SUFFIX = ".tar.bzip2";
 
-    public ContainerArchieve(OkHttpClient client, Config config, String name) {
-        super(client, config, name, ARCHIVE);
+
+    public BaseImageOperation(OkHttpClient client, Config config, String name, String operationType) {
+        super(client, config, IMAGES_RESOURCE, name, operationType);
     }
 
-    @Override
-    public InputStream downloadFrom(String path) {
-        return null;
-    }
-
-    @Override
-    public OutputStream uploadTo(String path) {
-        return null;
+    public BaseImageOperation(OkHttpClient client, Config config, String resource, String name, String operationType) {
+        super(client, config, resource, name, operationType);
     }
 }

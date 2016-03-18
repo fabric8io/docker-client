@@ -44,8 +44,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class ImageNamedOperationImpl extends OperationSupport implements
-        ImageInspectOrPullOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface<ImageInspect, OutputHandle, List<ImageHistory>, Boolean, ImageDelete, InputStream> {
+public class ImageNamedOperationImpl extends BaseImageOperation implements
+        ImageInspectOrPullOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface<ImageInspect, OutputHandle, List<ImageHistory>, Boolean, List<ImageDelete>, InputStream> {
 
     private static final String HISTORY_OPERATION = "history";
     private static final String INSPECT_OPERATION = "json";
@@ -53,12 +53,12 @@ public class ImageNamedOperationImpl extends OperationSupport implements
     private static final String LOAD_OPERATION = "load";
 
     public ImageNamedOperationImpl(OkHttpClient client, Config config, String name) {
-        super(client, config, IMAGES_RESOURCE, name, null);
+        super(client, config, name, null);
     }
 
     @Override
-    public ForceOrAndPruneOrNoPruneInterface<ImageDelete> delete() {
-        return new io.fabric8.docker.client.impl.ImageDelete(client, config, name);
+    public ForceOrAndPruneOrNoPruneInterface<List<ImageDelete>> delete() {
+        return new DeleteImage(client, config, name);
     }
 
     @Override
@@ -82,12 +82,12 @@ public class ImageNamedOperationImpl extends OperationSupport implements
 
     @Override
     public InRepositoryOrForceOrTagNameInterface<Boolean> tag() {
-        return new ImageTag(client, config, name);
+        return new TagImage(client, config, name);
     }
 
     @Override
     public UsingListenerOrRedirectingWritingOutputOrTagOrToRegistryOrForceInterface<OutputHandle> push() {
-        return new ImagePush(client, config, name);
+        return new PushImage(client, config, name);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class ImageNamedOperationImpl extends OperationSupport implements
     public Boolean load(String path) {
         try {
             StringBuilder sb = new StringBuilder()
-                    .append(URLUtils.join(getRootUrl().toString(), "load").toString());
+                    .append(URLUtils.join(getRootUrl().toString(), LOAD_OPERATION).toString());
 
 
             RequestBody body = RequestBody.create(MEDIA_TYPE_TAR, new File(path));
@@ -125,7 +125,7 @@ public class ImageNamedOperationImpl extends OperationSupport implements
     @Override
     public Boolean load(InputStream inputStream) {
         try {
-            File tempFile = Files.createTempFile(Paths.get(DEFAULT_TEMP_DIR), TEMP_PREFIX, TEMP_SUFFIX).toFile();
+            File tempFile = Files.createTempFile(Paths.get(DEFAULT_TEMP_DIR), DOCKER_PREFIX, BZIP2_SUFFIX).toFile();
             try (final FileOutputStream fout = new FileOutputStream(tempFile)) {
 
                 InputStreamPumper pumper = new InputStreamPumper(inputStream, new Callback<byte[], Void>() {
@@ -150,6 +150,6 @@ public class ImageNamedOperationImpl extends OperationSupport implements
 
     @Override
     public UsingListenerOrRedirectingWritingOutputOrTagOrFromRegistryInterface<OutputHandle> pull() {
-        return new ImagePull(client,config,name);
+        return new PullImage(client,config,name);
     }
 }

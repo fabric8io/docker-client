@@ -35,24 +35,24 @@ import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.dsl.container.ContainerExecOrContainerResourceOrLogsOrContainerExecResourceOrAttachOrArhciveInterface;
 import io.fabric8.docker.dsl.container.ContainerInterface;
 import io.fabric8.docker.dsl.container.LimitOrSinceOrBeforeOrSizeOrFiltersOrAllOrRunningInterface;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 
-public class ContainerOperationImpl extends OperationSupport implements ContainerInterface {
+public class ContainerOperationImpl extends BaseContainerOperation implements ContainerInterface {
 
-    private static final String CONTAINERS = "containers";
-    private static final String JSON = "json";
+    private static final String CREATE_OPERATION = "create";
 
     public ContainerOperationImpl(OkHttpClient client, Config config) {
-        super(client, config, CONTAINERS, null, null);
+        super(client, config, null, null);
     }
 
 
     @Override
     public LimitOrSinceOrBeforeOrSizeOrFiltersOrAllOrRunningInterface<List<Container>> list() {
-        return new ContainerList(client, config, null, null, null, new HashMap<String, String[]>(), 0);
+        return new ListContainer(client, config, null, null, null, new HashMap<String, String[]>(), 0);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class ContainerOperationImpl extends OperationSupport implements Containe
     @Override
     public ContainerCreateResponse create(ContainerCreateRequest container) {
         try {
-            return handleCreate(container, ContainerCreateResponse.class, "create");
+            return handleCreate(container, ContainerCreateResponse.class, CREATE_OPERATION);
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
         }

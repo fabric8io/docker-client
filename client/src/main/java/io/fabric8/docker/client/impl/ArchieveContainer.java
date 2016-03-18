@@ -17,28 +17,28 @@
 
 package io.fabric8.docker.client.impl;
 
-import io.fabric8.docker.dsl.EventListener;
-import io.fabric8.docker.client.ProgressEvent;
-import io.fabric8.docker.client.utils.Utils;
+import com.squareup.okhttp.OkHttpClient;
+import io.fabric8.docker.client.Config;
+import io.fabric8.docker.dsl.container.DownloadFromOrUploadToInterface;
 
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.concurrent.TimeUnit;
 
-public class ImagePushHandle extends EventHandle {
+public class ArchieveContainer extends BaseContainerOperation  implements DownloadFromOrUploadToInterface<InputStream, OutputStream> {
 
-    private static final String SUCCESSFULLY_BUILT = "Successfully built";
+    private static final String ARCHIVE = "archive";
 
-    public ImagePushHandle(OutputStream out, long duration, TimeUnit unit, EventListener listener) {
-        super(out, duration, unit, listener);
+    public ArchieveContainer(OkHttpClient client, Config config, String name) {
+        super(client, config, name, ARCHIVE);
     }
 
     @Override
-    public boolean isSuccess(ProgressEvent event) {
-        return Utils.isNotNullOrEmpty(event.getStream()) && event.getStream().startsWith(SUCCESSFULLY_BUILT);
+    public InputStream downloadFrom(String path) {
+        return null;
     }
 
     @Override
-    public boolean isFailure(ProgressEvent event) {
-        return Utils.isNotNullOrEmpty(event.getError());
+    public OutputStream uploadTo(String path) {
+        return null;
     }
 }

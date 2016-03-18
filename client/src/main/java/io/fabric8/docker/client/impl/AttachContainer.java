@@ -35,7 +35,7 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.concurrent.TimeUnit;
 
-public class ContainerAttach extends BaseContainerOperation implements
+public class AttachContainer extends BaseContainerOperation implements
         ContainerInputOrContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle>,
         ContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle>,
         ContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle>,
@@ -55,7 +55,7 @@ public class ContainerAttach extends BaseContainerOperation implements
     private final PipedInputStream outPipe;
     private final PipedInputStream errPipe;
 
-    public ContainerAttach(OkHttpClient client, Config config, String name, InputStream in, OutputStream out, OutputStream err, PipedOutputStream inPipe, PipedInputStream outPipe, PipedInputStream errPipe) {
+    public AttachContainer(OkHttpClient client, Config config, String name, InputStream in, OutputStream out, OutputStream err, PipedOutputStream inPipe, PipedInputStream outPipe, PipedInputStream errPipe) {
         super(client, config, name, "attach");
         this.in = in;
         this.out = out;
@@ -100,12 +100,12 @@ public class ContainerAttach extends BaseContainerOperation implements
 
     @Override
     public StreamOrGetLogsInterface<InputOutputErrorHandle> readingError(PipedInputStream errPipe) {
-        return new ContainerAttach(client, config, name, in, out, err, inPipe, outPipe, errPipe);
+        return new AttachContainer(client, config, name, in, out, err, inPipe, outPipe, errPipe);
     }
 
     @Override
     public StreamOrGetLogsInterface<InputOutputErrorHandle> writingError(OutputStream err) {
-        return new ContainerAttach(client, config, name, in, out, err, inPipe, outPipe, errPipe);
+        return new AttachContainer(client, config, name, in, out, err, inPipe, outPipe, errPipe);
     }
 
     @Override
@@ -115,12 +115,12 @@ public class ContainerAttach extends BaseContainerOperation implements
 
     @Override
     public ContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle> readingInput(InputStream in) {
-        return new ContainerAttach(client, config, name, in, out, err, inPipe, outPipe, errPipe);
+        return new AttachContainer(client, config, name, in, out, err, inPipe, outPipe, errPipe);
     }
 
     @Override
     public ContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle> writingInput(PipedOutputStream inPipe) {
-        return new ContainerAttach(client, config, name, in, out, err, inPipe, outPipe, errPipe);
+        return new AttachContainer(client, config, name, in, out, err, inPipe, outPipe, errPipe);
     }
 
     @Override
@@ -130,12 +130,12 @@ public class ContainerAttach extends BaseContainerOperation implements
 
     @Override
     public ContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle> readingOutput(PipedInputStream outPipe) {
-        return new ContainerAttach(client, config, name, in, out, err, inPipe, outPipe, errPipe);
+        return new AttachContainer(client, config, name, in, out, err, inPipe, outPipe, errPipe);
     }
 
     @Override
     public ContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle> writingOutput(OutputStream out) {
-        return new ContainerAttach(client, config, name, in, out, err, inPipe, outPipe, errPipe);
+        return new AttachContainer(client, config, name, in, out, err, inPipe, outPipe, errPipe);
     }
 
     @Override

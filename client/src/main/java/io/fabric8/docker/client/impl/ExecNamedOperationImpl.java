@@ -30,8 +30,14 @@ import java.net.URL;
 
 public class ExecNamedOperationImpl extends OperationSupport implements ContainerExecResource<Boolean, ContainerInspect> {
 
+    protected static final String EXEC_RESOURCE = "exec";
+
+    private static final String START_OPERATION = "start";
+    private static final String RESIZE_OPERATION = "resize";
+    private static final String SIZE = "size";
+
     public ExecNamedOperationImpl(OkHttpClient client, Config config, String name) {
-        super(client, config, EXEC_OPERATION, name, null);
+        super(client, config, EXEC_RESOURCE, name, null);
     }
 
     @Override
@@ -39,10 +45,10 @@ public class ExecNamedOperationImpl extends OperationSupport implements Containe
         try {
             StringBuilder sb = new StringBuilder();
             sb.append(getResourceUrl());
-            sb.append("?h=").append(h);
-            sb.append("&w=").append(w);
-            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, "");
-            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), "resize"));
+            sb.append(Q).append("h").append(EQUALS).append(h);
+            sb.append(A).append("w").append(EQUALS).append(w);
+            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, EMPTY);
+            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), RESIZE_OPERATION));
             handleResponse(requestBuilder, 200);
             return true;
         } catch (Exception e) {
@@ -55,8 +61,8 @@ public class ExecNamedOperationImpl extends OperationSupport implements Containe
         try {
             StringBuilder sb = new StringBuilder();
             sb.append(getResourceUrl());
-            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, "");
-            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), "start"));
+            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, EMPTY);
+            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), START_OPERATION));
             handleResponse(requestBuilder, 204);
             return true;
         } catch (Exception e) {
@@ -74,7 +80,7 @@ public class ExecNamedOperationImpl extends OperationSupport implements Containe
         StringBuilder sb = new StringBuilder();
         try {
             sb.append(getResourceUrl());
-            sb.append("?size=" + withSize);
+            sb.append(Q).append(SIZE).append(EQUALS).append(withSize);
             return handleGet(new URL(sb.toString()), ContainerInspect.class);
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);

@@ -17,14 +17,26 @@
 
 package io.fabric8.docker.client.impl;
 
-import com.squareup.okhttp.OkHttpClient;
-import io.fabric8.docker.client.Config;
+import io.fabric8.docker.dsl.EventListener;
+import io.fabric8.docker.client.ProgressEvent;
+import io.fabric8.docker.client.utils.Utils;
 
-public class BaseContainerOperation extends OperationSupport {
+import java.io.OutputStream;
+import java.util.concurrent.TimeUnit;
 
-    protected static final String CONTAINER_RESOURCE = "containers";
+public class PullImageHandle extends EventHandle {
 
-    public BaseContainerOperation(OkHttpClient client, Config config, String name, String operationType) {
-        super(client, config, CONTAINER_RESOURCE, name, operationType);
+    public PullImageHandle(OutputStream out, long duration, TimeUnit unit, EventListener listener) {
+        super(out, duration, unit, listener);
+    }
+
+    @Override
+    public boolean isSuccess(ProgressEvent event) {
+        return false;
+    }
+
+    @Override
+    public boolean isFailure(ProgressEvent event) {
+        return Utils.isNotNullOrEmpty(event.getError());
     }
 }

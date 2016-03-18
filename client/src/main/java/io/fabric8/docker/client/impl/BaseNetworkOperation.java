@@ -20,11 +20,11 @@ package io.fabric8.docker.client.impl;
 import com.squareup.okhttp.OkHttpClient;
 import io.fabric8.docker.client.Config;
 
-public class BaseContainerOperation extends OperationSupport {
+public class BaseNetworkOperation extends OperationSupport {
 
-    protected static final String CONTAINER_RESOURCE = "containers";
+    protected static final String NETWORK_RESOURCE = "networks";
 
-    public BaseContainerOperation(OkHttpClient client, Config config, String name, String operationType) {
-        super(client, config, CONTAINER_RESOURCE, name, operationType);
+    public BaseNetworkOperation(OkHttpClient client, Config config, String name, String operationType) {
+        super(client, config, NETWORK_RESOURCE, name, operationType);
     }
 }
