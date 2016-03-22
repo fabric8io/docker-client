@@ -19,12 +19,12 @@ package io.fabric8.docker.client.impl;
 
 import com.squareup.okhttp.OkHttpClient;
 import io.fabric8.docker.client.Config;
-import io.fabric8.docker.dsl.container.DownloadFromOrUploadToInterface;
+import io.fabric8.docker.dsl.container.DownloadFromUploadToInterface;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class ArchieveContainer extends BaseContainerOperation  implements DownloadFromOrUploadToInterface<InputStream, OutputStream> {
+public class ArchieveContainer extends BaseContainerOperation  implements DownloadFromUploadToInterface<InputStream, OutputStream> {
 
     private static final String ARCHIVE = "archive";
 

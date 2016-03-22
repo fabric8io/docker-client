@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Original Authors
+ * Copyright (C) 2016 iginal Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +22,14 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.ws.WebSocketCall;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.dsl.OutputHandle;
-import io.fabric8.docker.dsl.container.FollowOrDisplayInterface;
-import io.fabric8.docker.dsl.container.FollowOrDisplayOrContainerErrorOrTimestampsOrTailingLinesInterface;
-import io.fabric8.docker.dsl.container.FollowOrDisplayOrContainerOutputOrContainerErrorOrTimestampsOrTailingLinesInterface;
-import io.fabric8.docker.dsl.container.FollowOrDisplayOrTailingLinesInterface;
-import io.fabric8.docker.dsl.container.FollowOrDisplayOrTimestampsOrTailingLinesInterface;
-import io.fabric8.docker.dsl.container.SinceOrFollowOrDisplayOrContainerOutputOrContainerErrorOrTimestampsOrTailingLinesInterface;
 import io.fabric8.docker.client.utils.URLUtils;
+import io.fabric8.docker.dsl.OutputHandle;
+import io.fabric8.docker.dsl.container.ContainerErrorTimestampsTailingLinesFollowDisplayInterface;
+import io.fabric8.docker.dsl.container.ContainerOutputErrorTimestampsTailingLinesFollowDisplayInterface;
+import io.fabric8.docker.dsl.container.FollowDisplayInterface;
+import io.fabric8.docker.dsl.container.SinceContainerOutputErrorTimestampsTailingLinesFollowDisplayInterface;
+import io.fabric8.docker.dsl.container.TailingLinesFollowDisplayInterface;
+import io.fabric8.docker.dsl.container.TimestampsTailingLinesFollowDisplayInterface;
 
 import java.io.OutputStream;
 import java.io.PipedInputStream;
@@ -38,11 +38,11 @@ import java.util.concurrent.TimeUnit;
 import static io.fabric8.docker.client.utils.Utils.isNotNullOrEmpty;
 
 public class GetLogsOfContainer extends BaseContainerOperation implements
-        SinceOrFollowOrDisplayOrContainerOutputOrContainerErrorOrTimestampsOrTailingLinesInterface<OutputHandle>,
-        FollowOrDisplayOrTimestampsOrTailingLinesInterface<OutputHandle>,
-        FollowOrDisplayOrContainerErrorOrTimestampsOrTailingLinesInterface<OutputHandle>,
-        FollowOrDisplayOrTailingLinesInterface<OutputHandle>,
-        FollowOrDisplayInterface<OutputHandle> {
+        SinceContainerOutputErrorTimestampsTailingLinesFollowDisplayInterface<OutputHandle>,
+        TimestampsTailingLinesFollowDisplayInterface<OutputHandle>,
+        ContainerErrorTimestampsTailingLinesFollowDisplayInterface<OutputHandle>,
+        FollowDisplayInterface<OutputHandle>,
+        TailingLinesFollowDisplayInterface<OutputHandle> {
 
     private static final String LOG = "log";
     private static final String FOLLOW = "follow";
@@ -121,48 +121,48 @@ public class GetLogsOfContainer extends BaseContainerOperation implements
     }
 
     @Override
-    public FollowOrDisplayOrTimestampsOrTailingLinesInterface<OutputHandle> readingError(PipedInputStream errPipe) {
+    public TimestampsTailingLinesFollowDisplayInterface<OutputHandle> readingError(PipedInputStream errPipe) {
         return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled);
     }
 
     @Override
-    public FollowOrDisplayOrTimestampsOrTailingLinesInterface<OutputHandle> writingError(OutputStream err) {
+    public TimestampsTailingLinesFollowDisplayInterface<OutputHandle> writingError(OutputStream err) {
         return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled);
     }
 
     @Override
-    public FollowOrDisplayOrTimestampsOrTailingLinesInterface<OutputHandle> redirectingError() {
+    public TimestampsTailingLinesFollowDisplayInterface<OutputHandle> redirectingError() {
         return readingError(new PipedInputStream());
     }
 
 
     @Override
-    public FollowOrDisplayOrContainerErrorOrTimestampsOrTailingLinesInterface<OutputHandle> readingOutput(PipedInputStream outPipe) {
+    public ContainerErrorTimestampsTailingLinesFollowDisplayInterface<OutputHandle> readingOutput(PipedInputStream outPipe) {
         return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled);
     }
 
     @Override
-    public FollowOrDisplayOrContainerErrorOrTimestampsOrTailingLinesInterface<OutputHandle> writingOutput(OutputStream out) {
+    public ContainerErrorTimestampsTailingLinesFollowDisplayInterface<OutputHandle> writingOutput(OutputStream out) {
         return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled);
     }
 
     @Override
-    public FollowOrDisplayOrContainerErrorOrTimestampsOrTailingLinesInterface<OutputHandle> redirectingOutput() {
+    public ContainerErrorTimestampsTailingLinesFollowDisplayInterface<OutputHandle> redirectingOutput() {
         return readingOutput(new PipedInputStream());
     }
 
     @Override
-    public FollowOrDisplayOrContainerOutputOrContainerErrorOrTimestampsOrTailingLinesInterface<OutputHandle> since(String since) {
+    public ContainerOutputErrorTimestampsTailingLinesFollowDisplayInterface<OutputHandle> since(String since) {
         return null;
     }
 
     @Override
-    public FollowOrDisplayInterface<OutputHandle> tailingLines(int lines) {
+    public FollowDisplayInterface<OutputHandle> tailingLines(int lines) {
         return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled);
     }
 
     @Override
-    public FollowOrDisplayOrTailingLinesInterface<OutputHandle> withTimestamps() {
+    public TailingLinesFollowDisplayInterface<OutputHandle> withTimestamps() {
         return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, true);
     }
 }

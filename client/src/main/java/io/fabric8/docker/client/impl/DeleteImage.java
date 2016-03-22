@@ -17,19 +17,21 @@
 
 package io.fabric8.docker.client.impl;
 
-import com.squareup.okhttp.OkHttpClient;;
+import com.squareup.okhttp.OkHttpClient;
 import io.fabric8.docker.api.model.ImageDelete;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.dsl.image.AndPruneOrNoPruneInterface;
-import io.fabric8.docker.dsl.image.ForceOrAndPruneOrNoPruneInterface;
+import io.fabric8.docker.dsl.image.AndPruneNoInterface;
+import io.fabric8.docker.dsl.image.ForceAndPruneNoInterface;
 
 import java.net.URL;
 import java.util.List;
 
+;
+
 public class DeleteImage extends BaseImageOperation implements
-        ForceOrAndPruneOrNoPruneInterface<List<ImageDelete>>,
-        AndPruneOrNoPruneInterface<List<ImageDelete>> {
+        ForceAndPruneNoInterface<List<ImageDelete>>,
+        AndPruneNoInterface<List<ImageDelete>> {
 
     private static final String FORCE = "force";
     private static final String NOPRUNE = "noprune";
@@ -62,12 +64,12 @@ public class DeleteImage extends BaseImageOperation implements
     }
 
     @Override
-    public AndPruneOrNoPruneInterface<List<ImageDelete>> force() {
+    public AndPruneNoInterface<List<ImageDelete>> force() {
         return force(true);
     }
 
     @Override
-    public AndPruneOrNoPruneInterface<List<ImageDelete>> force(Boolean force) {
+    public AndPruneNoInterface<List<ImageDelete>> force(Boolean force) {
         return new DeleteImage(client, config, name, force);
     }
 

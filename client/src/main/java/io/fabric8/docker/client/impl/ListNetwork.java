@@ -19,15 +19,16 @@ package io.fabric8.docker.client.impl;
 
 import com.squareup.okhttp.OkHttpClient;
 import io.fabric8.docker.api.model.NetworkResource;
-import io.fabric8.docker.client.*;
-import io.fabric8.docker.dsl.network.FiltersOrAllInterface;
+import io.fabric8.docker.client.Config;
+import io.fabric8.docker.client.DockerClientException;
+import io.fabric8.docker.dsl.network.AllFiltersInterface;
 
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ListNetwork extends BaseNetworkOperation implements FiltersOrAllInterface<List<NetworkResource>> {
+public class ListNetwork extends BaseNetworkOperation implements AllFiltersInterface<List<NetworkResource>> {
 
     private static final String FILTERS = "filters";
     private static final String ALL = "all";
@@ -61,7 +62,7 @@ public class ListNetwork extends BaseNetworkOperation implements FiltersOrAllInt
     }
 
     @Override
-    public io.fabric8.docker.dsl.network.AllInterface<List<NetworkResource>> filters(String key, String value) {
+    public AllFiltersInterface<List<NetworkResource>> filters(String key, String value) {
         Map<String, String[]> newFilters = new HashMap<>(this.filters);
         newFilters.put(key, new String[]{value});
         return new ListNetwork(client, config, newFilters);

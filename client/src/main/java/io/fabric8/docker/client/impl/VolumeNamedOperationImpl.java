@@ -21,9 +21,9 @@ import com.squareup.okhttp.OkHttpClient;
 import io.fabric8.docker.api.model.Volume;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.dsl.volume.VolumeInspectOrDeleteInterface;
+import io.fabric8.docker.dsl.volume.VolumeInspectDeleteInterface;
 
-public class VolumeNamedOperationImpl extends BaseVolumeOperation implements VolumeInspectOrDeleteInterface<Volume, Boolean> {
+public class VolumeNamedOperationImpl extends BaseVolumeOperation implements VolumeInspectDeleteInterface<Volume, Boolean> {
 
     private static final String INSPECT_OPERATION = "inspect";
 

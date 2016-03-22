@@ -27,11 +27,11 @@ import io.fabric8.docker.client.utils.RegistryUtils;
 import io.fabric8.docker.client.utils.Utils;
 import io.fabric8.docker.dsl.EventListener;
 import io.fabric8.docker.dsl.OutputHandle;
-import io.fabric8.docker.dsl.image.RedirectingWritingOutputOrTagOrToRegistryOrForceInterface;
-import io.fabric8.docker.dsl.image.TagOrToRegistryOrForceInterface;
+import io.fabric8.docker.dsl.image.ForceToRegistryInterface;
+import io.fabric8.docker.dsl.image.RedirectingWritingOutputTagForceToRegistryInterface;
+import io.fabric8.docker.dsl.image.TagForceToRegistryInterface;
 import io.fabric8.docker.dsl.image.ToRegistryInterface;
-import io.fabric8.docker.dsl.image.ToRegistryOrForceInterface;
-import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrToRegistryOrForceInterface;
+import io.fabric8.docker.dsl.image.UsingListenerRedirectingWritingOutputTagForceToRegistryInterface;
 import org.apache.commons.codec.binary.Base64;
 
 import java.io.OutputStream;
@@ -39,10 +39,11 @@ import java.io.PipedOutputStream;
 import java.util.concurrent.TimeUnit;
 
 public class PushImage extends BaseImageOperation implements
-        UsingListenerOrRedirectingWritingOutputOrTagOrToRegistryOrForceInterface<OutputHandle>,
-        RedirectingWritingOutputOrTagOrToRegistryOrForceInterface<OutputHandle>,
-        TagOrToRegistryOrForceInterface<OutputHandle>,
-        ToRegistryOrForceInterface<OutputHandle> {
+        UsingListenerRedirectingWritingOutputTagForceToRegistryInterface<OutputHandle>,
+        RedirectingWritingOutputTagForceToRegistryInterface<OutputHandle>,
+        TagForceToRegistryInterface<OutputHandle>,
+        ForceToRegistryInterface<OutputHandle>,
+        ToRegistryInterface<OutputHandle> {
 
     private static final String PUSH_OPERATION = "push";
     private static final String TAG = "tag";
@@ -89,22 +90,22 @@ public class PushImage extends BaseImageOperation implements
     }
 
     @Override
-    public ToRegistryOrForceInterface<OutputHandle> withTag(String tag) {
+    public ForceToRegistryInterface<OutputHandle> withTag(String tag) {
         return new PushImage(client, config, name, tag, force, out, listener);
     }
 
     @Override
-    public RedirectingWritingOutputOrTagOrToRegistryOrForceInterface<OutputHandle> usingListener(EventListener listener) {
+    public RedirectingWritingOutputTagForceToRegistryInterface<OutputHandle> usingListener(EventListener listener) {
         return new PushImage(client, config, name, tag, force, out, listener);
     }
 
     @Override
-    public TagOrToRegistryOrForceInterface<OutputHandle> redirectingOutput() {
+    public TagForceToRegistryInterface<OutputHandle> redirectingOutput() {
         return new PushImage(client, config, name, tag, force, new PipedOutputStream(), listener);
     }
 
     @Override
-    public TagOrToRegistryOrForceInterface<OutputHandle> writingOutput(OutputStream out) {
+    public TagForceToRegistryInterface<OutputHandle> writingOutput(OutputStream out) {
         return new PushImage(client, config, name, tag, force, out, listener);
     }
 

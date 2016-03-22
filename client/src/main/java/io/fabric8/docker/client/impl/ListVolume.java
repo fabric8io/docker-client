@@ -21,8 +21,7 @@ import com.squareup.okhttp.OkHttpClient;
 import io.fabric8.docker.api.model.Volume;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.dsl.volume.AllInterface;
-import io.fabric8.docker.dsl.volume.FiltersOrAllInterface;
+import io.fabric8.docker.dsl.volume.AllFiltersInterface;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -30,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ListVolume extends BaseVolumeOperation implements
-        FiltersOrAllInterface<List<Volume>> {
+        AllFiltersInterface<List<Volume>> {
 
     private static final String FILTERS = "filters";
     private static final String ALL = "all";
@@ -64,7 +63,7 @@ public class ListVolume extends BaseVolumeOperation implements
     }
 
     @Override
-    public AllInterface<List<Volume>> filters(String key, String value) {
+    public AllFiltersInterface<List<Volume>> filters(String key, String value) {
         Map<String, String[]> newFilters = new HashMap<>(this.filters);
         newFilters.put(key, new String[]{value});
         return new ListVolume(client, config, newFilters);

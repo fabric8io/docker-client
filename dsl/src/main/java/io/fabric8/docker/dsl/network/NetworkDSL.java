@@ -32,6 +32,7 @@ import io.sundr.dsl.annotations.Dsl;
 import io.sundr.dsl.annotations.EntryPoint;
 import io.sundr.dsl.annotations.InterfaceName;
 import io.sundr.dsl.annotations.Multiple;
+import io.sundr.dsl.annotations.None;
 import io.sundr.dsl.annotations.Terminal;
 
 import java.util.List;

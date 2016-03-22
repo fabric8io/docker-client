@@ -45,6 +45,7 @@ import io.sundr.dsl.annotations.Dsl;
 import io.sundr.dsl.annotations.EntryPoint;
 import io.sundr.dsl.annotations.InterfaceName;
 import io.sundr.dsl.annotations.Multiple;
+import io.sundr.dsl.annotations.None;
 import io.sundr.dsl.annotations.Only;
 import io.sundr.dsl.annotations.Or;
 import io.sundr.dsl.annotations.Terminal;
@@ -66,24 +67,24 @@ public interface ContainerDSL {
     @ExecOption
     void exec();
 
-    @Only({}) //Means no option at all
+    @Only(methods = "create") //Means no option at all
     @Or //We use @Or here to tell in order to call withName, you either need no option or exec options.
     @Any({ExecOption.class})
     @NamedOption
     void withName(String name);
 
-    @Terminal
     @CreateOption
+    @Terminal
     @InterfaceName("ContainerCreateInterface")
     ContainerCreateResponse create(ContainerCreateRequest container);
 
-    @Terminal
     @CreateOption
+    @Terminal
     @InterfaceName("ContainerCreateInterface")
     InlineContainerCreate createNew();
 
     @ListOption
-    @Only({})
+    @Only(methods = "container")
     void list();
 
     @All({ListOption.class})

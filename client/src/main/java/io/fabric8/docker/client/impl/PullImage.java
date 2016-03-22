@@ -28,9 +28,9 @@ import io.fabric8.docker.client.utils.Utils;
 import io.fabric8.docker.dsl.EventListener;
 import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.dsl.image.FromRegistryInterface;
-import io.fabric8.docker.dsl.image.RedirectingWritingOutputOrTagOrFromRegistryInterface;
-import io.fabric8.docker.dsl.image.TagOrFromRegistryInterface;
-import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrFromRegistryInterface;
+import io.fabric8.docker.dsl.image.RedirectingWritingOutputTagFromRegistryInterface;
+import io.fabric8.docker.dsl.image.TagFromRegistryInterface;
+import io.fabric8.docker.dsl.image.UsingListenerRedirectingWritingOutputTagFromRegistryInterface;
 import org.apache.commons.codec.binary.Base64;
 
 import java.io.OutputStream;
@@ -38,9 +38,9 @@ import java.io.PipedOutputStream;
 import java.util.concurrent.TimeUnit;
 
 public class PullImage extends BaseImageOperation implements
-        UsingListenerOrRedirectingWritingOutputOrTagOrFromRegistryInterface<OutputHandle>,
-        RedirectingWritingOutputOrTagOrFromRegistryInterface<OutputHandle>,
-        TagOrFromRegistryInterface<OutputHandle> {
+        UsingListenerRedirectingWritingOutputTagFromRegistryInterface<OutputHandle>,
+        RedirectingWritingOutputTagFromRegistryInterface<OutputHandle>,
+        TagFromRegistryInterface<OutputHandle> {
 
 
     private static final String CREATE_OPERATION = "create";
@@ -70,17 +70,17 @@ public class PullImage extends BaseImageOperation implements
     }
 
     @Override
-    public RedirectingWritingOutputOrTagOrFromRegistryInterface<OutputHandle> usingListener(EventListener listener) {
+    public RedirectingWritingOutputTagFromRegistryInterface<OutputHandle> usingListener(EventListener listener) {
         return new PullImage(client, config, name, tag, out, listener);
     }
 
     @Override
-    public TagOrFromRegistryInterface<OutputHandle> redirectingOutput() {
+    public TagFromRegistryInterface<OutputHandle> redirectingOutput() {
         return new PullImage(client, config, name, tag, new PipedOutputStream(), listener);
     }
 
     @Override
-    public TagOrFromRegistryInterface<OutputHandle> writingOutput(OutputStream out) {
+    public TagFromRegistryInterface<OutputHandle> writingOutput(OutputStream out) {
         return new PullImage(client, config, name, tag, out, listener);
     }
 

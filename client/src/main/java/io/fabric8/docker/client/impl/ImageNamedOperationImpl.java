@@ -30,11 +30,11 @@ import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.client.utils.InputStreamPumper;
 import io.fabric8.docker.client.utils.URLUtils;
 import io.fabric8.docker.dsl.OutputHandle;
-import io.fabric8.docker.dsl.image.ForceOrAndPruneOrNoPruneInterface;
-import io.fabric8.docker.dsl.image.ImageInspectOrPullOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface;
-import io.fabric8.docker.dsl.image.InRepositoryOrForceOrTagNameInterface;
-import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrFromRegistryInterface;
-import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrToRegistryOrForceInterface;
+import io.fabric8.docker.dsl.image.ForceAndPruneNoInterface;
+import io.fabric8.docker.dsl.image.ImageInspectPullHistoryPushTagDeleteGetLoadInterface;
+import io.fabric8.docker.dsl.image.InRepositoryForceTagNameInterface;
+import io.fabric8.docker.dsl.image.UsingListenerRedirectingWritingOutputTagForceToRegistryInterface;
+import io.fabric8.docker.dsl.image.UsingListenerRedirectingWritingOutputTagFromRegistryInterface;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,7 +45,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class ImageNamedOperationImpl extends BaseImageOperation implements
-        ImageInspectOrPullOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface<ImageInspect, OutputHandle, List<ImageHistory>, Boolean, List<ImageDelete>, InputStream> {
+        ImageInspectPullHistoryPushTagDeleteGetLoadInterface<ImageInspect, OutputHandle, List<ImageHistory>, Boolean, List<ImageDelete>, InputStream> {
 
     private static final String HISTORY_OPERATION = "history";
     private static final String INSPECT_OPERATION = "json";
@@ -57,7 +57,7 @@ public class ImageNamedOperationImpl extends BaseImageOperation implements
     }
 
     @Override
-    public ForceOrAndPruneOrNoPruneInterface<List<ImageDelete>> delete() {
+    public ForceAndPruneNoInterface<List<ImageDelete>> delete() {
         return new DeleteImage(client, config, name);
     }
 
@@ -81,12 +81,12 @@ public class ImageNamedOperationImpl extends BaseImageOperation implements
 
 
     @Override
-    public InRepositoryOrForceOrTagNameInterface<Boolean> tag() {
+    public InRepositoryForceTagNameInterface<Boolean> tag() {
         return new TagImage(client, config, name);
     }
 
     @Override
-    public UsingListenerOrRedirectingWritingOutputOrTagOrToRegistryOrForceInterface<OutputHandle> push() {
+    public UsingListenerRedirectingWritingOutputTagForceToRegistryInterface<OutputHandle> push() {
         return new PushImage(client, config, name);
     }
 
@@ -149,7 +149,7 @@ public class ImageNamedOperationImpl extends BaseImageOperation implements
     }
 
     @Override
-    public UsingListenerOrRedirectingWritingOutputOrTagOrFromRegistryInterface<OutputHandle> pull() {
+    public UsingListenerRedirectingWritingOutputTagFromRegistryInterface<OutputHandle> pull() {
         return new PullImage(client,config,name);
     }
 }

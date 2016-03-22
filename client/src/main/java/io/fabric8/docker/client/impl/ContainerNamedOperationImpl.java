@@ -29,13 +29,13 @@ import io.fabric8.docker.api.model.InlineExecConfig;
 import io.fabric8.docker.api.model.Stats;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
+import io.fabric8.docker.client.utils.URLUtils;
 import io.fabric8.docker.dsl.InputOutputErrorHandle;
 import io.fabric8.docker.dsl.OutputHandle;
-import io.fabric8.docker.dsl.container.ContainerExecOrContainerResourceOrLogsOrContainerExecResourceOrAttachOrArhciveInterface;
-import io.fabric8.docker.dsl.container.ContainerInputOrContainerOutputOrContainerErrorOrStreamOrGetLogsInterface;
-import io.fabric8.docker.dsl.container.DownloadFromOrUploadToInterface;
-import io.fabric8.docker.dsl.container.SinceOrFollowOrDisplayOrContainerOutputOrContainerErrorOrTimestampsOrTailingLinesInterface;
-import io.fabric8.docker.client.utils.URLUtils;
+import io.fabric8.docker.dsl.container.ContainerExecResourceLogsAttachArhciveInterface;
+import io.fabric8.docker.dsl.container.ContainerInputOutputErrorStreamGetLogsInterface;
+import io.fabric8.docker.dsl.container.DownloadFromUploadToInterface;
+import io.fabric8.docker.dsl.container.SinceContainerOutputErrorTimestampsTailingLinesFollowDisplayInterface;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -43,7 +43,7 @@ import java.net.URL;
 import java.util.List;
 
 public class ContainerNamedOperationImpl extends BaseContainerOperation implements
-        ContainerExecOrContainerResourceOrLogsOrContainerExecResourceOrAttachOrArhciveInterface<ContainerExecCreateResponse, InlineExecConfig, ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, OutputHandle, ContainerInspect, InputOutputErrorHandle, OutputStream> {
+        ContainerExecResourceLogsAttachArhciveInterface<ContainerExecCreateResponse, InlineExecConfig, ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, OutputHandle, ContainerInspect, InputOutputErrorHandle, OutputStream> {
 
     private static final String EXEC_OPERATION = "exec";
     private static final String TOP_OPERATION = "top";
@@ -66,7 +66,7 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
     }
 
     @Override
-    public DownloadFromOrUploadToInterface<InputStream, OutputStream> arhcive() {
+    public DownloadFromUploadToInterface<InputStream, OutputStream> arhcive() {
         return new ArchieveContainer(client, config, name);
     }
 
@@ -256,12 +256,12 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
     }
 
     @Override
-    public SinceOrFollowOrDisplayOrContainerOutputOrContainerErrorOrTimestampsOrTailingLinesInterface<OutputHandle> logs() {
+    public SinceContainerOutputErrorTimestampsTailingLinesFollowDisplayInterface<OutputHandle> logs() {
         return new GetLogsOfContainer(client, config, name, null, null, null, null, null, 0, false);
     }
 
     @Override
-    public ContainerInputOrContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle> attach() {
+    public ContainerInputOutputErrorStreamGetLogsInterface<InputOutputErrorHandle> attach() {
         return new AttachContainer(client, config, name, null, null, null, null, null, null);
     }
 

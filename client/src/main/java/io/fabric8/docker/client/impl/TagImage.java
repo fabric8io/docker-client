@@ -22,17 +22,17 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.dsl.image.ForceOrTagNameInterface;
-import io.fabric8.docker.dsl.image.InRepositoryOrForceOrTagNameInterface;
-import io.fabric8.docker.dsl.image.WithTagNameInterface;
 import io.fabric8.docker.client.utils.Utils;
+import io.fabric8.docker.dsl.image.ForceTagNameInterface;
+import io.fabric8.docker.dsl.image.InRepositoryForceTagNameInterface;
+import io.fabric8.docker.dsl.image.WithTagNameInterface;
 import okio.ByteString;
 
 import java.net.URL;
 
 public class TagImage extends BaseImageOperation implements
-        InRepositoryOrForceOrTagNameInterface<Boolean>,
-        ForceOrTagNameInterface<Boolean> {
+        InRepositoryForceTagNameInterface<Boolean>,
+        ForceTagNameInterface<Boolean> {
 
     private static final String TAG_OPERATION = "tag";
     private static final String FORCE = "force";
@@ -62,7 +62,7 @@ public class TagImage extends BaseImageOperation implements
     }
 
     @Override
-    public ForceOrTagNameInterface<Boolean> inRepository(String repository) {
+    public ForceTagNameInterface<Boolean> inRepository(String repository) {
         return new TagImage(client, config, name, repository, force);
     }
 

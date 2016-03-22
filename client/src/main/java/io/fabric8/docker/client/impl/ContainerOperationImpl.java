@@ -32,9 +32,9 @@ import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.dsl.InputOutputErrorHandle;
 import io.fabric8.docker.dsl.OutputHandle;
-import io.fabric8.docker.dsl.container.ContainerExecOrContainerResourceOrLogsOrContainerExecResourceOrAttachOrArhciveInterface;
+import io.fabric8.docker.dsl.container.ContainerExecResourceLogsAttachArhciveInterface;
 import io.fabric8.docker.dsl.container.ContainerInterface;
-import io.fabric8.docker.dsl.container.LimitOrSinceOrBeforeOrSizeOrFiltersOrAllOrRunningInterface;
+import io.fabric8.docker.dsl.container.LimitSinceBeforeSizeFiltersAllRunningInterface;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -51,12 +51,12 @@ public class ContainerOperationImpl extends BaseContainerOperation implements Co
 
 
     @Override
-    public LimitOrSinceOrBeforeOrSizeOrFiltersOrAllOrRunningInterface<List<Container>> list() {
+    public LimitSinceBeforeSizeFiltersAllRunningInterface<List<Container>> list() {
         return new ListContainer(client, config, null, null, null, new HashMap<String, String[]>(), 0);
     }
 
     @Override
-    public ContainerExecOrContainerResourceOrLogsOrContainerExecResourceOrAttachOrArhciveInterface<ContainerExecCreateResponse, InlineExecConfig, ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, OutputHandle, ContainerInspect, InputOutputErrorHandle, OutputStream> withName(String name) {
+    public ContainerExecResourceLogsAttachArhciveInterface<ContainerExecCreateResponse, InlineExecConfig, ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, OutputHandle, ContainerInspect, InputOutputErrorHandle, OutputStream> withName(String name) {
         return new ContainerNamedOperationImpl(client, config, name);
     }
 

@@ -41,6 +41,7 @@ import io.sundr.dsl.annotations.Dsl;
 import io.sundr.dsl.annotations.EntryPoint;
 import io.sundr.dsl.annotations.InterfaceName;
 import io.sundr.dsl.annotations.Multiple;
+import io.sundr.dsl.annotations.None;
 import io.sundr.dsl.annotations.Only;
 import io.sundr.dsl.annotations.Terminal;
 
@@ -213,7 +214,7 @@ public interface ImageDSL {
     @All({RemoveOption.class})
     List<ImageDelete> withNoPrune();
 
-    @Only({})
+   @Only(methods = "image")
     @Terminal
     @InterfaceName("ImageSearchInterface")
     List<SearchResult> search(String term);

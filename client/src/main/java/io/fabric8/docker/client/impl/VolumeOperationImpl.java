@@ -23,8 +23,8 @@ import io.fabric8.docker.api.model.Volume;
 import io.fabric8.docker.api.model.VolumeCreateRequest;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.dsl.volume.FiltersOrAllInterface;
-import io.fabric8.docker.dsl.volume.VolumeInspectOrDeleteInterface;
+import io.fabric8.docker.dsl.volume.AllFiltersInterface;
+import io.fabric8.docker.dsl.volume.VolumeInspectDeleteInterface;
 import io.fabric8.docker.dsl.volume.VolumeInterface;
 
 import java.util.List;
@@ -38,13 +38,13 @@ public class VolumeOperationImpl extends BaseVolumeOperation implements VolumeIn
     }
 
     @Override
-    public FiltersOrAllInterface<List<Volume>> list() {
+    public AllFiltersInterface<List<Volume>> list() {
         return new ListVolume(client, config);
     }
 
 
     @Override
-    public VolumeInspectOrDeleteInterface<Volume, Boolean> withName(String name) {
+    public VolumeInspectDeleteInterface<Volume, Boolean> withName(String name) {
         return new VolumeNamedOperationImpl(client, config, name);
     }
 
