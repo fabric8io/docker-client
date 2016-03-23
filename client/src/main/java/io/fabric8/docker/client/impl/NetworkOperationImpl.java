@@ -23,8 +23,8 @@ import io.fabric8.docker.api.model.NetworkCreate;
 import io.fabric8.docker.api.model.NetworkCreateResponse;
 import io.fabric8.docker.api.model.NetworkResource;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.dsl.network.FiltersOrAllInterface;
-import io.fabric8.docker.dsl.network.NetworkInspectOrNetworkDeleteOrConnectOrDisconnectInterface;
+import io.fabric8.docker.dsl.network.AllFiltersInterface;
+import io.fabric8.docker.dsl.network.NetworkInspectDeleteConnectDisconnectInterface;
 import io.fabric8.docker.dsl.network.NetworkInterface;
 
 import java.util.List;
@@ -32,7 +32,7 @@ import java.util.List;
 public class NetworkOperationImpl extends OperationSupport implements NetworkInterface {
 
     @Override
-    public FiltersOrAllInterface<List<NetworkResource>> list() {
+    public AllFiltersInterface<List<NetworkResource>> list() {
         return new ListNetwork(client, config);
     }
 
@@ -56,7 +56,7 @@ public class NetworkOperationImpl extends OperationSupport implements NetworkInt
     }
 
     @Override
-    public NetworkInspectOrNetworkDeleteOrConnectOrDisconnectInterface<NetworkResource, Boolean> withName(String name) {
+    public NetworkInspectDeleteConnectDisconnectInterface<NetworkResource, Boolean> withName(String name) {
         return new NetworkNamedOperationImpl(client, config, name);
     }
 }

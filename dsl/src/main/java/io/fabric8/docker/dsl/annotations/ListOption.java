@@ -17,9 +17,8 @@
 
 package io.fabric8.docker.dsl.annotations;
 
-import io.sundr.dsl.annotations.Keyword;
-import io.sundr.dsl.annotations.None;
 import io.sundr.dsl.annotations.Only;
+import io.sundr.dsl.annotations.Option;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -28,7 +27,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.SOURCE)
-@Keyword
-@Only(value = ListOption.class,orNone = true)
+@Option
+@Only(value = ListOption.class, orNone = true)
 public @interface ListOption {
 }

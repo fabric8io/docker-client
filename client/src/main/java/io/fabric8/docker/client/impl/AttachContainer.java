@@ -22,12 +22,12 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.ws.WebSocketCall;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.dsl.InputOutputErrorHandle;
-import io.fabric8.docker.dsl.container.ContainerErrorOrStreamOrGetLogsInterface;
-import io.fabric8.docker.dsl.container.ContainerInputOrContainerOutputOrContainerErrorOrStreamOrGetLogsInterface;
-import io.fabric8.docker.dsl.container.ContainerOutputOrContainerErrorOrStreamOrGetLogsInterface;
-import io.fabric8.docker.dsl.container.StreamOrGetLogsInterface;
 import io.fabric8.docker.client.utils.URLUtils;
+import io.fabric8.docker.dsl.InputOutputErrorHandle;
+import io.fabric8.docker.dsl.container.ContainerErrorStreamGetLogsInterface;
+import io.fabric8.docker.dsl.container.ContainerInputOutputErrorStreamGetLogsInterface;
+import io.fabric8.docker.dsl.container.ContainerOutputErrorStreamGetLogsInterface;
+import io.fabric8.docker.dsl.container.StreamGetLogsInterface;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -36,10 +36,10 @@ import java.io.PipedOutputStream;
 import java.util.concurrent.TimeUnit;
 
 public class AttachContainer extends BaseContainerOperation implements
-        ContainerInputOrContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle>,
-        ContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle>,
-        ContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle>,
-        StreamOrGetLogsInterface<InputOutputErrorHandle> {
+        ContainerInputOutputErrorStreamGetLogsInterface<InputOutputErrorHandle>,
+        ContainerOutputErrorStreamGetLogsInterface<InputOutputErrorHandle>,
+        ContainerErrorStreamGetLogsInterface<InputOutputErrorHandle>,
+        StreamGetLogsInterface<InputOutputErrorHandle> {
 
     private static final String STDIN = "stdin";
     private static final String STDOUT = "stdout";
@@ -99,47 +99,47 @@ public class AttachContainer extends BaseContainerOperation implements
     }
 
     @Override
-    public StreamOrGetLogsInterface<InputOutputErrorHandle> readingError(PipedInputStream errPipe) {
+    public StreamGetLogsInterface<InputOutputErrorHandle> readingError(PipedInputStream errPipe) {
         return new AttachContainer(client, config, name, in, out, err, inPipe, outPipe, errPipe);
     }
 
     @Override
-    public StreamOrGetLogsInterface<InputOutputErrorHandle> writingError(OutputStream err) {
+    public StreamGetLogsInterface<InputOutputErrorHandle> writingError(OutputStream err) {
         return new AttachContainer(client, config, name, in, out, err, inPipe, outPipe, errPipe);
     }
 
     @Override
-    public StreamOrGetLogsInterface<InputOutputErrorHandle> redirectingError() {
+    public StreamGetLogsInterface<InputOutputErrorHandle> redirectingError() {
         return readingError(new PipedInputStream());
     }
 
     @Override
-    public ContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle> readingInput(InputStream in) {
+    public ContainerOutputErrorStreamGetLogsInterface<InputOutputErrorHandle> readingInput(InputStream in) {
         return new AttachContainer(client, config, name, in, out, err, inPipe, outPipe, errPipe);
     }
 
     @Override
-    public ContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle> writingInput(PipedOutputStream inPipe) {
+    public ContainerOutputErrorStreamGetLogsInterface<InputOutputErrorHandle> writingInput(PipedOutputStream inPipe) {
         return new AttachContainer(client, config, name, in, out, err, inPipe, outPipe, errPipe);
     }
 
     @Override
-    public ContainerOutputOrContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle> redirectingInput() {
+    public ContainerOutputErrorStreamGetLogsInterface<InputOutputErrorHandle> redirectingInput() {
         return writingInput(new PipedOutputStream());
     }
 
     @Override
-    public ContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle> readingOutput(PipedInputStream outPipe) {
+    public ContainerErrorStreamGetLogsInterface<InputOutputErrorHandle> readingOutput(PipedInputStream outPipe) {
         return new AttachContainer(client, config, name, in, out, err, inPipe, outPipe, errPipe);
     }
 
     @Override
-    public ContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle> writingOutput(OutputStream out) {
+    public ContainerErrorStreamGetLogsInterface<InputOutputErrorHandle> writingOutput(OutputStream out) {
         return new AttachContainer(client, config, name, in, out, err, inPipe, outPipe, errPipe);
     }
 
     @Override
-    public ContainerErrorOrStreamOrGetLogsInterface<InputOutputErrorHandle> redirectingOutput() {
+    public ContainerErrorStreamGetLogsInterface<InputOutputErrorHandle> redirectingOutput() {
         return readingOutput(new PipedInputStream());
     }
 }

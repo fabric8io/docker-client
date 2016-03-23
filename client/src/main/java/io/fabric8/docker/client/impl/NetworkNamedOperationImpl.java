@@ -22,10 +22,11 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import io.fabric8.docker.api.model.NetworkResource;
-import io.fabric8.docker.client.*;
-import io.fabric8.docker.dsl.network.NetworkInspectOrNetworkDeleteOrConnectOrDisconnectInterface;
+import io.fabric8.docker.client.Config;
+import io.fabric8.docker.client.DockerClientException;
+import io.fabric8.docker.dsl.network.NetworkInspectDeleteConnectDisconnectInterface;
 
-public class NetworkNamedOperationImpl extends BaseNetworkOperation implements NetworkInspectOrNetworkDeleteOrConnectOrDisconnectInterface<NetworkResource, Boolean>{
+public class NetworkNamedOperationImpl extends BaseNetworkOperation implements NetworkInspectDeleteConnectDisconnectInterface<NetworkResource, Boolean> {
 
     private static final String INSPECT_OPERATION = "inspect";
     private static final String CONENCT_OPERATION = "connect";

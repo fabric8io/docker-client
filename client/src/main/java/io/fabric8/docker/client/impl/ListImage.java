@@ -21,8 +21,8 @@ import com.squareup.okhttp.OkHttpClient;
 import io.fabric8.docker.api.model.Image;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.dsl.image.AllImagesOrEndImagesOrFiltersInterface;
-import io.fabric8.docker.dsl.image.FilterOrFiltersOrAllImagesOrEndImagesInterface;
+import io.fabric8.docker.dsl.image.AllImagesEndFiltersInterface;
+import io.fabric8.docker.dsl.image.FilterFiltersAllImagesEndInterface;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ListImage extends BaseImageOperation implements
-        FilterOrFiltersOrAllImagesOrEndImagesInterface<List<Image>>,
-        AllImagesOrEndImagesOrFiltersInterface<List<Image>> {
+        FilterFiltersAllImagesEndInterface<List<Image>>,
+        AllImagesEndFiltersInterface<List<Image>> {
 
     private static final String FILTER = "filter";
     private static final String FILTERS = "filters";
@@ -79,12 +79,12 @@ public class ListImage extends BaseImageOperation implements
     }
 
     @Override
-    public AllImagesOrEndImagesOrFiltersInterface<List<Image>> filter(String filter) {
+    public AllImagesEndFiltersInterface<List<Image>> filter(String filter) {
         return new ListImage(client, config, filter, filters);
     }
 
     @Override
-    public AllImagesOrEndImagesOrFiltersInterface<List<Image>> filters(String key, String value) {
+    public AllImagesEndFiltersInterface<List<Image>> filters(String key, String value) {
         Map<String, String[]> newFilters = new HashMap<>(this.filters);
         newFilters.put(key, new String[]{value});
         return new ListImage(client, config, filter, newFilters);

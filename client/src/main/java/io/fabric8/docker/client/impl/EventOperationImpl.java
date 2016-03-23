@@ -25,9 +25,8 @@ import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.client.utils.Utils;
 import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.dsl.misc.EventsInterface;
-import io.fabric8.docker.dsl.misc.FiltersOrListInterface;
-import io.fabric8.docker.dsl.misc.ListInterface;
-import io.fabric8.docker.dsl.misc.UntilOrFiltersOrListInterface;
+import io.fabric8.docker.dsl.misc.ListFiltersInterface;
+import io.fabric8.docker.dsl.misc.UntilFiltersListInterface;
 
 import java.io.PipedOutputStream;
 import java.util.HashMap;
@@ -36,8 +35,8 @@ import java.util.concurrent.TimeUnit;
 
 public class EventOperationImpl extends OperationSupport implements
         EventsInterface,
-        FiltersOrListInterface<OutputHandle>,
-        UntilOrFiltersOrListInterface<OutputHandle> {
+        ListFiltersInterface<OutputHandle>,
+        UntilFiltersListInterface<OutputHandle> {
 
     private static final String EVENTS_RESOURCE = "events";
     private static final String SINCE = "since";
@@ -86,19 +85,19 @@ public class EventOperationImpl extends OperationSupport implements
     }
 
     @Override
-    public ListInterface<OutputHandle> filters(String key, String value) {
+    public ListFiltersInterface<OutputHandle> filters(String key, String value) {
         Map<String, String[]> newFilters = new HashMap<>(this.filters);
         newFilters.put(key, new String[]{value});
         return new EventOperationImpl(client, config, since, until, newFilters);
     }
 
     @Override
-    public UntilOrFiltersOrListInterface<OutputHandle> since(String since) {
+    public UntilFiltersListInterface<OutputHandle> since(String since) {
         return new EventOperationImpl(client, config, since, until, filters);
     }
 
     @Override
-    public FiltersOrListInterface<OutputHandle> until(String until) {
+    public ListFiltersInterface<OutputHandle> until(String until) {
         return new EventOperationImpl(client, config, since, until, filters);
     }
 }

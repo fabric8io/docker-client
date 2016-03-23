@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Original Authors
+ * Copyright (C) 2016 iginal Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,11 +33,11 @@ import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.client.utils.InputStreamPumper;
 import io.fabric8.docker.client.utils.URLUtils;
 import io.fabric8.docker.dsl.OutputHandle;
-import io.fabric8.docker.dsl.image.FilterOrFiltersOrAllImagesOrEndImagesInterface;
-import io.fabric8.docker.dsl.image.ImageInspectOrPullOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface;
+import io.fabric8.docker.dsl.image.FilterFiltersAllImagesEndInterface;
+import io.fabric8.docker.dsl.image.ImageInspectPullHistoryPushTagDeleteGetLoadInterface;
 import io.fabric8.docker.dsl.image.ImageInterface;
-import io.fabric8.docker.dsl.image.RepositoryNameOrSupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface;
-import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrAsRepoInterface;
+import io.fabric8.docker.dsl.image.RepositoryNameSupressingVerboseOutputNoCachePullingRemoveIntermediateMemorySwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingFromPathInterface;
+import io.fabric8.docker.dsl.image.UsingListenerRedirectingWritingOutputTagAsRepoInterface;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -62,22 +62,22 @@ public class ImageOperationImpl extends BaseImageOperation implements ImageInter
     }
 
     @Override
-    public RepositoryNameOrSupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle> build() {
+    public RepositoryNameSupressingVerboseOutputNoCachePullingRemoveIntermediateMemorySwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingFromPathInterface<OutputHandle> build() {
         return new BuildImage(client, config);
     }
 
     @Override
-    public FilterOrFiltersOrAllImagesOrEndImagesInterface<List<Image>> list() {
+    public FilterFiltersAllImagesEndInterface<List<Image>> list() {
         return new ListImage(client,config, null, new HashMap<String,String[]>());
     }
 
     @Override
-    public ImageInspectOrPullOrHistoryOrPushOrTagOrDeleteOrGetOrLoadInterface<ImageInspect, OutputHandle, List<ImageHistory>, Boolean, List<ImageDelete>, InputStream> withName(String name) {
+    public ImageInspectPullHistoryPushTagDeleteGetLoadInterface<ImageInspect, OutputHandle, List<ImageHistory>, Boolean, List<ImageDelete>, InputStream> withName(String name) {
         return new ImageNamedOperationImpl(client, config, name);
     }
 
     @Override
-    public UsingListenerOrRedirectingWritingOutputOrTagOrAsRepoInterface<OutputHandle> importFrom(String source) {
+    public UsingListenerRedirectingWritingOutputTagAsRepoInterface<OutputHandle> importFrom(String source) {
         return new ImportImage(client, config, source);
     }
 

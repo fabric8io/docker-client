@@ -36,12 +36,12 @@ public class ImageBuildExample {
     public static void main(String args[]) throws InterruptedException, IOException {
 
         if (args.length == 0) {
-            System.err.println("Usage: ImageBuildExample <docker host>");
-            System.err.println("Optionally: ImageBuildExample <docker host> <repo name> <path> <registry> <namespace>");
+            System.err.println("Usage: ImageBuildExample <docker url>");
+            System.err.println("Optionally: ImageBuildExample <docker url> <image name> <path to image> <registry> <namespace>");
             return;
         }
 
-        String dokcerHost = args[0];
+        String dockerUrl = args[0];
         String image = args.length >= 2 ? args[1] : DEFAULT_IMAGE;
         String imageFolder = args.length >= 3 ? args[2] : DEFAULT_IMAGE_PATH;
         String registry = args.length >= 4 ? args[3] : "172.30.101.121:5000";
@@ -50,7 +50,7 @@ public class ImageBuildExample {
         String repositoryName = registry + "/" + namespace + "/" + image;
 
         Config config = new ConfigBuilder()
-                .withDockerUrl(dokcerHost)
+                .withDockerUrl(dockerUrl)
                 .build();
 
         DockerClient client = new DefaultDockerClient(config);

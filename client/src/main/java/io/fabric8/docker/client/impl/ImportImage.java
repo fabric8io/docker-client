@@ -23,14 +23,14 @@ import com.squareup.okhttp.RequestBody;
 import io.fabric8.docker.api.model.AuthConfig;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
+import io.fabric8.docker.client.utils.RegistryUtils;
+import io.fabric8.docker.client.utils.Utils;
 import io.fabric8.docker.dsl.EventListener;
 import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.dsl.image.AsRepoInterface;
-import io.fabric8.docker.dsl.image.RedirectingWritingOutputOrTagOrAsRepoInterface;
-import io.fabric8.docker.dsl.image.TagOrAsRepoInterface;
-import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrTagOrAsRepoInterface;
-import io.fabric8.docker.client.utils.RegistryUtils;
-import io.fabric8.docker.client.utils.Utils;
+import io.fabric8.docker.dsl.image.RedirectingWritingOutputTagAsRepoInterface;
+import io.fabric8.docker.dsl.image.TagAsRepoInterface;
+import io.fabric8.docker.dsl.image.UsingListenerRedirectingWritingOutputTagAsRepoInterface;
 import org.apache.commons.codec.binary.Base64;
 
 import java.io.OutputStream;
@@ -38,10 +38,10 @@ import java.io.PipedOutputStream;
 import java.util.concurrent.TimeUnit;
 
 public class ImportImage extends BaseImageOperation implements
-        UsingListenerOrRedirectingWritingOutputOrTagOrAsRepoInterface<OutputHandle>,
-        RedirectingWritingOutputOrTagOrAsRepoInterface<OutputHandle>,
+        UsingListenerRedirectingWritingOutputTagAsRepoInterface<OutputHandle>,
+        RedirectingWritingOutputTagAsRepoInterface<OutputHandle>,
         AsRepoInterface<OutputHandle>,
-        TagOrAsRepoInterface<OutputHandle> {
+        TagAsRepoInterface<OutputHandle> {
 
     private static final String CREATE_OPERATION = "create";
     private static final String TAG = "tag";
@@ -86,17 +86,17 @@ public class ImportImage extends BaseImageOperation implements
 
 
     @Override
-    public TagOrAsRepoInterface<OutputHandle> redirectingOutput() {
+    public TagAsRepoInterface<OutputHandle> redirectingOutput() {
         return new ImportImage(client, config, source, tag, new PipedOutputStream(), listener);
     }
 
     @Override
-    public TagOrAsRepoInterface<OutputHandle> writingOutput(OutputStream out) {
+    public TagAsRepoInterface<OutputHandle> writingOutput(OutputStream out) {
         return new ImportImage(client, config, source, tag, out, listener);
     }
 
     @Override
-    public RedirectingWritingOutputOrTagOrAsRepoInterface<OutputHandle> usingListener(EventListener listener) {
+    public RedirectingWritingOutputTagAsRepoInterface<OutputHandle> usingListener(EventListener listener) {
         return new ImportImage(client, config, source, tag, out, listener);
     }
 

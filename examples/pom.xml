@@ -38,4 +38,25 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>hawt-app-maven-plugin</artifactId>
+                <version>2.2.100</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <javaMainClass>io.fabric8.docker.examples.Main</javaMainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

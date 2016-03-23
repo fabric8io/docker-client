@@ -21,12 +21,12 @@ import com.squareup.okhttp.OkHttpClient;
 import io.fabric8.docker.api.model.Container;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.dsl.container.AllOrRunningOrFiltersInterface;
-import io.fabric8.docker.dsl.container.BeforeOrSizeOrFiltersOrAllOrRunningInterface;
-import io.fabric8.docker.dsl.container.LimitOrSinceOrBeforeOrSizeOrFiltersOrAllOrRunningInterface;
-import io.fabric8.docker.dsl.container.SinceOrBeforeOrSizeOrFiltersOrAllOrRunningInterface;
-import io.fabric8.docker.dsl.container.SizeOrFiltersOrAllOrRunningInterface;
 import io.fabric8.docker.client.utils.Utils;
+import io.fabric8.docker.dsl.container.AllRunningFiltersInterface;
+import io.fabric8.docker.dsl.container.BeforeSizeFiltersAllRunningInterface;
+import io.fabric8.docker.dsl.container.LimitSinceBeforeSizeFiltersAllRunningInterface;
+import io.fabric8.docker.dsl.container.SinceBeforeSizeFiltersAllRunningInterface;
+import io.fabric8.docker.dsl.container.SizeFiltersAllRunningInterface;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -34,11 +34,11 @@ import java.util.List;
 import java.util.Map;
 
 public class ListContainer extends BaseContainerOperation implements
-        LimitOrSinceOrBeforeOrSizeOrFiltersOrAllOrRunningInterface<List<Container>>,
-        SizeOrFiltersOrAllOrRunningInterface<List<Container>>,
-        BeforeOrSizeOrFiltersOrAllOrRunningInterface<List<Container>>,
-        SinceOrBeforeOrSizeOrFiltersOrAllOrRunningInterface<List<Container>>,
-        AllOrRunningOrFiltersInterface<List<Container>> {
+        LimitSinceBeforeSizeFiltersAllRunningInterface<List<Container>>,
+        SizeFiltersAllRunningInterface<List<Container>>,
+        BeforeSizeFiltersAllRunningInterface<List<Container>>,
+        SinceBeforeSizeFiltersAllRunningInterface<List<Container>>,
+        AllRunningFiltersInterface<List<Container>> {
 
     private final String before;
     private final String since;
@@ -108,29 +108,29 @@ public class ListContainer extends BaseContainerOperation implements
 
 
     @Override
-    public SizeOrFiltersOrAllOrRunningInterface<List<Container>> before(String before) {
+    public SizeFiltersAllRunningInterface<List<Container>> before(String before) {
         return new ListContainer(client, config, before, since, size, filters, limit);
     }
 
     @Override
-    public AllOrRunningOrFiltersInterface<List<Container>> filters(String key, String value) {
+    public AllRunningFiltersInterface<List<Container>> filters(String key, String value) {
         Map<String, String[]> newFilters = new HashMap<>(this.filters);
         newFilters.put(key, new String[]{value});
         return new ListContainer(client, config, before, since, size, newFilters, limit);
     }
 
     @Override
-    public SinceOrBeforeOrSizeOrFiltersOrAllOrRunningInterface<List<Container>> limit(int limit) {
+    public SinceBeforeSizeFiltersAllRunningInterface<List<Container>> limit(int limit) {
         return new ListContainer(client, config, before, since, size, filters, limit);
     }
 
     @Override
-    public BeforeOrSizeOrFiltersOrAllOrRunningInterface<List<Container>> since(String since) {
+    public BeforeSizeFiltersAllRunningInterface<List<Container>> since(String since) {
         return new ListContainer(client, config, before, since, size, filters, limit);
     }
 
     @Override
-    public AllOrRunningOrFiltersInterface<List<Container>> size(String id) {
+    public AllRunningFiltersInterface<List<Container>> size(String id) {
         return new ListContainer(client, config, before, since, size, filters, limit);
     }
 }

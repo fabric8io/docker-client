@@ -26,22 +26,22 @@ import io.fabric8.docker.client.utils.DockerIgnorePathMatcher;
 import io.fabric8.docker.client.utils.Utils;
 import io.fabric8.docker.dsl.EventListener;
 import io.fabric8.docker.dsl.OutputHandle;
-import io.fabric8.docker.dsl.image.BuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface;
-import io.fabric8.docker.dsl.image.CpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface;
-import io.fabric8.docker.dsl.image.CpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface;
-import io.fabric8.docker.dsl.image.CpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface;
-import io.fabric8.docker.dsl.image.CpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface;
+import io.fabric8.docker.dsl.image.BuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface;
+import io.fabric8.docker.dsl.image.CpuPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface;
+import io.fabric8.docker.dsl.image.CpuQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface;
+import io.fabric8.docker.dsl.image.CpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface;
+import io.fabric8.docker.dsl.image.CpusCpuPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface;
 import io.fabric8.docker.dsl.image.FromPathInterface;
-import io.fabric8.docker.dsl.image.MemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface;
-import io.fabric8.docker.dsl.image.NoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface;
-import io.fabric8.docker.dsl.image.PullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface;
-import io.fabric8.docker.dsl.image.RedirectingWritingOutputOrFromPathInterface;
-import io.fabric8.docker.dsl.image.RemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface;
-import io.fabric8.docker.dsl.image.RepositoryNameOrSupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface;
-import io.fabric8.docker.dsl.image.SupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface;
-import io.fabric8.docker.dsl.image.SwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface;
-import io.fabric8.docker.dsl.image.UsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface;
-import io.fabric8.docker.dsl.image.UsingListenerOrRedirectingWritingOutputOrFromPathInterface;
+import io.fabric8.docker.dsl.image.MemorySwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface;
+import io.fabric8.docker.dsl.image.NoCachePullingRemoveIntermediateMemorySwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface;
+import io.fabric8.docker.dsl.image.PullingRemoveIntermediateMemorySwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface;
+import io.fabric8.docker.dsl.image.RedirectingWritingOutputFromPathInterface;
+import io.fabric8.docker.dsl.image.RemoveIntermediateMemorySwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface;
+import io.fabric8.docker.dsl.image.RepositoryNameSupressingVerboseOutputNoCachePullingRemoveIntermediateMemorySwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingFromPathInterface;
+import io.fabric8.docker.dsl.image.SupressingVerboseOutputNoCachePullingRemoveIntermediateMemorySwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingFromPathInterface;
+import io.fabric8.docker.dsl.image.SwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface;
+import io.fabric8.docker.dsl.image.UsingDockerFileListenerRedirectingWritingOutputFromPathInterface;
+import io.fabric8.docker.dsl.image.UsingListenerRedirectingWritingOutputFromPathInterface;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
@@ -67,21 +67,21 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class BuildImage extends BaseImageOperation implements
-        RepositoryNameOrSupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle>,
-        MemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle>,
-        RemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle>,
-        NoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle>,
-        UsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle>,
-        CpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle>,
-        BuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle>,
-        CpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle>,
-        CpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle>,
-        SwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle>,
-        PullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle>,
-        SupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle>,
-        CpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle>,
-        UsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle>,
-        RedirectingWritingOutputOrFromPathInterface<OutputHandle>,
+        RepositoryNameSupressingVerboseOutputNoCachePullingRemoveIntermediateMemorySwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingFromPathInterface<OutputHandle>,
+        MemorySwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle>,
+        RemoveIntermediateMemorySwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle>,
+        NoCachePullingRemoveIntermediateMemorySwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle>,
+        UsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle>,
+        CpuQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle>,
+        BuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle>,
+        CpusCpuPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle>,
+        CpuPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle>,
+        SwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle>,
+        PullingRemoveIntermediateMemorySwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle>,
+        SupressingVerboseOutputNoCachePullingRemoveIntermediateMemorySwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingFromPathInterface<OutputHandle>,
+        CpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle>,
+        UsingListenerRedirectingWritingOutputFromPathInterface<OutputHandle>,
+        RedirectingWritingOutputFromPathInterface<OutputHandle>,
         FromPathInterface<OutputHandle> {
 
     private static final String BUILD_OPERATION = "build";
@@ -274,77 +274,77 @@ public class BuildImage extends BaseImageOperation implements
 
 
     @Override
-    public MemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle> alwaysRemovingIntermediate() {
+    public MemorySwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle> alwaysRemovingIntermediate() {
         return new BuildImage(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, true, false, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, out, listener);
     }
 
     @Override
-    public RemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle> pulling() {
+    public RemoveIntermediateMemorySwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle> pulling() {
         return new BuildImage(client, config, repositoryName, dockerFile, noCache, buildArgs, true, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, out, listener);
     }
 
     @Override
-    public MemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle> removingIntermediateOnSuccess() {
+    public MemorySwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle> removingIntermediateOnSuccess() {
         return new BuildImage(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, false, true, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, out, listener);
     }
 
     @Override
-    public NoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle> supressingVerboseOutput() {
+    public NoCachePullingRemoveIntermediateMemorySwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle> supressingVerboseOutput() {
         return new BuildImage(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, true, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, out, listener);
     }
 
     @Override
-    public UsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle> withBuildArgs(String buildArgs) {
+    public UsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle> withBuildArgs(String buildArgs) {
         return new BuildImage(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, out, listener);
     }
 
     @Override
-    public CpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle> withCpuPeriod(int cpuPeriodMicros) {
+    public CpuQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle> withCpuPeriod(int cpuPeriodMicros) {
         return new BuildImage(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, out, listener);
     }
 
     @Override
-    public BuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle> withCpuQuota(int cpuQuotaMicros) {
+    public BuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle> withCpuQuota(int cpuQuotaMicros) {
         return new BuildImage(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, out, listener);
     }
 
     @Override
-    public CpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle> withCpuShares(int cpuShares) {
+    public CpusCpuPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle> withCpuShares(int cpuShares) {
         return new BuildImage(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, out, listener);
     }
 
     @Override
-    public CpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle> withCpus(int cpus) {
+    public CpuPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle> withCpus(int cpus) {
         return new BuildImage(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, out, listener);
     }
 
     @Override
-    public SwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle> withMemory(String memorySize) {
+    public SwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle> withMemory(String memorySize) {
         return new BuildImage(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, out, listener);
     }
 
     @Override
-    public PullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle> withNoCache() {
+    public PullingRemoveIntermediateMemorySwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle> withNoCache() {
         return new BuildImage(client, config, repositoryName, dockerFile, true, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, out, listener);
     }
 
     @Override
-    public SupressingVerboseOutputOrNoCacheOrPullingOrRemoveIntermediateOrMemoryOrSwapOrCpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle> withRepositoryName(String repositoryName) {
+    public SupressingVerboseOutputNoCachePullingRemoveIntermediateMemorySwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingFromPathInterface<OutputHandle> withRepositoryName(String repositoryName) {
         return new BuildImage(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, out, listener);
     }
 
     @Override
-    public CpuSharesOrCpusOrCpuPeriodOrCpuQuotaOrBuildArgsOrUsingDockerFileOrUsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle> withSwap(String swapSize) {
+    public CpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface<OutputHandle> withSwap(String swapSize) {
         return new BuildImage(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, out, listener);
     }
 
     @Override
-    public UsingListenerOrRedirectingWritingOutputOrFromPathInterface<OutputHandle> usingDockerFile(String dockerFile) {
+    public UsingListenerRedirectingWritingOutputFromPathInterface<OutputHandle> usingDockerFile(String dockerFile) {
         return new BuildImage(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, out, listener);
     }
 
     @Override
-    public RedirectingWritingOutputOrFromPathInterface<OutputHandle> usingListener(EventListener listener) {
+    public RedirectingWritingOutputFromPathInterface<OutputHandle> usingListener(EventListener listener) {
         return new BuildImage(client, config, repositoryName, dockerFile, noCache, buildArgs, pulling, alwaysRemoveIntermediate, removeIntermediateOnSuccess, supressingVerboseOutput, cpuPeriodMicros, cpuQuotaMicros, cpuShares, cpus, memorySize, swapSize, out, listener);
     }
 
