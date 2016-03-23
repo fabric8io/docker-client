@@ -37,25 +37,19 @@ public class ImageBuildExample {
 
         if (args.length == 0) {
             System.err.println("Usage: ImageBuildExample <docker url>");
-            System.err.println("Optionally: ImageBuildExample <docker url> <image name> <path to image> <registry> <namespace>");
+            System.err.println("Optionally: ImageBuildExample <docker url> <image name> <path to image>");
             return;
         }
 
         String dockerUrl = args[0];
         String image = args.length >= 2 ? args[1] : DEFAULT_IMAGE;
         String imageFolder = args.length >= 3 ? args[2] : DEFAULT_IMAGE_PATH;
-        String registry = args.length >= 4 ? args[3] : "172.30.101.121:5000";
-        String namespace = args.length >= 5 ? args[4] : "default";
-
-        String repositoryName = registry + "/" + namespace + "/" + image;
-
         Config config = new ConfigBuilder()
                 .withDockerUrl(dockerUrl)
                 .build();
 
         DockerClient client = new DefaultDockerClient(config);
         final CountDownLatch buildDone = new CountDownLatch(1);
-        final CountDownLatch pushDone = new CountDownLatch(1);
 
 
         OutputHandle handle = client.image().build()
@@ -81,31 +75,6 @@ public class ImageBuildExample {
                 .fromFolder(imageFolder);
 
         buildDone.await();
-        handle.close();
-
-        client.image().withName(image).tag().inRepository(repositoryName).force().withTagName("v1");
-
-        handle = client.image().withName(repositoryName).push().usingListener(new EventListener() {
-            @Override
-            public void onSuccess(String message) {
-                System.out.println("Success:" + message);
-                pushDone.countDown();
-            }
-
-            @Override
-            public void onError(String message) {
-                System.out.println("Error:" + message);
-                pushDone.countDown();
-            }
-
-            @Override
-            public void onEvent(String event) {
-                System.out.println(event);
-
-            }
-        }).toRegistry();
-
-        pushDone.await();
         handle.close();
         client.close();
     }
