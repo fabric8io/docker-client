@@ -37,16 +37,16 @@ public class ImageDeleteExample {
     public static void main(String args[]) throws InterruptedException, IOException {
 
         if (args.length == 0) {
-            System.err.println("Usage: ImagePushExample <docker host>");
-            System.err.println("Optionally: ImageDeleteExample <docker host> <image>");
+            System.err.println("Usage: ImagePushExample <docker url>");
+            System.err.println("Optionally: ImageDeleteExample <docker url> <image name>");
             return;
         }
 
-        String dokcerHost = args[0];
+        String dockerUrl = args[0];
         String image = args.length >= 2 ? args[1] : DEFAULT_IMAGE;
 
         Config config = new ConfigBuilder()
-                .withDockerUrl(dokcerHost)
+                .withDockerUrl(dockerUrl)
                 .build();
 
         DockerClient client = new DefaultDockerClient(config);

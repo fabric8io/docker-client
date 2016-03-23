@@ -28,7 +28,7 @@ public class Main {
         if (args.length == 0) {
             System.err.println("Usage: Main <example name> <arguments>");
             System.err.println("Example: Main ImageBuilder http://localhost:2375 myImage /some/path docker.io myns");
-            System.err.println("Optionally: ImagePushExample <docker host> <repo name> <path> <registry> <namespace>");
+            System.err.println("Optionally: ImagePushExample <docker url> <repo name> <path> <registry> <namespace>");
             return;
         }
 

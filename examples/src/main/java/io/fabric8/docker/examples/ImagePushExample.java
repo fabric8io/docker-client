@@ -35,12 +35,12 @@ public class ImagePushExample {
     public static void main(String args[]) throws InterruptedException, IOException {
 
         if (args.length == 0) {
-            System.err.println("Usage: ImagePushExample <docker host>");
-            System.err.println("Optionally: ImagePushExample <docker host> <repo name> <path> <registry> <namespace>");
+            System.err.println("Usage: ImagePushExample <docker url>");
+            System.err.println("Optionally: ImagePushExample <docker url> <registry> <registry>");
             return;
         }
 
-        String dokcerHost = args[0];
+        String dockerUrl = args[0];
         String image = args.length >= 2 ? args[1] : DEFAULT_IMAGE;
         String registry = args.length >= 3 ? args[2] : "index.docker.io";
         String namespace = args.length >= 4 ? args[3] : "default";
@@ -48,7 +48,7 @@ public class ImagePushExample {
         String repositoryName = registry + "/" + namespace + "/" + image;
 
         Config config = new ConfigBuilder()
-                .withDockerUrl(dokcerHost)
+                .withDockerUrl(dockerUrl)
                 .build();
 
         DockerClient client = new DefaultDockerClient(config);
