@@ -30,7 +30,7 @@
     <groupId>io.fabric8</groupId>
     <artifactId>docker-client-project</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.11-SNAPSHOT</version>
+    <version>1.0.12-SNAPSHOT</version>
     <name>Fabric8 :: Docker :: Project</name>
 
     <url>http://fabric8.io/</url>
