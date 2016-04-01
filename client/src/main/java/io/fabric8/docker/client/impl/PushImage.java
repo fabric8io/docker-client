@@ -81,8 +81,10 @@ public class PushImage extends BaseImageOperation implements
                     .post(body)
                     .url(sb.toString()).build();
 
+            OkHttpClient clone = client.clone();
+            clone.setReadTimeout(config.getImagePushTimeout(), TimeUnit.MILLISECONDS);
             PushImageHandle handle = new PushImageHandle(out, config.getImagePushTimeout(), TimeUnit.MILLISECONDS, listener);
-            client.newCall(request).enqueue(handle);
+            clone.newCall(request).enqueue(handle);
             return handle;
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);

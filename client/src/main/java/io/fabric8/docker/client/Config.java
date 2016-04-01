@@ -97,6 +97,7 @@ public class Config {
     private String oauthToken;
     private int imageBuildTimeout = 10 * 60 * 1000;
     private int imagePushTimeout = 10 * 60 * 1000;
+    private int imagePullTimeout = 10 * 60 * 1000;
     private int imageSearchTimeout = 3 * 60 * 1000;
     private int connectionTimeout = 10 * 1000;
     private int requestTimeout = 30 * 1000;
@@ -111,7 +112,7 @@ public class Config {
         tryServiceAccount(this);
     }
 
-    public Config(boolean trustCerts, String dockerUrl, String caCertFile, String caCertData, String clientCertFile, String clientCertData, String clientKeyFile, String clientKeyData, String clientKeyAlgo, String clientKeyPassphrase, String username, String password, String oauthToken, int imageBuildTimeout, int imagePushTimeout, int imageSearchTimeout, int connectionTimeout, int requestTimeout, String httpProxy, String httpsProxy, String[] noProxy, Map<String, AuthConfig> authConfigs) {
+    public Config(boolean trustCerts, String dockerUrl, String caCertFile, String caCertData, String clientCertFile, String clientCertData, String clientKeyFile, String clientKeyData, String clientKeyAlgo, String clientKeyPassphrase, String username, String password, String oauthToken, int imageBuildTimeout, int imagePushTimeout, int imagePullTimeout, int imageSearchTimeout, int connectionTimeout, int requestTimeout, String httpProxy, String httpsProxy, String[] noProxy, Map<String, AuthConfig> authConfigs) {
         this();
         this.trustCerts = trustCerts;
         this.dockerUrl = dockerUrl;
@@ -128,6 +129,7 @@ public class Config {
         this.oauthToken = oauthToken;
         this.imageBuildTimeout = imageBuildTimeout;
         this.imagePushTimeout = imagePushTimeout;
+        this.imagePullTimeout = imagePullTimeout;
         this.imageSearchTimeout = imageSearchTimeout;
         this.connectionTimeout = connectionTimeout;
         this.requestTimeout = requestTimeout;
@@ -327,6 +329,14 @@ public class Config {
 
     public void setImagePushTimeout(int imagePushTimeout) {
         this.imagePushTimeout = imagePushTimeout;
+    }
+
+    public int getImagePullTimeout() {
+        return imagePullTimeout;
+    }
+
+    public void setImagePullTimeout(int imagePullTimeout) {
+        this.imagePullTimeout = imagePullTimeout;
     }
 
     public int getImageSearchTimeout() {

@@ -76,8 +76,10 @@ public class EventOperationImpl extends OperationSupport implements
 
 
             Request request = new Request.Builder().get().url(sb.toString()).build();
+            OkHttpClient clone = client.clone();
+            clone.setReadTimeout(0, TimeUnit.NANOSECONDS);
             EventHandle handle = new EventHandle(new PipedOutputStream(), config.getRequestTimeout(), TimeUnit.MILLISECONDS);
-            client.newCall(request).enqueue(handle);
+            clone.newCall(request).enqueue(handle);
             return handle;
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
