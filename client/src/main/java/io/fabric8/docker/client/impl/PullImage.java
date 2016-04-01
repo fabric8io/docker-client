@@ -100,8 +100,10 @@ public class PullImage extends BaseImageOperation implements
                     .post(RequestBody.create(MEDIA_TYPE_TEXT, EMPTY))
                     .url(sb.toString()).build();
 
+            OkHttpClient clone = client.clone();
+            clone.setReadTimeout(config.getImagePullTimeout(), TimeUnit.MILLISECONDS);
             PullImageHandle handle = new PullImageHandle(out, config.getImagePushTimeout(), TimeUnit.MILLISECONDS, listener);
-            client.newCall(request).enqueue(handle);
+            clone.newCall(request).enqueue(handle);
             return handle;
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
