@@ -35,7 +35,7 @@ import java.util.List;
 public class NetworkOperationImpl extends OperationSupport implements NetworkInterface {
 
     public NetworkOperationImpl(OkHttpClient client, Config config) {
-        super(client, config, "network","network",null);
+        super(client, config, "networks",null,null);
     }
 
     @Override

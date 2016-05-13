@@ -76,7 +76,7 @@ public class NetworkNamedOperationImpl extends BaseNetworkOperation implements N
     @Override
     public NetworkResource inspect() {
         try {
-            return handleGet(getOperationUrl(INSPECT_OPERATION), NetworkResource.class);
+            return handleGet(getOperationUrl(EMPTY), NetworkResource.class);
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
         }

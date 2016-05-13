@@ -136,12 +136,12 @@ public class OperationSupport {
 
   protected <T> T handleDelete(URL requestUrl, Class<T> type) throws ExecutionException, InterruptedException, DockerClientException, IOException {
     Request.Builder requestBuilder = new Request.Builder().delete(null).url(requestUrl);
-   return handleResponse(requestBuilder, type, 200);
+   return handleResponse(requestBuilder, type, 200, 204);
   }
 
   protected <T> T handleDelete(URL requestUrl, JavaType type) throws ExecutionException, InterruptedException, DockerClientException, IOException {
     Request.Builder requestBuilder = new Request.Builder().delete(null).url(requestUrl);
-    return handleResponse(requestBuilder, type, 200);
+    return handleResponse(requestBuilder, type, 200,204);
   }
 
   public <T> void handleCreate(T resource) throws ExecutionException, InterruptedException, DockerClientException, IOException {
@@ -152,6 +152,7 @@ public class OperationSupport {
 
   public <T, I> T handleCreate(I resource, Class<T> outputType, String ...dirs) throws ExecutionException, InterruptedException, DockerClientException, IOException {
     RequestBody body = RequestBody.create(MEDIA_TYPE_JSON, JSON_MAPPER.writeValueAsString(resource));
+    System.out.println(URLUtils.join(getResourceUrl().toString(), URLUtils.join(dirs)));
     Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), URLUtils.join(dirs)));
     return handleResponse(requestBuilder, outputType, 200, 201, 204);
   }
