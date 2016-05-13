@@ -67,7 +67,7 @@ public final class SSLUtils {
         try {
             Request request = new Request.Builder().get().url(sslConfig.getDockerUrl()).build();
             response = client.newCall(request).execute();
-            return response.isSuccessful();
+            return response.handshake() != null;
         } catch (Throwable t) {
             LOG.warn("SSL handshake failed. Falling back to insecure connection.");
         } finally {
