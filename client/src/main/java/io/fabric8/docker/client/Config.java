@@ -153,8 +153,27 @@ public class Config {
             this.dockerUrl = getSystemPropertyOrEnvVar(DOCKER_HOST, "unix:///var/run/docker.sock");
         }
 
+        String dockerCertPath = getSystemPropertyOrEnvVar(DOCKER_CERT_PATH_SYSTEM_PROPERTY, new File(getHomeDir(), ".docker").getAbsolutePath());
+
         if (isNullOrEmpty(caCertData) && isNullOrEmpty(caCertFile)) {
-            this.caCertFile = getSystemPropertyOrEnvVar(DOCKER_CERT_PATH_SYSTEM_PROPERTY);
+            File caCertCandidate = new File(dockerCertPath, "ca.pem");
+            if (caCertCandidate.exists()) {
+                this.caCertFile = caCertCandidate.getAbsolutePath();
+            }
+        }
+
+        if (isNullOrEmpty(clientCertData) && isNullOrEmpty(clientCertFile)) {
+            File clientCertCandidate = new File(dockerCertPath, "cert.pem");
+            if (clientCertCandidate.exists()) {
+                this.clientCertFile = clientCertCandidate.getAbsolutePath();
+            }
+        }
+
+        if (isNullOrEmpty(clientKeyData) && isNullOrEmpty(clientKeyFile)) {
+            File clientKeyCandidate = new File(dockerCertPath, "key.pem");
+            if (clientKeyCandidate.exists()) {
+                this.clientKeyFile = clientKeyCandidate.getAbsolutePath();
+            }
         }
 
         this.trustCerts |= !getSystemPropertyOrEnvVar(DOCKER_TLS_VERIFY_PROPERTY, true);
@@ -166,6 +185,29 @@ public class Config {
                 this.dockerUrl = URLUtils.withProtocol(this.dockerUrl, HTTP_PROTOCOL_PREFIX);
             }
         }
+    }
+
+    private String getHomeDir() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (osName.startsWith("win")) {
+            String userProfile = System.getenv("USERPROFILE");
+            if (!userProfile.isEmpty()) {
+                File f = new File(userProfile);
+                if (f.exists() && f.isDirectory()) {
+                    return userProfile;
+                }
+            }
+        }
+        String home = System.getenv("HOME");
+        if (!home.isEmpty()) {
+            File f = new File(home);
+            if (f.exists() && f.isDirectory()) {
+                return home;
+            }
+        }
+
+        //Fall back to user.home should never really get here
+        return System.getProperty("user.home", ".");
     }
 
     private boolean tryDockerConfig(Config config) {
