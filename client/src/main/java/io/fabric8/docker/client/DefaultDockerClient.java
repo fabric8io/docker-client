@@ -40,7 +40,6 @@ import java.net.URL;
 public class DefaultDockerClient implements DockerClient {
 
     private final OkHttpClient client;
-    private final URL masterUrl;
     private final Config configuration;
 
     public DefaultDockerClient() {
@@ -49,12 +48,7 @@ public class DefaultDockerClient implements DockerClient {
 
     public DefaultDockerClient(Config configuration) {
         this.configuration = configuration;
-        try {
-            this.client = HttpClientUtils.createHttpClient(configuration);
-            this.masterUrl = new URL(configuration.getDockerUrl());
-        } catch (MalformedURLException e) {
-            throw DockerClientException.launderThrowable(e);
-        }
+        this.client = HttpClientUtils.createHttpClient(configuration);
     }
 
     @Override

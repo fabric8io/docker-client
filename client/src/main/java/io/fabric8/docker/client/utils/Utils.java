@@ -59,7 +59,7 @@ public class Utils {
 
   public static Boolean getSystemPropertyOrEnvVar(String systemPropertyName, Boolean defaultValue) {
     String result = getSystemPropertyOrEnvVar(systemPropertyName, defaultValue.toString());
-    return Boolean.parseBoolean(result);
+    return result.equals("1") || Boolean.parseBoolean(result);
   }
 
   public static int getSystemPropertyOrEnvVar(String systemPropertyName, int defaultValue) {

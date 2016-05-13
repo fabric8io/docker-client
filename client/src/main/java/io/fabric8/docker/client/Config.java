@@ -41,6 +41,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static io.fabric8.docker.client.utils.Utils.getSystemPropertyOrEnvVar;
+import static io.fabric8.docker.client.utils.Utils.isNullOrEmpty;
+
 @Buildable(editableEnabled = true, validationEnabled = true, generateBuilderPackage = false, builderPackage = "io.fabric8.docker.api.builder", inline = @Inline(type = Doneable.class, prefix = "Doneable", value = "done"))
 public class Config {
 
@@ -72,6 +75,9 @@ public class Config {
     public static final String DOCKER_BUILD_TIMEOUT_SYSTEM_PROPERTY = "docker.build.timeout";
     public static final String DOCKER_PUSH_TIMEOUT_SYSTEM_PROPERTY = "docker.push.timeout";
     public static final String DOCKER_SEARCH_TIMEOUT_SYSTEM_PROPERTY = "docker.search.timeout";
+
+    public static final String DOCKER_CERT_PATH_SYSTEM_PROPERTY = "docker.cert.path";
+    public static final String DOCKER_TLS_VERIFY_PROPERTY = "docker.tls.verify";
 
     public static final String DOCKER_HTTP_PROXY = "http.proxy";
     public static final String DOCKER_HTTPS_PROXY = "https.proxy";
@@ -143,9 +149,15 @@ public class Config {
             this.authConfigs = new HashMap<>();
         }
 
-        if (dockerUrl == null) {
-            this.dockerUrl = Utils.getSystemPropertyOrEnvVar(DOCKER_HOST);
+        if (isNullOrEmpty(dockerUrl)) {
+            this.dockerUrl = getSystemPropertyOrEnvVar(DOCKER_HOST, "unix:///var/run/docker.sock");
         }
+
+        if (isNullOrEmpty(caCertData) && isNullOrEmpty(caCertFile)) {
+            this.caCertFile = getSystemPropertyOrEnvVar(DOCKER_CERT_PATH_SYSTEM_PROPERTY);
+        }
+
+        this.trustCerts |= !getSystemPropertyOrEnvVar(DOCKER_TLS_VERIFY_PROPERTY, true);
 
         if (this.dockerUrl != null && this.dockerUrl.startsWith(TCP_PROTOCOL_PREFIX)) {
             if (SSLUtils.isHttpsAvailable(this)) {
