@@ -31,6 +31,6 @@ public class ExecOperationImpl extends OperationSupport implements ExecInterface
 
     @Override
     public ContainerExecResource<Boolean, ContainerInspect> withName(String name) {
-        return null;
+        return new ExecNamedOperationImpl(this.client, this.config, name);
     }
 }

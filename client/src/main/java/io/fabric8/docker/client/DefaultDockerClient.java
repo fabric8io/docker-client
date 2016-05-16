@@ -24,11 +24,15 @@ import io.fabric8.docker.api.model.InlineAuth;
 import io.fabric8.docker.api.model.Version;
 import io.fabric8.docker.client.impl.ContainerOperationImpl;
 import io.fabric8.docker.client.impl.EventOperationImpl;
+import io.fabric8.docker.client.impl.ExecOperationImpl;
 import io.fabric8.docker.client.impl.ImageOperationImpl;
+import io.fabric8.docker.client.impl.NetworkOperationImpl;
 import io.fabric8.docker.client.impl.OperationSupport;
+import io.fabric8.docker.client.impl.VolumeOperationImpl;
 import io.fabric8.docker.client.utils.HttpClientUtils;
 import io.fabric8.docker.dsl.container.ContainerInterface;
 import io.fabric8.docker.dsl.container.ExecInterface;
+import io.fabric8.docker.dsl.container.annotations.ExecOption;
 import io.fabric8.docker.dsl.image.ImageInterface;
 import io.fabric8.docker.dsl.misc.EventsInterface;
 import io.fabric8.docker.dsl.network.NetworkInterface;
@@ -103,7 +107,7 @@ public class DefaultDockerClient implements DockerClient {
 
     @Override
     public ExecInterface exec() {
-        return null;
+        return new ExecOperationImpl(client,configuration, "exec");//TODO: check this
     }
 
     @Override
@@ -113,12 +117,12 @@ public class DefaultDockerClient implements DockerClient {
 
     @Override
     public NetworkInterface network() {
-        return null;
+        return new NetworkOperationImpl(client, configuration);
     }
 
     @Override
     public VolumeInterface volume() {
-        return null;
+        return new VolumeOperationImpl(client, configuration);
     }
 
     @Override

@@ -18,10 +18,13 @@
 package io.fabric8.docker.client.impl;
 
 
+import com.squareup.okhttp.OkHttpClient;
+
 import io.fabric8.docker.api.model.InlineNetworkCreate;
 import io.fabric8.docker.api.model.NetworkCreate;
 import io.fabric8.docker.api.model.NetworkCreateResponse;
 import io.fabric8.docker.api.model.NetworkResource;
+import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.dsl.network.AllFiltersInterface;
 import io.fabric8.docker.dsl.network.NetworkInspectDeleteConnectDisconnectInterface;
@@ -30,6 +33,10 @@ import io.fabric8.docker.dsl.network.NetworkInterface;
 import java.util.List;
 
 public class NetworkOperationImpl extends OperationSupport implements NetworkInterface {
+
+    public NetworkOperationImpl(OkHttpClient client, Config config) {
+        super(client, config, "networks",null,null);
+    }
 
     @Override
     public AllFiltersInterface<List<NetworkResource>> list() {

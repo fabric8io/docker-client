@@ -44,7 +44,7 @@ public class GetLogsOfContainer extends BaseContainerOperation implements
         FollowDisplayInterface<OutputHandle>,
         TailingLinesFollowDisplayInterface<OutputHandle> {
 
-    private static final String LOG = "log";
+    private static final String LOG = "logs";
     private static final String FOLLOW = "follow";
     private static final String STDOUT = "stdout";
     private static final String STDERR = "stderr";
@@ -78,7 +78,7 @@ public class GetLogsOfContainer extends BaseContainerOperation implements
     private OutputHandle doGetLogHandle(Boolean follow) {
         try {
             StringBuilder sb = new StringBuilder();
-            sb.append(URLUtils.join(getOperationUrl().toString(), "ws"));
+            sb.append(URLUtils.join(getOperationUrl().toString()));
             sb.append("?").append(FOLLOW).append("=").append(follow);
             sb.append("&").append(STDOUT).append("=").append(out != null || outPipe != null);
             sb.append("&").append(STDERR).append("=").append(err != null || errPipe != null);
@@ -87,10 +87,9 @@ public class GetLogsOfContainer extends BaseContainerOperation implements
             if (isNotNullOrEmpty(since)) {
                 sb.append("&").append(SINCE).append("=").append(since);
             }
+
             if (lines > 0) {
                 sb.append("&").append(TAIL).append("=").append(lines);
-            } else {
-                sb.append("&").append(SINCE).append("=").append(ALL);
             }
 
             if(timestampsEnabled) {

@@ -40,7 +40,7 @@ public class ListNetwork extends BaseNetworkOperation implements AllFiltersInter
     }
 
     public ListNetwork(OkHttpClient client, Config config, Map<String, String[]> filters) {
-        super(client, config, null, JSON_OPERATION);
+        super(client, config, null, EMPTY);
         this.filters = filters;
     }
 
@@ -48,7 +48,6 @@ public class ListNetwork extends BaseNetworkOperation implements AllFiltersInter
         try {
             StringBuilder sb = new StringBuilder();
             sb.append(getOperationUrl().toString());
-            sb.append(Q).append(ALL).append(EQUALS).append(all);
 
             if (filters != null && !filters.isEmpty()) {
                 sb.append(A).append(FILTERS).append(EQUALS)

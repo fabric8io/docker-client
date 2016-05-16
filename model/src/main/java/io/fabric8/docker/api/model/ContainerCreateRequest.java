@@ -17,6 +17,7 @@
 
 package io.fabric8.docker.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -81,6 +82,9 @@ import java.util.Map;
 public class ContainerCreateRequest implements Serializable {
 
     private static final long serialVersionUID = 5464523908891656210L;
+
+    @JsonIgnore
+    private String name;
 
     @JsonProperty("Hostname")
     private String hostname;
@@ -186,7 +190,8 @@ public class ContainerCreateRequest implements Serializable {
     @JsonProperty("HostConfig")
     private HostConfig hostConfig;
 
-    public ContainerCreateRequest(String cpuset, String hostname, String domainname, String user, String memory, String memorySwap, String memoryReservation, String kernelMemory, String cpuShares, String cpuPeriod, String cpuQuota, String cpusetCpus, String cpusetMems, Integer blkioWeight, Integer memorySwappiness, Boolean oomKillDisable, Boolean attachStdin, Boolean attachStdout, Boolean attachStderr, Boolean tty, Boolean openStdin, Boolean stdinOnce, Map<String, String> env, List<String> cmd, String entrypoint, String image, Map<String, String> labels, Map<String, String> mounts, String workingDir, Boolean networkDisabled, String macAddress, Map<Integer, Protocol> exposedPorts, String stopSignal, HostConfig hostConfig) {
+    public ContainerCreateRequest(String name, String cpuset, String hostname, String domainname, String user, String memory, String memorySwap, String memoryReservation, String kernelMemory, String cpuShares, String cpuPeriod, String cpuQuota, String cpusetCpus, String cpusetMems, Integer blkioWeight, Integer memorySwappiness, Boolean oomKillDisable, Boolean attachStdin, Boolean attachStdout, Boolean attachStderr, Boolean tty, Boolean openStdin, Boolean stdinOnce, Map<String, String> env, List<String> cmd, String entrypoint, String image, Map<String, String> labels, Map<String, String> mounts, String workingDir, Boolean networkDisabled, String macAddress, Map<Integer, Protocol> exposedPorts, String stopSignal, HostConfig hostConfig) {
+        this.name = name;
         this.cpuset = cpuset;
         this.hostname = hostname;
         this.domainname = domainname;
@@ -222,6 +227,8 @@ public class ContainerCreateRequest implements Serializable {
         this.stopSignal = stopSignal;
         this.hostConfig = hostConfig;
     }
+
+    public String getName() { return name; }
 
     public String getCpuset() {
         return cpuset;

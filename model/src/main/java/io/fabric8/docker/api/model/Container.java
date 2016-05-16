@@ -17,9 +17,7 @@
 
 package io.fabric8.docker.api.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.sundr.builder.annotations.Buildable;
 import io.sundr.builder.annotations.Inline;
@@ -51,6 +49,7 @@ import java.util.Map;
 @ToString
 @EqualsAndHashCode
 @Buildable(editableEnabled = true, validationEnabled = true, generateBuilderPackage = true, builderPackage = "io.fabric8.docker.api.builder", inline = @Inline(type = Doneable.class, prefix = "Doneable", value = "done"))
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Container implements Serializable {
 
     @JsonProperty("Id")

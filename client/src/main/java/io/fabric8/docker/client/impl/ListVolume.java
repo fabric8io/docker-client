@@ -19,6 +19,7 @@ package io.fabric8.docker.client.impl;
 
 import com.squareup.okhttp.OkHttpClient;
 import io.fabric8.docker.api.model.Volume;
+import io.fabric8.docker.api.model.VolumesListResponse;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.dsl.volume.AllFiltersInterface;
@@ -41,22 +42,21 @@ public class ListVolume extends BaseVolumeOperation implements
     }
 
     public ListVolume(OkHttpClient client, Config config, Map<String, String[]> filters) {
-        super(client, config, null, JSON_OPERATION);
+        super(client, config, null, EMPTY);
         this.filters = filters;
     }
 
-    private List<Volume> doList(Boolean all) {
+    private List<Volume> doList() {
         try {
             StringBuilder sb = new StringBuilder();
             sb.append(getOperationUrl().toString());
-            sb.append(Q).append(ALL).append(EQUALS).append(all);
 
             if (filters != null && !filters.isEmpty()) {
-                sb.append(A).append(FILTERS).append(EQUALS)
+                sb.append(Q).append(FILTERS).append(EQUALS)
                         .append(JSON_MAPPER.writeValueAsString(filters));
             }
             URL requestUrl = new URL(sb.toString());
-            return handleList(requestUrl, Volume.class);
+            return handleGet(requestUrl,VolumesListResponse.class).getVolumes();
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
         }
@@ -71,6 +71,6 @@ public class ListVolume extends BaseVolumeOperation implements
 
     @Override
     public List<Volume> all() {
-        return doList(true);
+        return doList();
     }
 }

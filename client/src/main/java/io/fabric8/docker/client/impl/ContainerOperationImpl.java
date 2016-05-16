@@ -63,7 +63,11 @@ public class ContainerOperationImpl extends BaseContainerOperation implements Co
     @Override
     public ContainerCreateResponse create(ContainerCreateRequest container) {
         try {
-            return handleCreate(container, ContainerCreateResponse.class, CREATE_OPERATION);
+            String dir = "";
+            if(container.getName() != null && !container.getName().isEmpty()) {
+                dir = "?name=" + container.getName();
+            }
+            return handleCreate(container, ContainerCreateResponse.class, CREATE_OPERATION, dir);
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
         }
