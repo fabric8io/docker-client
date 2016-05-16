@@ -28,7 +28,6 @@ import io.fabric8.docker.api.model.SearchResultBuilder;
 import io.fabric8.docker.client.DockerClient;
 import org.junit.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
