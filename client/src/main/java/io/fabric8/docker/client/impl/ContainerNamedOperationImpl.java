@@ -276,7 +276,7 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
                     .post(body)
                     .url(sb.toString());
 
-            return handleResponse(builder, ContainerExecCreateResponse.class, 200);
+            return handleResponse(builder, ContainerExecCreateResponse.class, 200, 201);
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
         }
