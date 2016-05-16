@@ -1,15 +1,14 @@
 package io.fabric8.docker.client.test;
 
+import io.fabric8.docker.api.model.*;
+import io.fabric8.docker.api.model.VolumeBuilder;
+import io.fabric8.docker.api.model.VolumeCreateRequestBuilder;
+import io.fabric8.docker.api.model.VolumesListResponseBuilder;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.fabric8.docker.api.model.Volume;
-import io.fabric8.docker.api.model.VolumeBuilder;
-import io.fabric8.docker.api.model.VolumeCreateRequest;
-import io.fabric8.docker.api.model.VolumeCreateRequestBuilder;
-import io.fabric8.docker.api.model.VolumesListResponse;
 import io.fabric8.docker.client.DockerClient;
 
 import static org.junit.Assert.assertEquals;
@@ -24,7 +23,10 @@ public class VolumeOperationTest extends DockerMockServerTestBase {
         expected.add(new VolumeBuilder().withName("vol2").build());
         expected.add(new VolumeBuilder().withName("vol3").build());
 
-        expect().withPath("/volumes").andReturn(200,expected).always();
+        VolumesListResponse response = new VolumesListResponseBuilder().withVolumes(expected).build();
+
+
+        expect().withPath("/volumes").andReturn(200,response).always();
 
         DockerClient client = getClient();
 
@@ -59,7 +61,7 @@ public class VolumeOperationTest extends DockerMockServerTestBase {
     @Test
     public void testVolumeRemove() {
 
-        expect().delete().withPath("/volumes/vol1").andReturn(204,null);
+        expect().delete().withPath("/volumes/vol1").andReturn(204,"").once();
 
         DockerClient client = getClient();
         assertTrue(client.volume().withName("vol1").delete());

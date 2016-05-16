@@ -71,7 +71,7 @@ public class NetworkOperationTest extends DockerMockServerTestBase  {
 
 
         expect().delete().withPath("/networks/net1")
-                .andReturn(204, null).once();
+                .andReturn(204, "").once();
 
         DockerClient client = getClient();
 
