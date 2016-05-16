@@ -29,7 +29,7 @@ public class ExecOperationTest extends DockerMockServerTestBase {
 
     @Test
     public void testExecStart() {
-        expect().post().withPath("/exec/11111/start").andReturn(200,"");
+        expect().post().withPath("/exec/11111/start").andReturn(200,"").once();
 
         DockerClient client = getClient();
         assertTrue(client.exec().withName("11111").start());
@@ -39,7 +39,7 @@ public class ExecOperationTest extends DockerMockServerTestBase {
     public void testExecInspect() {
         ContainerInspect expected = new ContainerInspectBuilder().withId("11111").withName("con1").build();
 
-        expect().withPath("/exec/11111/json").andReturn(200,expected);
+        expect().withPath("/exec/11111/json").andReturn(200,expected).always();
 
         DockerClient client = getClient();
         ContainerInspect actual = client.exec().withName("11111").inspect();
