@@ -44,7 +44,7 @@ public class VolumeNamedOperationImpl extends BaseVolumeOperation implements Vol
     @Override
     public Volume inspect() {
         try {
-            return handleGet(getOperationUrl(INSPECT_OPERATION), Volume.class);
+            return handleGet(getOperationUrl(EMPTY), Volume.class);
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
         }

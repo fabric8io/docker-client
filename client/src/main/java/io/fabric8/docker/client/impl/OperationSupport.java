@@ -152,7 +152,6 @@ public class OperationSupport {
 
   public <T, I> T handleCreate(I resource, Class<T> outputType, String ...dirs) throws ExecutionException, InterruptedException, DockerClientException, IOException {
     RequestBody body = RequestBody.create(MEDIA_TYPE_JSON, JSON_MAPPER.writeValueAsString(resource));
-    System.out.println(URLUtils.join(getResourceUrl().toString(), URLUtils.join(dirs)));
     Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), URLUtils.join(dirs)));
     return handleResponse(requestBuilder, outputType, 200, 201, 204);
   }
