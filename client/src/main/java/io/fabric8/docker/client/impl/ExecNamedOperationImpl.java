@@ -21,6 +21,8 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import io.fabric8.docker.api.model.ContainerInspect;
+import io.fabric8.docker.api.model.ExecStartCheck;
+import io.fabric8.docker.api.model.ExecStartCheckBuilder;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.client.utils.URLUtils;
@@ -58,30 +60,33 @@ public class ExecNamedOperationImpl extends OperationSupport implements Containe
 
     @Override
     public Boolean start() {
+        ExecStartCheck config = new ExecStartCheckBuilder().withDetach(true).withTty(false).build();
+        return start(config);
+    }
+
+    public Boolean start(ExecStartCheck config) {
         try {
             StringBuilder sb = new StringBuilder();
             sb.append(getResourceUrl());
-            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, EMPTY);
+            RequestBody body = RequestBody.create(MEDIA_TYPE_JSON, JSON_MAPPER.writeValueAsString(config));
             Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), START_OPERATION));
-            handleResponse(requestBuilder, 204);
+            handleResponse(requestBuilder, 200);
             return true;
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
         }
     }
 
+    //size not used in inspec exec API
     @Override
-    public ContainerInspect inspect() {
-        return inspect(false);
+    public ContainerInspect inspect(Boolean withSize) {
+        return inspect();
     }
 
     @Override
-    public ContainerInspect inspect(Boolean withSize) {
-        StringBuilder sb = new StringBuilder();
+    public ContainerInspect inspect() {
         try {
-            sb.append(getResourceUrl());
-            sb.append(Q).append(SIZE).append(EQUALS).append(withSize);
-            return handleGet(new URL(sb.toString()), ContainerInspect.class);
+            return handleGet(new URL(URLUtils.join(getResourceUrl().toString(),JSON_OPERATION)), ContainerInspect.class);
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
         }
