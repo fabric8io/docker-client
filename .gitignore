@@ -76,4 +76,4 @@ crashlytics-build.properties
 
 # Old logs
 *.log.*
-*.lo
+*.log
