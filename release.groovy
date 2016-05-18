@@ -1,4 +1,17 @@
 #!/usr/bin/groovy
+
+def updateDependencies(source){
+
+  def properties = []
+  properties << ['<mockwebserver.version>','io/fabric8/mockwebserver']
+
+  updatePropertyVersion{
+    updates = properties
+    repository = source
+    project = 'fabric8io/docker-client'
+  }
+}
+
 def stage(){
   return stageProject{
     project = 'fabric8io/docker-client'

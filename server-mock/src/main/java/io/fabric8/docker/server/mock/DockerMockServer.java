@@ -17,62 +17,43 @@
 
 package io.fabric8.docker.server.mock;
 
-import com.google.mockwebserver.MockWebServer;
+import com.squareup.okhttp.mockwebserver.MockWebServer;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.ConfigBuilder;
 import io.fabric8.docker.client.DefaultDockerClient;
 import io.fabric8.docker.client.DockerClient;
+import io.fabric8.mockwebserver.DefaultMockServer;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 
-public class DockerMockServer {
+public class DockerMockServer extends DefaultMockServer {
 
-  private final boolean useHttps;
-
-  private MockWebServer server = new MockWebServer();
-  private Map<ServerRequest, Queue<ServerResponse>> responses = new HashMap<>();
-
-  public DockerMockServer() {
-    this(true);
-  }
-
-  public DockerMockServer(boolean useHttps) {
-    this.useHttps = useHttps;
-  }
-
-  public void init()  {
-    try {
-      if (useHttps) {
-        server.useHttps(MockSSLContextFactory.create().getSocketFactory(), false);
-      }
-      server.setDispatcher(new MockDispatcher(responses));
-      server.play();
-    } catch (Throwable t) {
-      throw new RuntimeException(t);
+    public DockerMockServer() {
+        this(true);
     }
-  }
 
+    public DockerMockServer(boolean useHttps) {
+        super(useHttps);
+    }
 
-  public DockerClient createClient() {
-    Config config = new ConfigBuilder()
-            .withDockerUrl(server.getUrl("/").toString())
-            .withTrustCerts(true)
-            .build();
-    return new DefaultDockerClient(config);
-  }
+    public DockerMockServer(MockWebServer server, Map<io.fabric8.mockwebserver.ServerRequest, Queue<io.fabric8.mockwebserver.ServerResponse>> responses, boolean useHttps) {
+        super(server, responses, useHttps);
+    }
 
-  public void destroy() throws IOException {
-    server.shutdown();
-  }
+    public void init() {
+        start();
+    }
 
-  public MockWebServer getServer() {
-    return server;
-  }
+    public void destroy() {
+        shutdown();
+    }
 
-  public MockServerExpectation expect() {
-    return new MockServerExpectationImpl(responses);
-  }
+    public DockerClient createClient() {
+        Config config = new ConfigBuilder()
+                .withDockerUrl(url("/"))
+                .withTrustCerts(true)
+                .build();
+        return new DefaultDockerClient(config);
+    }
 }
