@@ -18,6 +18,7 @@
 package io.fabric8.docker.server.mock;
 
 import io.fabric8.docker.client.DockerClient;
+import io.fabric8.mockwebserver.dsl.MockServerExpectation;
 import org.junit.After;
 import org.junit.Before;
 

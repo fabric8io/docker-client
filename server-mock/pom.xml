@@ -39,7 +39,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.google.mockwebserver</groupId>
+            <groupId>io.fabric8</groupId>
             <artifactId>mockwebserver</artifactId>
         </dependency>
 
