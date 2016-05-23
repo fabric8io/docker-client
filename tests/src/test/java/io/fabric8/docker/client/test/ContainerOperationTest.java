@@ -19,8 +19,10 @@ package io.fabric8.docker.client.test;
 
 import io.fabric8.docker.api.model.Container;
 import io.fabric8.docker.api.model.ContainerBuilder;
+import io.fabric8.docker.api.model.ContainerCreateResponseBuilder;
 import io.fabric8.docker.api.model.ContainerInspect;
 import io.fabric8.docker.api.model.ContainerInspectBuilder;
+import io.fabric8.docker.api.model.Protocol;
 import io.fabric8.docker.client.DockerClient;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -122,7 +124,6 @@ public class ContainerOperationTest extends DockerMockServerTestBase {
         assertTrue(client.container().withName("mycnt").kill());
     }
 
-
     @Test
     @Ignore
     public void testRenameContainer() {
@@ -132,5 +133,22 @@ public class ContainerOperationTest extends DockerMockServerTestBase {
 
         DockerClient client = getClient();
         //TODO: Implement this
+    }
+
+
+    @Test
+    public void testIssue48() {
+        //Ensure we don't have regressions on serialization
+        expect().post().withPath("/containers/create/")
+                .andReturn(201, new ContainerCreateResponseBuilder()
+                        .withId("someid")
+                        .build())
+                .once();
+
+        DockerClient client = getClient();
+        client.container().createNew()
+                .withImage("my/image")
+                .withCmd("/bin/dostuff")
+                .addToExposedPorts(8080, Protocol.TCP).done();
     }
 }

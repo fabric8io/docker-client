@@ -33,7 +33,7 @@ public class ExposedPortSerializer  extends JsonSerializer<Map<Integer, Protocol
     public void serialize(Map<Integer, Protocol> value, JsonGenerator gen, SerializerProvider serializers) throws IOException, JsonProcessingException {
         Map<String, Object> values = new HashMap<>();
         for (Map.Entry<Integer, Protocol> entry:value.entrySet()) {
-            values.put(entry.getKey() + "/" + entry.getValue().name().toLowerCase(), new Object());
+            values.put(entry.getKey() + "/" + entry.getValue().name().toLowerCase(), new HashMap<>());
         }
         gen.writeObject(values);
     }
