@@ -17,15 +17,13 @@
 
 package io.fabric8.docker.client.unix;
 
-import org.newsclub.net.unix.AFUNIXSocket;
-import org.newsclub.net.unix.AFUNIXSocketAddress;
+import jnr.unixsocket.UnixSocketAddress;
 
 import javax.net.SocketFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class UnixSocketFactory extends SocketFactory {
 
@@ -37,16 +35,16 @@ public class UnixSocketFactory extends SocketFactory {
 
     @Override
     public Socket createSocket() throws IOException {
-        return new UnixSocket(AFUNIXSocket.newInstance(),new AFUNIXSocketAddress(new File(path)));
+        return new JnrUnixSocket(new UnixSocketAddress(new File(path)));
     }
 
     @Override
-    public Socket createSocket(String s, int i) throws IOException, UnknownHostException {
+    public Socket createSocket(String s, int i) throws IOException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Socket createSocket(String s, int i, InetAddress inetAddress, int i1) throws IOException, UnknownHostException {
+    public Socket createSocket(String s, int i, InetAddress inetAddress, int i1) throws IOException {
         throw new UnsupportedOperationException();
     }
 

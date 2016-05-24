@@ -88,6 +88,8 @@ public class Config {
     public static String HTTP_PROTOCOL_PREFIX = "http://";
     public static String HTTPS_PROTOCOL_PREFIX = "https://";
 
+    public static final String USE_JNR_UNIX_SOCKET = "docker.useJnrUnixSocket";
+
     private boolean trustCerts;
     private String dockerUrl;
     private String caCertFile;
