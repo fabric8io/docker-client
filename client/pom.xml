@@ -41,9 +41,6 @@
             io.fabric8.docker.client*,
             jnr.*,
             com.kenai*,
-            lib.*,
-            org.scijava.nativelib*,
-            org.newsclub.net*,
             com.squareup*,
             okio*
         </osgi.export>
@@ -92,17 +89,6 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
-        </dependency>
-
-        <!-- junixsocket-common -->
-        <dependency>
-            <groupId>com.kohlschutter.junixsocket</groupId>
-            <artifactId>junixsocket-common</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.kohlschutter.junixsocket</groupId>
-            <artifactId>junixsocket-native-common</artifactId>
         </dependency>
 
         <!-- jnr-unixsocket -->

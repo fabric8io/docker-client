@@ -41,7 +41,6 @@ public class Issue51Test {
     public void createClient() {
         Config config = new ConfigBuilder()
                 .withDockerUrl(url)
-                .withUseJnrUnixSocket(false)
                 .build();
 
         client = new DefaultDockerClient(config);

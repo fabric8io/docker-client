@@ -17,32 +17,25 @@
 
 package io.fabric8.docker.client.unix;
 
+import jnr.unixsocket.UnixSocketAddress;
+
+import javax.net.SocketFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 
-import javax.net.SocketFactory;
-
-import jnr.unixsocket.UnixSocketAddress;
-import org.newsclub.net.unix.AFUNIXSocket;
-import org.newsclub.net.unix.AFUNIXSocketAddress;
-
 public class UnixSocketFactory extends SocketFactory {
 
     private final String path;
-    private final boolean useJnrUnixSocket;
 
-    public UnixSocketFactory(String path, boolean useJnrUnixSocket) {
+    public UnixSocketFactory(String path) {
         this.path = path;
-        this.useJnrUnixSocket = useJnrUnixSocket;
     }
 
     @Override
     public Socket createSocket() throws IOException {
-        return useJnrUnixSocket ?
-            new JnrUnixSocket(new UnixSocketAddress(new File(path))) :
-            new AfUnixSocket(AFUNIXSocket.newInstance(), new AFUNIXSocketAddress(new File(path)));
+        return new JnrUnixSocket(new UnixSocketAddress(new File(path)));
     }
 
     @Override

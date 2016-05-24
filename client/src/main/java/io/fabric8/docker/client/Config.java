@@ -113,7 +113,6 @@ public class Config {
     private String httpsProxy;
     private String[] noProxy;
     private Map<String, AuthConfig> authConfigs = new HashMap<>();
-    private boolean useJnrUnixSocket = true;
 
     public Config() {
         tryDockerConfig(this);
@@ -121,7 +120,7 @@ public class Config {
         tryServiceAccount(this);
     }
 
-    public Config(boolean trustCerts, String dockerUrl, String caCertFile, String caCertData, String clientCertFile, String clientCertData, String clientKeyFile, String clientKeyData, String clientKeyAlgo, String clientKeyPassphrase, String username, String password, String oauthToken, int imageBuildTimeout, int imagePushTimeout, int imagePullTimeout, int imageSearchTimeout, int connectionTimeout, int requestTimeout, String httpProxy, String httpsProxy, String[] noProxy, Map<String, AuthConfig> authConfigs, boolean useJnrUnixSocket) {
+    public Config(boolean trustCerts, String dockerUrl, String caCertFile, String caCertData, String clientCertFile, String clientCertData, String clientKeyFile, String clientKeyData, String clientKeyAlgo, String clientKeyPassphrase, String username, String password, String oauthToken, int imageBuildTimeout, int imagePushTimeout, int imagePullTimeout, int imageSearchTimeout, int connectionTimeout, int requestTimeout, String httpProxy, String httpsProxy, String[] noProxy, Map<String, AuthConfig> authConfigs) {
         this();
         this.trustCerts = trustCerts;
         this.dockerUrl = dockerUrl;
@@ -145,7 +144,6 @@ public class Config {
         this.httpProxy = httpProxy;
         this.httpsProxy = httpsProxy;
         this.noProxy = noProxy;
-        this.useJnrUnixSocket = useJnrUnixSocket;
 
         if (authConfigs != null && !authConfigs.isEmpty()) {
             this.authConfigs = authConfigs;
@@ -451,13 +449,5 @@ public class Config {
 
     public void setAuthConfigs(Map<String, AuthConfig> authConfigs) {
         this.authConfigs = authConfigs;
-    }
-
-    public boolean getUseJnrUnixSocket() {
-        return this.useJnrUnixSocket;
-    }
-
-    public void setUseJnrUnixSocket(boolean useJnrUnixSocket) {
-        this.useJnrUnixSocket = useJnrUnixSocket;
     }
 }

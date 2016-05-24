@@ -79,7 +79,7 @@ public class HttpClientUtils {
 
             if (usesUnixSocket(config)) {
                 URL masterURL = new URL(config.getDockerUrl().replaceFirst(UNIX_SCHEME, FILE_SCHEME));
-                httpClient.setSocketFactory(new UnixSocketFactory(masterURL.getFile(), config.getUseJnrUnixSocket()));
+                httpClient.setSocketFactory(new UnixSocketFactory(masterURL.getFile()));
                 config.setDockerUrl(UNIX_FAKE_URL);
             }
 
