@@ -27,6 +27,7 @@
         <bundle dependency='true'>mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/${jackson.version}</bundle>
         <bundle dependency="true">mvn:commons-codec/commons-codec/${commons-codec.version}</bundle>
         <bundle dependency="true">mvn:org.apache.commons/commons-compress/${commons-compress.version}</bundle>
+        <bundle dependency="true">mvn:org.ow2.asm/asm/${asm.version}</bundle>
 
         <bundle>mvn:io.fabric8/docker-model/${project.version}</bundle>
         <bundle>mvn:io.fabric8/docker-dsl/${project.model.version}</bundle>

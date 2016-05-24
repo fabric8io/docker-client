@@ -39,6 +39,8 @@
         </osgi.import>
         <osgi.export>
             io.fabric8.docker.client*,
+            jnr.*,
+            com.kenai*,
             lib.*,
             org.scijava.nativelib*,
             org.newsclub.net*,
