@@ -17,28 +17,22 @@
 
 package io.fabric8.docker.client.unix;
 
-import org.newsclub.net.unix.AFUNIXSocket;
-import org.newsclub.net.unix.AFUNIXSocketAddress;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.SocketAddress;
-import java.net.SocketException;
-import java.net.SocketImplFactory;
+import java.io.*;
+import java.net.*;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-public class UnixSocket extends Socket {
+import org.newsclub.net.unix.AFUNIXSocket;
+import org.newsclub.net.unix.AFUNIXSocketAddress;
+
+public class AfUnixSocket extends Socket {
 
     private AFUNIXSocket delegate;
     private AFUNIXSocketAddress fixed;
     private final Queue<Runnable> optionsToSet = new ArrayDeque<Runnable>();
 
-    public UnixSocket(AFUNIXSocket delegate, AFUNIXSocketAddress fixed) {
+    public AfUnixSocket(AFUNIXSocket delegate, AFUNIXSocketAddress fixed) {
         this.fixed = fixed;
         this.delegate = delegate;
     }
@@ -107,12 +101,27 @@ public class UnixSocket extends Socket {
 
     @Override
     public InputStream getInputStream() throws IOException {
-        return delegate.getInputStream();
+        return new FilterInputStream(delegate.getInputStream()) {
+            @Override
+            public void close() throws IOException {
+                shutdownInput();
+            }
+        };
     }
 
     @Override
     public OutputStream getOutputStream() throws IOException {
-        return delegate.getOutputStream();
+        return new FilterOutputStream(delegate.getOutputStream()) {
+            @Override
+            public void write(byte[] b, int off, int len) throws IOException {
+                out.write(b, off, len);
+            }
+
+            @Override
+            public void close() throws IOException {
+                shutdownOutput();
+            }
+        };
     }
 
     @Override

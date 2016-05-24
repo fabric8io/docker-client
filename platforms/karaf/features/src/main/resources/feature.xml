@@ -14,7 +14,7 @@
   ~ limitations under the License.
   ~
   -->
-<features name="kuberntes-features-${project.version}">
+<features name="docker-features-${project.version}">
 
     <feature name="docker-client" description="Fabric8 Kubernetes Client" version="${project.version}">
         <bundle dependency='true'>mvn:javax.validation/validation-api/${validation.api.version}</bundle>
