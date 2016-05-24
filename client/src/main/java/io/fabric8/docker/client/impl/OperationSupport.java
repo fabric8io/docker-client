@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -172,8 +173,23 @@ public class OperationSupport {
   }
 
   protected <T> List<T> handleList(URL resourceUrl, Class<T> type) throws ExecutionException, InterruptedException, DockerClientException, IOException {
-    Request.Builder requestBuilder = new Request.Builder().get().url(resourceUrl);
-    return handleResponse(requestBuilder, JSON_MAPPER.getTypeFactory().constructCollectionType(List.class, type));
+    Request request = new Request.Builder().get().url(resourceUrl).build();
+    Response response = null;
+    try {
+      response = client.newCall(request).execute();
+    } catch (Exception e) {
+      throw requestException(request, e);
+    }
+
+    if (response.code() == 404) {
+      return Collections.emptyList();
+    }
+    assertResponseCodes(request, response, new int[]{200, 404});
+    if (type != null) {
+      return JSON_MAPPER.readValue(response.body().byteStream(), JSON_MAPPER.getTypeFactory().constructCollectionType(List.class, type));
+    } else {
+      return null;
+    }
   }
 
   protected <T> T handleResponse(Request.Builder requestBuilder, Class<T> type, int... successStatusCodes) throws ExecutionException, InterruptedException, DockerClientException, IOException {
