@@ -114,7 +114,9 @@ public class ListContainer extends BaseContainerOperation implements
 
     @Override
     public AllRunningFiltersInterface<List<Container>> filters(String key, String value) {
-        Map<String, String[]> newFilters = new HashMap<>(this.filters);
+        Map<String, String[]> newFilters = this.filters != null
+                ? new HashMap<>(this.filters)
+                : new HashMap<String, String[]>();
         newFilters.put(key, new String[]{value});
         return new ListContainer(client, config, before, since, size, newFilters, limit);
     }
