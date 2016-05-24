@@ -2,7 +2,7 @@ Docker Client
 ---
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.fabric8/docker-client/badge.svg?style=flat-square)](https://maven-badges.herokuapp.com/maven-central/io.fabric8/docker-client/)
-[![Javadocs](http://www.javadoc.io/badge/io.fabric8/docker-client?color=blue)](http://www.javadoc.io/doc/io.fabric8/docker-client)
+[![Javadocs](http://www.javadoc.io/badge/io.fabric8/docker-client.svg?color=blue)](http://www.javadoc.io/doc/io.fabric8/docker-client)
 
 
 Docker client for the Docker API version 1.21.
