@@ -64,7 +64,10 @@ public class ListVolume extends BaseVolumeOperation implements
 
     @Override
     public AllFiltersInterface<List<Volume>> filters(String key, String value) {
-        Map<String, String[]> newFilters = new HashMap<>(this.filters);
+        Map<String, String[]> newFilters = this.filters != null
+                ? new HashMap<>(this.filters)
+                : new HashMap<String, String[]>();
+
         newFilters.put(key, new String[]{value});
         return new ListVolume(client, config, newFilters);
     }
