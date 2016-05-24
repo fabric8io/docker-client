@@ -85,6 +85,7 @@
         <jsonschema2pojo.version>0.4.16</jsonschema2pojo.version>
         <junit.version>4.12</junit.version>
         <junixsocket.version>2.0.4</junixsocket.version>
+        <jnr-unixsocket.version>0.12</jnr-unixsocket.version>
         <lombok.version>1.16.4</lombok.version>
         <log4j.version>2.3</log4j.version>
         <mockwebserver.version>0.0.2</mockwebserver.version>
@@ -194,6 +195,11 @@
                 <version>${junixsocket.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.github.jnr</groupId>
+                <artifactId>jnr-unixsocket</artifactId>
+                <version>${jnr-unixsocket.version}</version>
+            </dependency>
             <!-- Testing and Mocking -->
             <dependency>
                 <groupId>io.fabric8</groupId>
