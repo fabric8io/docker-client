@@ -80,17 +80,6 @@ public class ContainerInputOutputErrorHandle extends ContainerOutputHandle imple
     }
 
 
-    @Override
-    public void onOpen(WebSocket webSocket, Response response) {
-        try {
-            if (in instanceof PipedInputStream && input != null) {
-                input.connect((PipedInputStream) in);
-            }
-        } catch (IOException e) {
-            queue.add(e);
-        }
-        super.onOpen(webSocket, response);
-    }
 
     public OutputStream getInput() {
         return input;
