@@ -79,9 +79,9 @@ public class GetLogsOfContainer extends BaseContainerOperation implements
         try {
             StringBuilder sb = new StringBuilder();
             sb.append(URLUtils.join(getOperationUrl().toString()));
-            sb.append("?").append(FOLLOW).append("=").append(follow);
-            sb.append("&").append(STDOUT).append("=").append(out != null || outPipe != null);
-            sb.append("&").append(STDERR).append("=").append(err != null || errPipe != null);
+            sb.append("?").append(FOLLOW).append("=").append(follow ? TRUE : FLASE);
+            sb.append("&").append(STDOUT).append("=").append(out != null || outPipe != null ? TRUE : FLASE);
+            sb.append("&").append(STDERR).append("=").append(err != null || errPipe != null ? TRUE : FLASE);
 
 
             if (isNotNullOrEmpty(since)) {
@@ -90,18 +90,20 @@ public class GetLogsOfContainer extends BaseContainerOperation implements
 
             if (lines > 0) {
                 sb.append("&").append(TAIL).append("=").append(lines);
+            } else {
+                sb.append("&").append(TAIL).append("=").append(ALL);
             }
 
             if(timestampsEnabled) {
-                sb.append("&").append(TIMESTAMPS).append("=").append(true);
+                sb.append("&").append(TIMESTAMPS).append("=").append(TRUE);
             }
 
-            Request.Builder r = new Request.Builder().url(sb.toString()).get();
+            Request request = new Request.Builder().url(sb.toString()).get().build();
             OkHttpClient clone = client.clone();
             clone.setReadTimeout(0, TimeUnit.MILLISECONDS);
-            WebSocketCall webSocketCall = WebSocketCall.create(clone, r.build());
-            final ContainerOutputHandle handle = new ContainerOutputHandle(out, err, outPipe, errPipe);
-            webSocketCall.enqueue(handle);
+
+            final ContainerLogHandle handle = new ContainerLogHandle(out, err, outPipe, errPipe);
+            clone.newCall(request).enqueue(handle);
             handle.waitUntilReady();
             return handle;
         } catch (Throwable t) {

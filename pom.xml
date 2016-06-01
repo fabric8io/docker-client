@@ -82,6 +82,7 @@
         <easymock.version>3.2</easymock.version>
         <felix.scr.annotations.version>1.9.8</felix.scr.annotations.version>
         <jackson.version>2.6.3</jackson.version>
+        <jsonassert.version>1.2.3</jsonassert.version>
         <jsonschema2pojo.version>0.4.16</jsonschema2pojo.version>
         <junit.version>4.12</junit.version>
         <jnr-unixsocket.version>0.12</jnr-unixsocket.version>
@@ -97,7 +98,7 @@
 
 
         <scr.annotations.version>1.9.2</scr.annotations.version>
-        <sundrio.version>0.2.1</sundrio.version>
+        <sundrio.version>0.2.7</sundrio.version>
 
         <maven.bundle.plugin.version>3.0.1</maven.bundle.plugin.version>
         <maven.buildhelper.plugin.version>1.9.1</maven.buildhelper.plugin.version>
@@ -192,6 +193,13 @@
                 <groupId>io.fabric8</groupId>
                 <artifactId>mockwebserver</artifactId>
                 <version>${mockwebserver.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.skyscreamer</groupId>
+                <artifactId>jsonassert</artifactId>
+                <version>${jsonassert.version}</version>
+                <scope>test</scope>
             </dependency>
 
             <dependency>

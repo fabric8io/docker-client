@@ -49,6 +49,9 @@ public class OperationSupport {
   public static final String EQUALS = "=";
   public static final String EMPTY = "";
 
+  public static final String TRUE = "1";
+  public static final String FLASE = "0";
+
   protected static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
   protected static final String JSON_OPERATION = "json";
