@@ -43,6 +43,7 @@ type Schema struct {
 	IndexInfo                   registry.IndexInfo
 	SearchResult                registry.SearchResult
 	SearchResults               registry.SearchResults
+	KeyValuePair                runconfig.KeyValuePair
 	LogConfig                   runconfig.LogConfig
 	HostConfig                  runconfig.HostConfig
 	StrSlice                    stringutils.StrSlice

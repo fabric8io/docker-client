@@ -2255,6 +2255,25 @@
         "java.io.Serializable"
       ]
     },
+    "docker_runconfig_KeyValuePair": {
+      "type": "object",
+      "description": "",
+      "properties": {
+        "Key": {
+          "type": "string",
+          "description": ""
+        },
+        "Value": {
+          "type": "string",
+          "description": ""
+        }
+      },
+      "additionalProperties": true,
+      "javaType": "io.fabric8.docker.api.model.KeyValuePair",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
+    },
     "docker_runconfig_LogConfig": {
       "type": "object",
       "description": "",
@@ -2455,6 +2474,10 @@
     "Info": {
       "$ref": "#/definitions/docker_Info",
       "javaType": "io.fabric8.docker.api.model.Info"
+    },
+    "KeyValuePair": {
+      "$ref": "#/definitions/docker_runconfig_KeyValuePair",
+      "javaType": "io.fabric8.docker.api.model.KeyValuePair"
     },
     "LogConfig": {
       "$ref": "#/definitions/docker_runconfig_LogConfig",
