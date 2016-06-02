@@ -16,6 +16,11 @@
  */
 package io.fabric8.docker.client.utils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 public class Utils {
 
   public static boolean isNullOrEmpty(String str) {
@@ -90,4 +95,17 @@ public class Utils {
     return buf.toString();
   }
 
+
+  public static String readFully(InputStream is) throws IOException {
+    StringBuilder sb = new StringBuilder();
+    try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+      String read;
+
+      while ((read = br.readLine()) != null) {
+        sb.append(read);
+      }
+
+    }
+    return sb.toString();
+  }
 }

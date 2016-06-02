@@ -16,6 +16,7 @@
  */
 package io.fabric8.docker.client.impl;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.MediaType;
@@ -52,7 +53,8 @@ public class OperationSupport {
   public static final String TRUE = "1";
   public static final String FLASE = "0";
 
-  protected static final ObjectMapper JSON_MAPPER = new ObjectMapper();
+  protected static final ObjectMapper JSON_MAPPER = new ObjectMapper()
+          .enable(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS);
 
   protected static final String JSON_OPERATION = "json";
   protected static final String SEARCH_OPERATION = "search";

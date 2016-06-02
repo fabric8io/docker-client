@@ -128,6 +128,7 @@
                             <target>
                                 <echo>removing the duplicate generated class</echo>
                                 <delete file="${basedir}/target/generated-sources/io/fabric8/docker/api/model/NetIPNet.java" verbose="true" />
+                                <delete file="${basedir}/target/generated-sources/io/fabric8/docker/api/model/LxcConfig.java" verbose="true" />
                             </target>
                         </configuration>
                         <goals>

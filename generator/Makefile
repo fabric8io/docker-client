@@ -23,13 +23,12 @@ prepare:
 		sh hack/make/.go-autogen && \
 		popd && \
 		godep restore
-	mkdir -p $(GOPATH)/src/github.com/fabric8io/docker-client/generator && cp -rf pkg $(GOPATH)/src/github.com/fabric8io/docker-client/generator/
 
 
 build:
 	CGO_ENABLED=0 godep go build -a ./cmd/generate/generate.go
 	./generate > ../model/src/main/resources/schema/docker-schema.json
-	cd ../model/ && mvn clean install
+#	cd ../model/ && mvn clean install
 
 update-deps:
 	echo $(tag) > .docker-version && \
