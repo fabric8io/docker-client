@@ -47,7 +47,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static io.fabric8.docker.client.utils.Utils.isNotNullOrEmpty;
-import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
 
 public class HttpClientUtils {
 
