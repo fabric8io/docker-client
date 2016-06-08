@@ -24,7 +24,7 @@ import io.fabric8.docker.dsl.annotations.CreateOption;
 import io.fabric8.docker.dsl.annotations.InspectOption;
 import io.fabric8.docker.dsl.annotations.ListOption;
 import io.fabric8.docker.dsl.annotations.NamedOption;
-import io.fabric8.docker.dsl.image.annotations.RemoveOption;
+import io.fabric8.docker.dsl.annotations.RemoveOption;
 import io.sundr.dsl.annotations.All;
 import io.sundr.dsl.annotations.Dsl;
 import io.sundr.dsl.annotations.EntryPoint;

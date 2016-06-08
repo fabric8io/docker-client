@@ -33,7 +33,7 @@ import io.fabric8.docker.dsl.image.annotations.PullOption;
 import io.fabric8.docker.dsl.image.annotations.BuildOption;
 import io.fabric8.docker.dsl.image.annotations.HistoryOption;
 import io.fabric8.docker.dsl.image.annotations.PushOption;
-import io.fabric8.docker.dsl.image.annotations.RemoveOption;
+import io.fabric8.docker.dsl.annotations.RemoveOption;
 import io.fabric8.docker.dsl.image.annotations.TagOption;
 import io.sundr.dsl.annotations.All;
 import io.sundr.dsl.annotations.Any;
@@ -41,7 +41,6 @@ import io.sundr.dsl.annotations.Dsl;
 import io.sundr.dsl.annotations.EntryPoint;
 import io.sundr.dsl.annotations.InterfaceName;
 import io.sundr.dsl.annotations.Multiple;
-import io.sundr.dsl.annotations.None;
 import io.sundr.dsl.annotations.Only;
 import io.sundr.dsl.annotations.Terminal;
 
@@ -214,7 +213,7 @@ public interface ImageDSL {
     @All({RemoveOption.class})
     List<ImageDelete> withNoPrune();
 
-   @Only(methods = "image")
+    @Only(methods = "image")
     @Terminal
     @InterfaceName("ImageSearchInterface")
     List<SearchResult> search(String term);

@@ -15,9 +15,8 @@
  *
  */
 
-package io.fabric8.docker.dsl.image.annotations;
+package io.fabric8.docker.dsl.annotations;
 
-import io.fabric8.docker.dsl.annotations.NamedOption;
 import io.sundr.dsl.annotations.All;
 import io.sundr.dsl.annotations.Only;
 import io.sundr.dsl.annotations.Option;
