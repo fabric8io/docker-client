@@ -21,7 +21,8 @@ import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import io.fabric8.docker.client.DockerClientException;
-import io.fabric8.docker.client.utils.InputStreamPumper;
+import io.fabric8.docker.client.DockerStreamData;
+import io.fabric8.docker.client.utils.DockerStreamPumper;
 import io.fabric8.docker.dsl.OutputErrorHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,15 +32,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.nio.ByteBuffer;
-import java.util.Arrays;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static java.lang.System.arraycopy;
 
 public class ContainerLogHandle implements OutputErrorHandle, Callback {
 
@@ -54,7 +51,7 @@ public class ContainerLogHandle implements OutputErrorHandle, Callback {
 
     protected final ArrayBlockingQueue<Object> queue = new ArrayBlockingQueue<>(1);
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private InputStreamPumper pumper;
+    private DockerStreamPumper pumper;
 
     public ContainerLogHandle(OutputStream out, OutputStream err, PipedInputStream outputPipe, PipedInputStream errorPipe) {
         this.out = outputStreamOrPipe(out, outputPipe);
@@ -107,37 +104,25 @@ public class ContainerLogHandle implements OutputErrorHandle, Callback {
             output.connect((PipedOutputStream) out);
         }
 
-        pumper = new InputStreamPumper(response.body().byteStream(), new io.fabric8.docker.api.model.Callback<byte[], Void>() {
-
-            private Header header = null;
+        pumper = new DockerStreamPumper(response.body().source(), new io.fabric8.docker.api.model.Callback<DockerStreamData, Void>() {
 
             @Override
-            public Void call(byte[] input) {
+            public Void call(DockerStreamData input) {
                 try {
-                    int offset = 0;
-                    if (header == null || header.remaining() <= 0) {
-                        byte[] headerBytes = Arrays.copyOf(input, 8);
-                        header = new Header(headerBytes);
-                        offset = 8;
-                    }
-
-                    input = Arrays.copyOfRange(input, offset, header.remaining() + offset);
-                    header.read(input.length);
-
-                    switch (header.stream()) {
-                        case 0:
-                        case 1:
+                    switch (input.streamType()) {
+                        case STDIN:
+                        case STDOUT:
                             if (out != null) {
-                                out.write(input);
+                                out.write(input.payload());
                             }
                             break;
-                        case 2:
+                        case STDERR:
                             if (err != null) {
-                                err.write(input);
+                                err.write(input.payload());
                             }
                             break;
                         default:
-                            throw new IOException("Unknown stream ID " + header.stream());
+                            throw new IOException("Unknown stream ID " + input.streamType());
                     }
                 } catch (IOException e) {
                     throw DockerClientException.launderThrowable(e);
@@ -166,37 +151,6 @@ public class ContainerLogHandle implements OutputErrorHandle, Callback {
             return new PipedOutputStream();
         } else {
             return null;
-        }
-    }
-
-    private class Header {
-        private byte stream;
-
-        private int remaining;
-
-        Header(byte[] header) {
-            if (header.length < 8) {
-                throw new IllegalArgumentException("Header bytes is too short");
-            }
-
-            stream = header[0];
-
-            byte[] sizeBytes = new byte[4];
-            arraycopy(header, 4, sizeBytes, 0, 4);
-
-            remaining = ByteBuffer.wrap(sizeBytes).getInt();
-        }
-
-        public int remaining() {
-            return remaining;
-        }
-
-        public void read(int n) {
-            remaining -= n;
-        }
-
-        public byte stream() {
-            return stream;
         }
     }
 }
