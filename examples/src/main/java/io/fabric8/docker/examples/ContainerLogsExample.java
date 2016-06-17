@@ -17,7 +17,6 @@
 
 package io.fabric8.docker.examples;
 
-import io.fabric8.docker.api.model.ContainerInspect;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.ConfigBuilder;
 import io.fabric8.docker.client.DefaultDockerClient;
@@ -48,7 +47,7 @@ public class ContainerLogsExample {
 
         OutputHandle handle = client.container().withName(containerId).logs().writingOutput(System.out).writingError(System.err).display();
 
-        Thread.sleep(1000);
+        Thread.sleep(10000);
         handle.close();
         client.close();
     }
