@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 
 public class URLUtils {
 
-    private static final Pattern URL_PATTERN = Pattern.compile("(?<protocol>^\\w+:[//]?)[^ ]+");
+    private static final Pattern URL_PATTERN = Pattern.compile("(?<protocol>^\\w+:((/){2})?)[^ ]+");
 
     private URLUtils() {}
 
