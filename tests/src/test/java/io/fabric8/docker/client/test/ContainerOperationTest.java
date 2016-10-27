@@ -139,7 +139,7 @@ public class ContainerOperationTest extends DockerMockServerTestBase {
     @Test
     public void testIssue48() {
         //Ensure we don't have regressions on serialization
-        expect().post().withPath("/containers/create/")
+        expect().post().withPath("/containers/create")
                 .andReturn(201, new ContainerCreateResponseBuilder()
                         .withId("someid")
                         .build())

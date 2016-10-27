@@ -37,6 +37,7 @@ public class URLUtils {
 
         // And normalize it...
         return joined
+                .replaceAll("/$", "")
                 .replaceAll("/+", "/")
                 .replaceAll("/\\?", "?")
                 .replaceAll("/#", "#")
