@@ -40,9 +40,7 @@
         <osgi.export>
             io.fabric8.docker.client*,
             jnr.*,
-            com.kenai*,
-            com.squareup*,
-            okio*
+            com.kenai*
         </osgi.export>
     </properties>
 
@@ -61,17 +59,17 @@
             <artifactId>commons-codec</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.squareup.okhttp</groupId>
+            <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
             <version>${okhttp.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.squareup.okhttp</groupId>
+            <groupId>com.squareup.okhttp3</groupId>
             <artifactId>logging-interceptor</artifactId>
             <version>${okhttp.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.squareup.okhttp</groupId>
+            <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp-ws</artifactId>
             <version>${okhttp.version}</version>
         </dependency>

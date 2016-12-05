@@ -17,9 +17,9 @@
 
 package io.fabric8.docker.client.impl;
 
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import io.fabric8.docker.api.model.AuthConfig;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
@@ -81,8 +81,7 @@ public class PushImage extends BaseImageOperation implements
                     .post(body)
                     .url(sb.toString()).build();
 
-            OkHttpClient clone = client.clone();
-            clone.setReadTimeout(config.getImagePushTimeout(), TimeUnit.MILLISECONDS);
+            OkHttpClient clone = client.newBuilder().readTimeout(0, TimeUnit.MILLISECONDS).build();
             PushImageHandle handle = new PushImageHandle(out, config.getImagePushTimeout(), TimeUnit.MILLISECONDS, listener);
             clone.newCall(request).enqueue(handle);
             return handle;

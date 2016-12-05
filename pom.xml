@@ -90,8 +90,10 @@
         <log4j.version>2.3</log4j.version>
         <mockwebserver.version>0.0.2</mockwebserver.version>
 
-        <okhttp.version>2.7.2</okhttp.version>
-        <okio.version>1.6.0</okio.version>
+        <okhttp.version>3.4.1</okhttp.version>
+        <okhttp.bundle.version>3.4.1_1</okhttp.bundle.version>
+        <okio.version>1.9.0</okio.version>
+        <okio.bundle.version>1.9.0_1</okio.bundle.version>
         <slf4j.version>1.7.12</slf4j.version>
         <snakeyaml.version>1.16</snakeyaml.version>
         <validation-api.version>1.1.0.Final</validation-api.version>

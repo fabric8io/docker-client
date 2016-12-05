@@ -17,8 +17,9 @@
 
 package io.fabric8.docker.client.impl;
 
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+import okhttp3.Call;
+import okhttp3.Request;
+import okhttp3.Response;
 import io.fabric8.docker.api.model.Callback;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.dsl.EventListener;
@@ -43,7 +44,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class EventHandle implements OutputHandle, com.squareup.okhttp.Callback {
+public class EventHandle implements OutputHandle, okhttp3.Callback {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventHandle.class);
 
@@ -97,15 +98,16 @@ public class EventHandle implements OutputHandle, com.squareup.okhttp.Callback {
         return false;
     }
 
+
     @Override
-    public void onFailure(Request request, IOException e) {
+    public void onFailure(Call call, IOException e) {
         error.set(e);
         listener.onError(e.getMessage());
         latch.countDown();
     }
 
     @Override
-    public void onResponse(Response r) throws IOException {
+    public void onResponse(Call call, Response r) throws IOException {
         response.set(r);
         if (r.code() == 200) {
             InputStreamPumper pumper = new InputStreamPumper(r.body().byteStream(), new Callback<byte[], Void>() {
@@ -132,7 +134,7 @@ public class EventHandle implements OutputHandle, com.squareup.okhttp.Callback {
             closeables.add(pumper);
             executorService.submit(pumper);
         } else {
-            onFailure(r.request(), new IOException(r.body().string()));
+            onFailure(call, new IOException(r.body().string()));
         }
         latch.countDown();
     }

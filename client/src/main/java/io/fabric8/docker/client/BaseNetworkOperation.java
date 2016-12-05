@@ -17,7 +17,7 @@
 
 package io.fabric8.docker.client;
 
-import com.squareup.okhttp.OkHttpClient;
+import okhttp3.OkHttpClient;
 import io.fabric8.docker.client.impl.OperationSupport;
 
 public class BaseNetworkOperation extends OperationSupport {

@@ -17,9 +17,9 @@
 
 package io.fabric8.docker.client.impl;
 
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.ws.WebSocketCall;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.ws.WebSocketCall;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.client.utils.URLUtils;
@@ -76,8 +76,7 @@ public class AttachContainer extends BaseContainerOperation implements
             sb.append("&").append(STDOUT).append("=").append(out != null || outPipe != null);
             sb.append("&").append(STDERR).append("=").append(err != null || errPipe != null);
             Request.Builder r = new Request.Builder().url(sb.toString()).get();
-            OkHttpClient clone = client.clone();
-            clone.setReadTimeout(0, TimeUnit.MILLISECONDS);
+            OkHttpClient clone = client.newBuilder().readTimeout(0, TimeUnit.MILLISECONDS).build();
             WebSocketCall webSocketCall = WebSocketCall.create(clone, r.build());
             final ContainerInputOutputErrorHandle handle = new ContainerInputOutputErrorHandle(in, out, err, inPipe, outPipe, errPipe);
             webSocketCall.enqueue(handle);
