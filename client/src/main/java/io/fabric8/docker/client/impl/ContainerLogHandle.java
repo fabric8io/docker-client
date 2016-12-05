@@ -17,9 +17,10 @@
 
 package io.fabric8.docker.client.impl;
 
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.client.DockerStreamData;
 import io.fabric8.docker.client.utils.DockerStreamPumper;
@@ -88,9 +89,8 @@ public class ContainerLogHandle implements OutputErrorHandle, Callback {
             throw DockerClientException.launderThrowable(t);
         }
     }
-
     @Override
-    public void onFailure(Request request, IOException ioe) {
+    public void onFailure(Call call, IOException ioe) {
         LOGGER.error("Request Failure.", ioe);
         //We only need to queue startup failures.
         if (!started.get()) {
@@ -99,7 +99,7 @@ public class ContainerLogHandle implements OutputErrorHandle, Callback {
     }
 
     @Override
-    public void onResponse(Response response) throws IOException {
+    public void onResponse(Call call, Response response) throws IOException {
         if (out instanceof PipedOutputStream && output != null) {
             output.connect((PipedOutputStream) out);
         }
@@ -153,4 +153,6 @@ public class ContainerLogHandle implements OutputErrorHandle, Callback {
             return null;
         }
     }
+
+
 }

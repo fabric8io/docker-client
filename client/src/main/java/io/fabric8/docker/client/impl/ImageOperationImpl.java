@@ -18,10 +18,10 @@
 package io.fabric8.docker.client.impl;
 
 import com.fasterxml.jackson.databind.JavaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import io.fabric8.docker.api.model.Callback;
 import io.fabric8.docker.api.model.Image;
 import io.fabric8.docker.api.model.ImageDelete;
@@ -91,8 +91,7 @@ public class ImageOperationImpl extends BaseImageOperation implements ImageInter
             Request request = new Request.Builder().get().url(new URL(sb.toString())).get().build();
             Response response = null;
             try {
-                OkHttpClient clone = client.clone();
-                clone.setReadTimeout(config.getImageSearchTimeout(), TimeUnit.MILLISECONDS);
+                OkHttpClient clone = client.newBuilder().readTimeout(0, TimeUnit.MILLISECONDS).build();
                 response = clone.newCall(request).execute();
                 assertResponseCodes(request, response, 200);
             } catch (Exception e) {

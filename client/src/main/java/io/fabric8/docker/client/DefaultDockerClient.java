@@ -17,7 +17,7 @@
 
 package io.fabric8.docker.client;
 
-import com.squareup.okhttp.OkHttpClient;
+import okhttp3.OkHttpClient;
 import io.fabric8.docker.api.model.AuthConfig;
 import io.fabric8.docker.api.model.Info;
 import io.fabric8.docker.api.model.InlineAuth;
@@ -127,9 +127,15 @@ public class DefaultDockerClient implements DockerClient {
 
     @Override
     public void close() {
-        if (client.getConnectionPool() != null) {
-            client.getConnectionPool().evictAll();
+        if (client.connectionPool() != null) {
+            client.connectionPool().evictAll();
         }
-        client.getDispatcher().getExecutorService().shutdown();
+        if (client.dispatcher() != null &&
+                client.dispatcher().executorService() != null &&
+                !client.dispatcher().executorService().isShutdown()
+                ) {
+            client
+                    .dispatcher().executorService().shutdown();
+        }
     }
 }

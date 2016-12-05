@@ -16,16 +16,17 @@
  */
 package io.fabric8.docker.client.utils;
 
-import com.squareup.okhttp.Authenticator;
-import com.squareup.okhttp.Challenge;
-import com.squareup.okhttp.ConnectionPool;
-import com.squareup.okhttp.Credentials;
-import com.squareup.okhttp.HttpUrl;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.logging.HttpLoggingInterceptor;
+import okhttp3.Authenticator;
+import okhttp3.Challenge;
+import okhttp3.ConnectionPool;
+import okhttp3.Credentials;
+import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.Route;
+import okhttp3.logging.HttpLoggingInterceptor;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.client.unix.UnixSocketFactory;
@@ -37,6 +38,8 @@ import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
@@ -60,15 +63,14 @@ public class HttpClientUtils {
 
     public static OkHttpClient createHttpClient(final Config config) {
         try {
-            OkHttpClient httpClient = new OkHttpClient();
+            OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
 
-            httpClient.setConnectionPool(ConnectionPool.getDefault());
             // Follow any redirects
-            httpClient.setFollowRedirects(true);
-            httpClient.setFollowSslRedirects(true);
+            httpClientBuilder.followRedirects(true);
+            httpClientBuilder.followSslRedirects(true);
 
             if (config.isTrustCerts()) {
-                httpClient.setHostnameVerifier(new HostnameVerifier() {
+                httpClientBuilder.hostnameVerifier(new HostnameVerifier() {
                     @Override
                     public boolean verify(String s, SSLSession sslSession) {
                         return true;
@@ -78,7 +80,7 @@ public class HttpClientUtils {
 
             if (usesUnixSocket(config)) {
                 URL masterURL = new URL(config.getDockerUrl().replaceFirst(UNIX_SCHEME, FILE_SCHEME));
-                httpClient.setSocketFactory(new UnixSocketFactory(masterURL.getFile()));
+                httpClientBuilder.socketFactory(new UnixSocketFactory(masterURL.getFile()));
                 config.setDockerUrl(UNIX_FAKE_URL);
             }
 
@@ -86,25 +88,34 @@ public class HttpClientUtils {
             KeyManager[] keyManagers = SSLUtils.keyManagers(config);
 
             if (keyManagers != null || trustManagers != null || config.isTrustCerts()) {
+                X509TrustManager trustManager = null;
+                if (trustManagers != null && trustManagers.length == 1) {
+                    trustManager = (X509TrustManager) trustManagers[0];
+                }
+
                 try {
                     SSLContext sslContext = SSLUtils.sslContext(keyManagers, trustManagers, config.isTrustCerts());
-                    httpClient.setSslSocketFactory(sslContext.getSocketFactory());
+                    httpClientBuilder.sslSocketFactory(sslContext.getSocketFactory(), trustManager);
                 } catch (GeneralSecurityException e) {
                     throw new AssertionError(); // The system has no TLS. Just give up.
                 }
+            } else {
+                SSLContext context = SSLContext.getInstance("TLSv1.2");
+                context.init(keyManagers, trustManagers, null);
+                httpClientBuilder.sslSocketFactory(context.getSocketFactory(), (X509TrustManager) trustManagers[0]);
             }
 
             if (isNotNullOrEmpty(config.getUsername()) && isNotNullOrEmpty(config.getPassword())) {
-                httpClient.setAuthenticator(new Authenticator() {
+                httpClientBuilder.authenticator(new Authenticator() {
 
                     @Override
-                    public Request authenticate(Proxy proxy, Response response) throws IOException {
+                    public Request authenticate(Route route, Response response) throws IOException {
                         List<Challenge> challenges = response.challenges();
                         Request request = response.request();
-                        HttpUrl url = request.httpUrl();
+                        HttpUrl url = request.url();
                         for (int i = 0, size = challenges.size(); i < size; i++) {
                             Challenge challenge = challenges.get(i);
-                            if (!"Basic".equalsIgnoreCase(challenge.getScheme())) continue;
+                            if (!"Basic".equalsIgnoreCase(challenge.scheme())) continue;
 
                             String credential = Credentials.basic(config.getUsername(), config.getPassword());
                             return request.newBuilder()
@@ -113,14 +124,9 @@ public class HttpClientUtils {
                         }
                         return null;
                     }
-
-                    @Override
-                    public Request authenticateProxy(Proxy proxy, Response response) throws IOException {
-                        return null;
-                    }
                 });
             } else if (config.getOauthToken() != null) {
-                httpClient.interceptors().add(new Interceptor() {
+                httpClientBuilder.interceptors().add(new Interceptor() {
                     @Override
                     public Response intercept(Chain chain) throws IOException {
                         Request authReq = chain.request().newBuilder().addHeader("Authorization", "Bearer " + config.getOauthToken()).build();
@@ -133,15 +139,15 @@ public class HttpClientUtils {
             if (reqLogger.isTraceEnabled()) {
                 HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
                 loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-                httpClient.networkInterceptors().add(loggingInterceptor);
+                httpClientBuilder.networkInterceptors().add(loggingInterceptor);
             }
 
             if (config.getConnectionTimeout() > 0) {
-                httpClient.setConnectTimeout(config.getConnectionTimeout(), TimeUnit.MILLISECONDS);
+                httpClientBuilder.connectTimeout(config.getConnectionTimeout(), TimeUnit.MILLISECONDS);
             }
 
             if (config.getRequestTimeout() > 0) {
-                httpClient.setReadTimeout(config.getRequestTimeout(), TimeUnit.MILLISECONDS);
+                httpClientBuilder.readTimeout(config.getRequestTimeout(), TimeUnit.MILLISECONDS);
             }
 
             // Only check proxy if it's a full URL with protocol
@@ -149,14 +155,14 @@ public class HttpClientUtils {
                 try {
                     URL proxyUrl = getProxyUrl(config);
                     if (proxyUrl != null) {
-                        httpClient.setProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyUrl.getHost(), proxyUrl.getPort())));
+                        httpClientBuilder.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyUrl.getHost(), proxyUrl.getPort())));
                     }
                 } catch (MalformedURLException e) {
                     throw new DockerClientException("Invalid proxy server configuration", e);
                 }
             }
 
-            return httpClient;
+            return httpClientBuilder.build();
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
         }

@@ -17,10 +17,10 @@
 
 package io.fabric8.docker.client.impl;
 
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ws.WebSocket;
-import com.squareup.okhttp.ws.WebSocketListener;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ws.WebSocket;
+import okhttp3.ws.WebSocketListener;
 import io.fabric8.docker.api.model.Callback;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.dsl.InputOutputErrorHandle;

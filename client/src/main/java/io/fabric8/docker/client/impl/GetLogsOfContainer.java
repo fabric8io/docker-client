@@ -17,9 +17,9 @@
 
 package io.fabric8.docker.client.impl;
 
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.ws.WebSocketCall;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.ws.WebSocketCall;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.client.utils.URLUtils;
@@ -99,8 +99,7 @@ public class GetLogsOfContainer extends BaseContainerOperation implements
             }
 
             Request request = new Request.Builder().url(sb.toString()).get().build();
-            OkHttpClient clone = client.clone();
-            clone.setReadTimeout(0, TimeUnit.MILLISECONDS);
+            OkHttpClient clone = client.newBuilder().readTimeout(0, TimeUnit.MILLISECONDS).build();
 
             final ContainerLogHandle handle = new ContainerLogHandle(out, err, outPipe, errPipe);
             clone.newCall(request).enqueue(handle);

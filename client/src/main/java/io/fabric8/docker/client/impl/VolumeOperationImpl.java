@@ -17,7 +17,7 @@
 
 package io.fabric8.docker.client.impl;
 
-import com.squareup.okhttp.OkHttpClient;
+import okhttp3.OkHttpClient;
 import io.fabric8.docker.api.model.InlineVolumeCreate;
 import io.fabric8.docker.api.model.Volume;
 import io.fabric8.docker.api.model.VolumeCreateRequest;

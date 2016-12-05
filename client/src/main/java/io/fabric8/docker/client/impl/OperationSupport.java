@@ -19,11 +19,11 @@ package io.fabric8.docker.client.impl;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.dsl.EventListener;
@@ -264,7 +264,7 @@ public class OperationSupport {
   DockerClientException requestFailure(Request request, Response response) {
     StringBuilder sb = new StringBuilder();
     sb.append("Failure executing: ").append(request.method())
-            .append(" at: ").append(request.urlString()).append(".")
+            .append(" at: ").append(request.url().toString()).append(".")
             .append(" Status:").append(response.code()).append(".")
             .append(" Message: ").append(response.message()).append(".");
     try {
@@ -279,7 +279,7 @@ public class OperationSupport {
   DockerClientException requestException(Request request, Exception e) {
     StringBuilder sb = new StringBuilder();
     sb.append("Error executing: ").append(request.method())
-      .append(" at: ").append(request.urlString())
+      .append(" at: ").append(request.url().toString())
       .append(". Cause: ").append(e.getMessage());
 
     return new DockerClientException(sb.toString(), e);

@@ -18,8 +18,8 @@
 package io.fabric8.docker.client.impl;
 
 
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.client.utils.Utils;
@@ -76,8 +76,7 @@ public class EventOperationImpl extends OperationSupport implements
 
 
             Request request = new Request.Builder().get().url(sb.toString()).build();
-            OkHttpClient clone = client.clone();
-            clone.setReadTimeout(0, TimeUnit.NANOSECONDS);
+            OkHttpClient clone = client.newBuilder().readTimeout(0, TimeUnit.MILLISECONDS).build();
             EventHandle handle = new EventHandle(new PipedOutputStream(), config.getRequestTimeout(), TimeUnit.MILLISECONDS);
             clone.newCall(request).enqueue(handle);
             return handle;
