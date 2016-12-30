@@ -66,7 +66,7 @@ public final class SSLUtils {
 
         OkHttpClient client = HttpClientUtils.createHttpClient(config);
         try {
-            Request request = new Request.Builder().get().url(sslConfig.getDockerUrl())
+            Request request = new Request.Builder().get().url(URLUtils.join(sslConfig.getDockerUrl(), "info"))
                     .build();
             Response response = client.newCall(request).execute();
             try (ResponseBody body = response.body()) {
