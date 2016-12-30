@@ -169,7 +169,16 @@ public class BuildImage extends BaseImageOperation implements
                  BZip2CompressorOutputStream bzout = new BZip2CompressorOutputStream(bout);
                  final TarArchiveOutputStream tout = new TarArchiveOutputStream(bzout)) {
                  Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
-                    @Override
+
+                     @Override
+                     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                         if (dockerIgnorePathMatcher.matches(dir)) {
+                             return FileVisitResult.SKIP_SUBTREE;
+                         }
+                         return FileVisitResult.CONTINUE;
+                     }
+
+                     @Override
                     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                         if (dockerIgnorePathMatcher.matches(file)) {
                             return FileVisitResult.SKIP_SUBTREE;
@@ -185,7 +194,6 @@ public class BuildImage extends BaseImageOperation implements
                         tout.closeArchiveEntry();
                         return FileVisitResult.CONTINUE;
                     }
-
                 });
                 fout.flush();
             }
