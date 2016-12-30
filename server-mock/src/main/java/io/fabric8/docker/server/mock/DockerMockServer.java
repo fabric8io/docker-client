@@ -17,7 +17,7 @@
 
 package io.fabric8.docker.server.mock;
 
-import com.squareup.okhttp.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.MockWebServer;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.ConfigBuilder;
 import io.fabric8.docker.client.DefaultDockerClient;

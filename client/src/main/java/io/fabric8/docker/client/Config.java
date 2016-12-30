@@ -42,6 +42,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.fabric8.docker.client.utils.Utils.getSystemPropertyOrEnvVar;
+import static io.fabric8.docker.client.utils.Utils.hasSystemPropertyOrEnvVar;
 import static io.fabric8.docker.client.utils.Utils.isNullOrEmpty;
 
 @Buildable(editableEnabled = true, validationEnabled = true, generateBuilderPackage = false, builderPackage = "io.fabric8.docker.api.builder", inline = @Inline(type = Doneable.class, prefix = "Doneable", value = "done"))
@@ -90,7 +91,7 @@ public class Config {
 
     public static final String USE_JNR_UNIX_SOCKET = "docker.useJnrUnixSocket";
 
-    private boolean trustCerts;
+    private boolean trustCerts = true;
     private String dockerUrl;
     private String caCertFile;
     private String caCertData;
@@ -178,7 +179,7 @@ public class Config {
             }
         }
 
-        this.trustCerts |= !getSystemPropertyOrEnvVar(DOCKER_TLS_VERIFY_PROPERTY, true);
+        this.trustCerts |= !hasSystemPropertyOrEnvVar(DOCKER_TLS_VERIFY_PROPERTY);
 
         if (this.dockerUrl != null && this.dockerUrl.startsWith(TCP_PROTOCOL_PREFIX)) {
             if (SSLUtils.isHttpsAvailable(this)) {

@@ -72,6 +72,10 @@ public class Utils {
     return Integer.parseInt(result);
   }
 
+  public static Boolean hasSystemPropertyOrEnvVar(String systemPropertyName) {
+    return System.getProperty(systemPropertyName) != null || System.getenv(convertSystemPropertyNameToEnvVar(systemPropertyName)) != null;
+  }
+
   public static String join(final Object[] array) {
     return join(array, ',');
   }
