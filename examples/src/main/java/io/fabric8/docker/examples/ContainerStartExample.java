@@ -22,8 +22,14 @@ import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.ConfigBuilder;
 import io.fabric8.docker.client.DefaultDockerClient;
 import io.fabric8.docker.client.DockerClient;
+import io.fabric8.docker.client.DockerClientException;
+import io.fabric8.docker.dsl.EventListener;
+import io.fabric8.docker.dsl.OutputHandle;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class ContainerStartExample {
 
@@ -45,16 +51,48 @@ public class ContainerStartExample {
 
         try (DockerClient client = new DefaultDockerClient(config)) {
 
+            final CountDownLatch latch = new CountDownLatch(1);
 
-            client.image().withName(image).pull();
+            try (OutputHandle pullHandle = client.image().withName(image).pull().usingListener(new EventListener() {
+                @Override
+                public void onSuccess(String message) {
+                    latch.countDown();
+                }
+
+                @Override
+                public void onError(String message) {
+                    latch.countDown();
+                }
+
+                @Override
+                public void onEvent(String event) {
+                    System.out.println(event);
+                }
+            }).fromRegistry()) {
+                if (!latch.await(5, TimeUnit.MINUTES)) {
+                    throw new DockerClientException("Failed to pull image [" + image + "]");
+                }
+            }
 
             ContainerCreateResponse container = client.container().createNew()
+                    .withName("example")
                     .withImage(image)
                     .done();
 
-            client.container().withName(container.getId()).start();
+            try (OutputHandle logHandle = client.container().withName(container.getId()).logs().writingOutput(System.out).writingError(System.err).display()) {
 
-            client.container().withName(container.getId()).stop();
+                if (client.container().withName(container.getId()).start()) {
+                    System.out.println("Container started!");
+                } else {
+                    throw new DockerClientException("Failed to start container.");
+                }
+
+                if (client.container().withName(container.getId()).stop()) {
+                    System.out.println("Container stopped!");
+                } else {
+                    throw new DockerClientException("Failed to stop container.");
+                }
+            }
 
             client.container().withName(container.getId()).remove();
         }
