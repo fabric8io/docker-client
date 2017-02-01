@@ -168,8 +168,8 @@ public class ContainerCreateRequest implements Serializable {
     @JsonProperty("Labels")
     private Map<String, String> labels;
 
-    @JsonProperty("Mounts")
-    private Map<String, String> mounts;
+    @JsonProperty("Volumes")
+    private Map<String, Object> volumes;
 
     @JsonProperty("WorkingDir")
     private String workingDir;
@@ -190,7 +190,7 @@ public class ContainerCreateRequest implements Serializable {
     @JsonProperty("HostConfig")
     private HostConfig hostConfig;
 
-    public ContainerCreateRequest(String name, String cpuset, String hostname, String domainname, String user, String memory, String memorySwap, String memoryReservation, String kernelMemory, String cpuShares, String cpuPeriod, String cpuQuota, String cpusetCpus, String cpusetMems, Integer blkioWeight, Integer memorySwappiness, Boolean oomKillDisable, Boolean attachStdin, Boolean attachStdout, Boolean attachStderr, Boolean tty, Boolean openStdin, Boolean stdinOnce, Map<String, String> env, List<String> cmd, String entrypoint, String image, Map<String, String> labels, Map<String, String> mounts, String workingDir, Boolean networkDisabled, String macAddress, Map<Integer, Protocol> exposedPorts, String stopSignal, HostConfig hostConfig) {
+    public ContainerCreateRequest(String name, String cpuset, String hostname, String domainname, String user, String memory, String memorySwap, String memoryReservation, String kernelMemory, String cpuShares, String cpuPeriod, String cpuQuota, String cpusetCpus, String cpusetMems, Integer blkioWeight, Integer memorySwappiness, Boolean oomKillDisable, Boolean attachStdin, Boolean attachStdout, Boolean attachStderr, Boolean tty, Boolean openStdin, Boolean stdinOnce, Map<String, String> env, List<String> cmd, String entrypoint, String image, Map<String, String> labels, Map<String, Object> volumes, String workingDir, Boolean networkDisabled, String macAddress, Map<Integer, Protocol> exposedPorts, String stopSignal, HostConfig hostConfig) {
         this.name = name;
         this.cpuset = cpuset;
         this.hostname = hostname;
@@ -219,7 +219,7 @@ public class ContainerCreateRequest implements Serializable {
         this.entrypoint = entrypoint;
         this.image = image;
         this.labels = labels;
-        this.mounts = mounts;
+        this.volumes = volumes;
         this.workingDir = workingDir;
         this.networkDisabled = networkDisabled;
         this.macAddress = macAddress;
@@ -338,8 +338,8 @@ public class ContainerCreateRequest implements Serializable {
         return labels;
     }
 
-    public Map<String, String> getMounts() {
-        return mounts;
+    public Map<String, Object> getVolumes() {
+        return volumes;
     }
 
     public String getWorkingDir() {
