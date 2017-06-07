@@ -299,7 +299,7 @@ public interface ContainerDSL {
 
     @ArchiveOption
     @All({NamedOption.class})
-    void arhcive();
+    void archive();
 
     @Terminal
     @All({ArchiveOption.class})

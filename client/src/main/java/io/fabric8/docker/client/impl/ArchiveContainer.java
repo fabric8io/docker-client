@@ -24,11 +24,11 @@ import io.fabric8.docker.dsl.container.DownloadFromUploadToInterface;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class ArchieveContainer extends BaseContainerOperation  implements DownloadFromUploadToInterface<InputStream, OutputStream> {
+public class ArchiveContainer extends BaseContainerOperation  implements DownloadFromUploadToInterface<InputStream, OutputStream> {
 
     private static final String ARCHIVE = "archive";
 
-    public ArchieveContainer(OkHttpClient client, Config config, String name) {
+    public ArchiveContainer(OkHttpClient client, Config config, String name) {
         super(client, config, name, ARCHIVE);
     }
 
