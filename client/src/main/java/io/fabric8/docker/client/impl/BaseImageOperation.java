@@ -24,7 +24,7 @@ public class BaseImageOperation extends OperationSupport {
 
     protected static final String IMAGES_RESOURCE = "images";
 
-    protected static final String DEFAULT_TEMP_DIR = System.getProperty("tmp.dir", "/tmp");
+    protected static final String DEFAULT_TEMP_DIR = System.getProperty("java.io.tmpdir", "/tmp");
     protected static final String DOCKER_PREFIX = "docker-";
     protected static final String BZIP2_SUFFIX = ".tar.bzip2";
 
