@@ -32,7 +32,7 @@ import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.dsl.InputOutputErrorHandle;
 import io.fabric8.docker.dsl.OutputHandle;
-import io.fabric8.docker.dsl.container.ContainerExecResourceLogsAttachArhciveInterface;
+import io.fabric8.docker.dsl.container.ContainerExecResourceLogsAttachArchiveInterface;
 import io.fabric8.docker.dsl.container.ContainerInterface;
 import io.fabric8.docker.dsl.container.LimitSinceBeforeSizeFiltersAllRunningInterface;
 
@@ -56,7 +56,7 @@ public class ContainerOperationImpl extends BaseContainerOperation implements Co
     }
 
     @Override
-    public ContainerExecResourceLogsAttachArhciveInterface<ContainerExecCreateResponse, InlineExecConfig, ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, OutputHandle, ContainerInspect, InputOutputErrorHandle, OutputStream> withName(String name) {
+    public ContainerExecResourceLogsAttachArchiveInterface<ContainerExecCreateResponse, InlineExecConfig, ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, OutputHandle, ContainerInspect, InputOutputErrorHandle, OutputStream> withName(String name) {
         return new ContainerNamedOperationImpl(client, config, name);
     }
 
