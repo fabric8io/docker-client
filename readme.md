@@ -7,7 +7,7 @@ Docker Client
 
 Docker client for the Docker API version 1.21.
 
-##Features
+## Features
 
 - Rich DSL
 - Unix Domain Socket
