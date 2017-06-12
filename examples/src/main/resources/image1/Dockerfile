@@ -1,4 +1,5 @@
 #image1
-FROM scratch
-COPY bin/hello.sh /usr/local/bin
+FROM alpine
+COPY bin/hello.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/hello.sh
 CMD ["/usr/local/bin/hello.sh"]
