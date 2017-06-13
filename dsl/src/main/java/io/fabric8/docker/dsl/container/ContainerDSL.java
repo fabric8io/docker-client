@@ -284,7 +284,7 @@ public interface ContainerDSL {
     @All({LogOption.class})
     void tailingLines(int number);
 
-    @All({ExecOption.class})
+    @Any({LogOption.class, ExecOption.class})
     void usingListener(EventListener listener);
 
     @Terminal
