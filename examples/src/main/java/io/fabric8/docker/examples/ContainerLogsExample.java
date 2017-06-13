@@ -21,9 +21,12 @@ import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.ConfigBuilder;
 import io.fabric8.docker.client.DefaultDockerClient;
 import io.fabric8.docker.client.DockerClient;
+import io.fabric8.docker.dsl.EventListener;
 import io.fabric8.docker.dsl.OutputHandle;
 
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class ContainerLogsExample {
 
@@ -45,9 +48,31 @@ public class ContainerLogsExample {
 
         DockerClient client = new DefaultDockerClient(config);
 
-        OutputHandle handle = client.container().withName(containerId).logs().writingOutput(System.out).writingError(System.err).display();
+        CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        Thread.sleep(10000);
+        OutputHandle handle = client.container().withName(containerId)
+            .logs().writingOutput(System.out)
+            .writingError(System.err).
+                usingListener(new EventListener() {
+                    @Override
+                    public void onSuccess(String message) {
+                        System.out.println(message);
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        System.out.println(message);
+
+                    }
+
+                    @Override
+                    public void onEvent(String event) {
+                        System.out.println(event);
+                    }
+                }).follow();
+
+        countDownLatch.await(10, TimeUnit.SECONDS);
+
         handle.close();
         client.close();
     }

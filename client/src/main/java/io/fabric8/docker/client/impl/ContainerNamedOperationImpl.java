@@ -17,9 +17,6 @@
 
 package io.fabric8.docker.client.impl;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
 import io.fabric8.docker.api.model.ContainerChange;
 import io.fabric8.docker.api.model.ContainerExecCreateResponse;
 import io.fabric8.docker.api.model.ContainerInspect;
@@ -35,12 +32,14 @@ import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.dsl.container.ContainerExecResourceLogsAttachArchiveInterface;
 import io.fabric8.docker.dsl.container.ContainerInputOutputErrorStreamGetLogsInterface;
 import io.fabric8.docker.dsl.container.DownloadFromUploadToInterface;
-import io.fabric8.docker.dsl.container.SinceContainerOutputErrorTimestampsTailingLinesFollowDisplayInterface;
-
+import io.fabric8.docker.dsl.container.SinceContainerOutputErrorTimestampsTailingLinesUsingListenerFollowDisplayInterface;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.List;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 
 public class ContainerNamedOperationImpl extends BaseContainerOperation implements
         ContainerExecResourceLogsAttachArchiveInterface<ContainerExecCreateResponse, InlineExecConfig, ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, OutputHandle, ContainerInspect, InputOutputErrorHandle, OutputStream> {
@@ -256,7 +255,7 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
     }
 
     @Override
-    public SinceContainerOutputErrorTimestampsTailingLinesFollowDisplayInterface<OutputHandle> logs() {
+    public SinceContainerOutputErrorTimestampsTailingLinesUsingListenerFollowDisplayInterface<OutputHandle> logs() {
         return new GetLogsOfContainer(client, config, name, null, null, null, null, null, 0, false);
     }
 

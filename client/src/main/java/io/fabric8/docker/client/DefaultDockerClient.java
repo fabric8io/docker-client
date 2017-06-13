@@ -88,7 +88,7 @@ public class DefaultDockerClient implements DockerClient {
     @Override
     public Boolean ping() {
         try {
-             new OperationSupport(client, configuration, "_ping", null, null).handleGet();
+            new OperationSupport(client, configuration, "_ping", null, null).handleGet();
             return true;
         } catch (Exception e) {
             return false;
@@ -107,7 +107,7 @@ public class DefaultDockerClient implements DockerClient {
 
     @Override
     public ExecInterface exec() {
-        return new ExecOperationImpl(client,configuration, "exec");//TODO: check this
+        return new ExecOperationImpl(client, configuration, "exec");//TODO: check this
     }
 
     @Override
@@ -131,11 +131,9 @@ public class DefaultDockerClient implements DockerClient {
             client.connectionPool().evictAll();
         }
         if (client.dispatcher() != null &&
-                client.dispatcher().executorService() != null &&
-                !client.dispatcher().executorService().isShutdown()
-                ) {
-            client
-                    .dispatcher().executorService().shutdown();
+            client.dispatcher().executorService() != null &&
+            !client.dispatcher().executorService().isShutdown()) {
+            client.dispatcher().executorService().shutdown();
         }
     }
 }
