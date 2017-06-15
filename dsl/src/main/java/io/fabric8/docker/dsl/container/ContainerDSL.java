@@ -45,11 +45,9 @@ import io.sundr.dsl.annotations.Dsl;
 import io.sundr.dsl.annotations.EntryPoint;
 import io.sundr.dsl.annotations.InterfaceName;
 import io.sundr.dsl.annotations.Multiple;
-import io.sundr.dsl.annotations.None;
 import io.sundr.dsl.annotations.Only;
 import io.sundr.dsl.annotations.Or;
 import io.sundr.dsl.annotations.Terminal;
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
@@ -163,7 +161,7 @@ public interface ContainerDSL {
     @All(NamedOption.class)
     @Only({NamedOption.class, ExecOption.class})
     @InterfaceName("ContainerExecResource")
-    Boolean resize(int h,int w);
+    Boolean resize(int h, int w);
 
     @Terminal
     @All(NamedOption.class)
@@ -206,6 +204,12 @@ public interface ContainerDSL {
     @All({NamedOption.class})
     @InterfaceName("ContainerResource")
     Boolean kill(String signal);
+
+    @Terminal
+    @OtherOption
+    @All({NamedOption.class})
+    @InterfaceName("ContainerResource")
+    Integer waitContainer();
 
     @Terminal
     @OtherOption
@@ -308,5 +312,4 @@ public interface ContainerDSL {
     @Terminal
     @All({ArchiveOption.class})
     OutputStream uploadTo(String path);
-
 }
