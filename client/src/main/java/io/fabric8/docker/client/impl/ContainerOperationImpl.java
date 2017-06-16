@@ -54,7 +54,7 @@ public class ContainerOperationImpl extends BaseContainerOperation implements Co
     }
 
     @Override
-    public ContainerExecResourceLogsAttachArchiveInterface<ContainerExecCreateResponse, InlineExecConfig, ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, Integer, OutputHandle, ContainerInspect, InputOutputErrorHandle, OutputStream> withName(
+    public ContainerExecResourceLogsAttachArchiveInterface<ContainerExecCreateResponse, InlineExecConfig, ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, Integer, OutputHandle, ContainerInspect, InputOutputErrorHandle> withName(
         String name) {
         return new ContainerNamedOperationImpl(client, config, name);
     }

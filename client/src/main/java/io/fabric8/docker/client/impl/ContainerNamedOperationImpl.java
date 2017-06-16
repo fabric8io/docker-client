@@ -17,14 +17,11 @@
 
 package io.fabric8.docker.client.impl;
 
-import io.fabric8.docker.api.model.ContainerWaitResponse;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
 import io.fabric8.docker.api.model.ContainerChange;
 import io.fabric8.docker.api.model.ContainerExecCreateResponse;
 import io.fabric8.docker.api.model.ContainerInspect;
 import io.fabric8.docker.api.model.ContainerProcessList;
+import io.fabric8.docker.api.model.ContainerWaitResponse;
 import io.fabric8.docker.api.model.ExecConfig;
 import io.fabric8.docker.api.model.InlineExecConfig;
 import io.fabric8.docker.api.model.Stats;
@@ -35,16 +32,17 @@ import io.fabric8.docker.dsl.InputOutputErrorHandle;
 import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.dsl.container.ContainerExecResourceLogsAttachArchiveInterface;
 import io.fabric8.docker.dsl.container.ContainerInputOutputErrorStreamGetLogsInterface;
-import io.fabric8.docker.dsl.container.DownloadFromUploadToInterface;
 import io.fabric8.docker.dsl.container.SinceContainerOutputErrorTimestampsTailingLinesFollowDisplayInterface;
-
+import io.fabric8.docker.dsl.container.UploadToDownloadFromHostResourceTarInputStreamInterface;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.util.List;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 
 public class ContainerNamedOperationImpl extends BaseContainerOperation implements
-    ContainerExecResourceLogsAttachArchiveInterface<ContainerExecCreateResponse, InlineExecConfig, ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, Integer, OutputHandle, ContainerInspect, InputOutputErrorHandle, OutputStream> {
+    ContainerExecResourceLogsAttachArchiveInterface<ContainerExecCreateResponse, InlineExecConfig, ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, Integer, OutputHandle, ContainerInspect, InputOutputErrorHandle> {
 
     private static final String EXEC_OPERATION = "exec";
     private static final String TOP_OPERATION = "top";
@@ -68,8 +66,8 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
     }
 
     @Override
-    public DownloadFromUploadToInterface<InputStream, OutputStream> archive() {
-        return new ArchiveContainer(client, config, name);
+    public UploadToDownloadFromHostResourceTarInputStreamInterface<InputStream, Boolean> archive() {
+        return new ArchiveContainer(client, config, name, ".", null, false);
     }
 
     @Override

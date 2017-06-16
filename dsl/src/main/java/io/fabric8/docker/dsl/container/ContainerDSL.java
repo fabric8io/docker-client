@@ -39,6 +39,7 @@ import io.fabric8.docker.dsl.container.annotations.ArchiveOption;
 import io.fabric8.docker.dsl.container.annotations.AttachOption;
 import io.fabric8.docker.dsl.container.annotations.ExecOption;
 import io.fabric8.docker.dsl.container.annotations.LogOption;
+import io.fabric8.docker.dsl.container.annotations.UploadOption;
 import io.sundr.dsl.annotations.All;
 import io.sundr.dsl.annotations.Any;
 import io.sundr.dsl.annotations.Dsl;
@@ -309,7 +310,18 @@ public interface ContainerDSL {
     @All({ArchiveOption.class})
     InputStream downloadFrom(String path);
 
-    @Terminal
+    @UploadOption
     @All({ArchiveOption.class})
-    OutputStream uploadTo(String path);
+    void uploadTo(String path);
+
+    @All({ArchiveOption.class, UploadOption.class})
+    void withNoOverwriteDirNonDir(boolean noOverwriteDirNonDir);
+
+    @Terminal
+    @Any({ArchiveOption.class, UploadOption.class})
+    Boolean withHostResource(String resource);
+
+    @Terminal
+    @Any({ArchiveOption.class, UploadOption.class})
+    Boolean withTarInputStream(InputStream tarInputStream);
 }

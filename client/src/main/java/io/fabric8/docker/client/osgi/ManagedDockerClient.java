@@ -31,6 +31,8 @@ import io.fabric8.docker.dsl.image.ImageInterface;
 import io.fabric8.docker.dsl.misc.EventsInterface;
 import io.fabric8.docker.dsl.network.NetworkInterface;
 import io.fabric8.docker.dsl.volume.VolumeInterface;
+import java.io.IOException;
+import java.util.Map;
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.ConfigurationPolicy;
@@ -38,10 +40,12 @@ import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;
 
-import java.io.IOException;
-import java.util.Map;
-
-import static io.fabric8.docker.client.Config.*;
+import static io.fabric8.docker.client.Config.DOCKER_ALL_PROXY;
+import static io.fabric8.docker.client.Config.DOCKER_HOST;
+import static io.fabric8.docker.client.Config.DOCKER_HTTPS_PROXY;
+import static io.fabric8.docker.client.Config.DOCKER_HTTP_PROXY;
+import static io.fabric8.docker.client.Config.DOCKER_NO_PROXY;
+import static io.fabric8.docker.client.Config.DOCKER_REQUEST_TIMEOUT_SYSTEM_PROPERTY;
 
 @Component(immediate = true, configurationPid = "io.fabric8.docker.client", policy = ConfigurationPolicy.OPTIONAL)
 @Service(DockerClient.class)
