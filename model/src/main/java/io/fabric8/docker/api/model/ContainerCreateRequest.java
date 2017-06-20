@@ -190,7 +190,20 @@ public class ContainerCreateRequest implements Serializable {
     @JsonProperty("HostConfig")
     private HostConfig hostConfig;
 
-    public ContainerCreateRequest(String name, String cpuset, String hostname, String domainname, String user, String memory, String memorySwap, String memoryReservation, String kernelMemory, String cpuShares, String cpuPeriod, String cpuQuota, String cpusetCpus, String cpusetMems, Integer blkioWeight, Integer memorySwappiness, Boolean oomKillDisable, Boolean attachStdin, Boolean attachStdout, Boolean attachStderr, Boolean tty, Boolean openStdin, Boolean stdinOnce, Map<String, String> env, List<String> cmd, String entrypoint, String image, Map<String, String> labels, Map<String, Object> volumes, String workingDir, Boolean networkDisabled, String macAddress, Map<Integer, Protocol> exposedPorts, String stopSignal, HostConfig hostConfig) {
+    @JsonIgnore
+    private String ipv4Address;
+
+    @JsonIgnore
+    private String ipv6Address;
+
+    public ContainerCreateRequest(String name, String cpuset, String hostname, String domainname, String user,
+        String memory, String memorySwap, String memoryReservation, String kernelMemory, String cpuShares,
+        String cpuPeriod, String cpuQuota, String cpusetCpus, String cpusetMems, Integer blkioWeight,
+        Integer memorySwappiness, Boolean oomKillDisable, Boolean attachStdin, Boolean attachStdout, Boolean attachStderr,
+        Boolean tty, Boolean openStdin, Boolean stdinOnce, Map<String, String> env, List<String> cmd, String entrypoint,
+        String image, Map<String, String> labels, Map<String, Object> volumes, String workingDir, Boolean networkDisabled,
+        String macAddress, Map<Integer, Protocol> exposedPorts, String stopSignal, HostConfig hostConfig,
+        String ipv4Address, String ipv6Address) {
         this.name = name;
         this.cpuset = cpuset;
         this.hostname = hostname;
@@ -226,6 +239,8 @@ public class ContainerCreateRequest implements Serializable {
         this.exposedPorts = exposedPorts;
         this.stopSignal = stopSignal;
         this.hostConfig = hostConfig;
+        this.ipv4Address = ipv4Address;
+        this.ipv6Address = ipv6Address;
     }
 
     public String getName() { return name; }
@@ -364,5 +379,13 @@ public class ContainerCreateRequest implements Serializable {
 
     public HostConfig getHostConfig() {
         return hostConfig;
+    }
+
+    public String getIpv4Address() {
+        return ipv4Address;
+    }
+
+    public String getIpv6Address() {
+        return ipv6Address;
     }
 }
