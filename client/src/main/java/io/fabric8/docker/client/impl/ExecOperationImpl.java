@@ -19,6 +19,7 @@ package io.fabric8.docker.client.impl;
 
 import io.fabric8.docker.api.model.ContainerInspect;
 import io.fabric8.docker.client.Config;
+import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.dsl.container.ContainerExecResourceOutputErrorUsingListenerInterface;
 import io.fabric8.docker.dsl.container.ExecInterface;
 import okhttp3.OkHttpClient;
@@ -30,7 +31,7 @@ public class ExecOperationImpl extends OperationSupport implements ExecInterface
     }
 
     @Override
-    public ContainerExecResourceOutputErrorUsingListenerInterface<Boolean, ContainerInspect> withName(String name) {
+    public ContainerExecResourceOutputErrorUsingListenerInterface<Boolean, OutputHandle, ContainerInspect> withName(String name) {
         return new ExecNamedOperationImpl(this.client, this.config, name, null, null, null, null, NULL_LISTENER);
     }
 }

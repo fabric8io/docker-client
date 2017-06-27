@@ -174,7 +174,7 @@ public interface ContainerDSL {
     @Terminal
     @Only({ExecOption.class})
     @InterfaceName("ContainerExecResource")
-    Boolean start(boolean detached);
+    OutputHandle start(boolean detached);
 
     @Terminal
     @OtherOption

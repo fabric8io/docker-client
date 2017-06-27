@@ -17,6 +17,7 @@
 
 package io.fabric8.docker.dsl.misc.annotations;
 
+import io.fabric8.docker.dsl.annotations.NamedOption;
 import io.sundr.dsl.annotations.Only;
 import io.sundr.dsl.annotations.Option;
 
@@ -28,6 +29,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.SOURCE)
 @Option
-@Only({EventsOption.class})
+@Only(value = {EventsOption.class}, orNone = true)
 public @interface EventsOption {
 }

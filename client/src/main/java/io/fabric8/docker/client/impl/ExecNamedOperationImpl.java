@@ -24,6 +24,7 @@ import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.client.utils.URLUtils;
 import io.fabric8.docker.dsl.EventListener;
+import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.dsl.container.ContainerErrorUsingListenerExecResourceInterface;
 import io.fabric8.docker.dsl.container.ContainerExecResource;
 import io.fabric8.docker.dsl.container.ContainerExecResourceOutputErrorUsingListenerInterface;
@@ -37,9 +38,9 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 
 public class ExecNamedOperationImpl extends OperationSupport implements
-    ContainerExecResourceOutputErrorUsingListenerInterface<Boolean, ContainerInspect>,
-    UsingListenerContainerExecResourceInterface<Boolean, ContainerInspect>,
-    ContainerErrorUsingListenerExecResourceInterface<Boolean, ContainerInspect> {
+    ContainerExecResourceOutputErrorUsingListenerInterface<Boolean, OutputHandle, ContainerInspect>,
+    UsingListenerContainerExecResourceInterface<Boolean, OutputHandle, ContainerInspect>,
+    ContainerErrorUsingListenerExecResourceInterface<Boolean, OutputHandle, ContainerInspect> {
 
     protected static final String EXEC_RESOURCE = "exec";
 
@@ -89,7 +90,7 @@ public class ExecNamedOperationImpl extends OperationSupport implements
     }
 
     @Override
-    public Boolean start(boolean detached) {
+    public OutputHandle start(boolean detached) {
         try {
             ExecStartCheck config = new ExecStartCheckBuilder().withDetach(detached).withTty(false).build();
             StringBuilder sb = new StringBuilder();
@@ -100,8 +101,10 @@ public class ExecNamedOperationImpl extends OperationSupport implements
             OkHttpClient clone = client.newBuilder().readTimeout(0, TimeUnit.MILLISECONDS).build();
 
             ContainerLogHandle containerLogHandle = new ContainerLogHandle(out, err, outPipe, errPipe, eventListener);
+            System.out.println("before handle");
             clone.newCall(request).enqueue(containerLogHandle);
-            return true;
+            System.out.println("after enqueu");
+            return containerLogHandle;
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
         }
@@ -137,38 +140,38 @@ public class ExecNamedOperationImpl extends OperationSupport implements
     }
 
     @Override
-    public UsingListenerContainerExecResourceInterface<Boolean, ContainerInspect> readingError(PipedInputStream errPipe) {
+    public UsingListenerContainerExecResourceInterface<Boolean, OutputHandle, ContainerInspect> readingError(PipedInputStream errPipe) {
         return new ExecNamedOperationImpl(this.client, this.config, name, out, err, outPipe, errPipe, eventListener);
     }
 
     @Override
-    public UsingListenerContainerExecResourceInterface<Boolean, ContainerInspect> writingError(OutputStream err) {
+    public UsingListenerContainerExecResourceInterface<Boolean, OutputHandle, ContainerInspect> writingError(OutputStream err) {
         return new ExecNamedOperationImpl(this.client, this.config, name, out, err, outPipe, errPipe, eventListener);
     }
 
     @Override
-    public UsingListenerContainerExecResourceInterface<Boolean, ContainerInspect> redirectingError() {
+    public UsingListenerContainerExecResourceInterface<Boolean, OutputHandle, ContainerInspect> redirectingError() {
         return readingError(new PipedInputStream());
     }
 
     @Override
-    public ContainerExecResource<Boolean, ContainerInspect> usingListener(EventListener listener) {
+    public ContainerExecResource<Boolean, OutputHandle, ContainerInspect> usingListener(EventListener listener) {
         return new ExecNamedOperationImpl(this.client, this.config, name, out, err, outPipe, errPipe, listener);
     }
 
     @Override
-    public ContainerErrorUsingListenerExecResourceInterface<Boolean, ContainerInspect> readingOutput(
+    public ContainerErrorUsingListenerExecResourceInterface<Boolean, OutputHandle, ContainerInspect> readingOutput(
         PipedInputStream outPipe) {
         return new ExecNamedOperationImpl(this.client, this.config, name, out, err, outPipe, errPipe, eventListener);
     }
 
     @Override
-    public ContainerErrorUsingListenerExecResourceInterface<Boolean, ContainerInspect> writingOutput(OutputStream out) {
+    public ContainerErrorUsingListenerExecResourceInterface<Boolean, OutputHandle, ContainerInspect> writingOutput(OutputStream out) {
         return new ExecNamedOperationImpl(this.client, this.config, name, out, err, outPipe, errPipe, eventListener);
     }
 
     @Override
-    public ContainerErrorUsingListenerExecResourceInterface<Boolean, ContainerInspect> redirectingOutput() {
+    public ContainerErrorUsingListenerExecResourceInterface<Boolean, OutputHandle, ContainerInspect> redirectingOutput() {
         return readingOutput(new PipedInputStream());
     }
 }
