@@ -15,6 +15,7 @@ public class ArchiveUtil {
 
     public static void putTarEntry(TarArchiveOutputStream tarArchiveOutputStream, TarArchiveEntry tarArchiveEntry,
         Path inputPath) throws IOException {
+        tarArchiveEntry.setSize(Files.size(inputPath));
         tarArchiveOutputStream.putArchiveEntry(tarArchiveEntry);
         Files.copy(inputPath, tarArchiveOutputStream);
         tarArchiveOutputStream.closeArchiveEntry();
@@ -34,7 +35,7 @@ public class ArchiveUtil {
 
         try (TarArchiveOutputStream tarArchiveOutputStream = buildTarStream(outputPath.toFile())) {
             if (!Files.isDirectory(inputPath)) {
-                TarArchiveEntry tarEntry = new TarArchiveEntry(inputPath.toFile());
+                TarArchiveEntry tarEntry = new TarArchiveEntry(inputPath.toFile().getName());
                 if (inputPath.toFile().canExecute()) {
                     tarEntry.setMode(tarEntry.getMode() | 0755);
                 }
