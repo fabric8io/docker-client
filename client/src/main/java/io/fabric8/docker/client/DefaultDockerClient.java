@@ -17,7 +17,6 @@
 
 package io.fabric8.docker.client;
 
-import okhttp3.OkHttpClient;
 import io.fabric8.docker.api.model.AuthConfig;
 import io.fabric8.docker.api.model.Info;
 import io.fabric8.docker.api.model.InlineAuth;
@@ -32,14 +31,11 @@ import io.fabric8.docker.client.impl.VolumeOperationImpl;
 import io.fabric8.docker.client.utils.HttpClientUtils;
 import io.fabric8.docker.dsl.container.ContainerInterface;
 import io.fabric8.docker.dsl.container.ExecInterface;
-import io.fabric8.docker.dsl.container.annotations.ExecOption;
 import io.fabric8.docker.dsl.image.ImageInterface;
 import io.fabric8.docker.dsl.misc.EventsInterface;
 import io.fabric8.docker.dsl.network.NetworkInterface;
 import io.fabric8.docker.dsl.volume.VolumeInterface;
-
-import java.net.MalformedURLException;
-import java.net.URL;
+import okhttp3.OkHttpClient;
 
 public class DefaultDockerClient implements DockerClient {
 
@@ -88,7 +84,7 @@ public class DefaultDockerClient implements DockerClient {
     @Override
     public Boolean ping() {
         try {
-             new OperationSupport(client, configuration, "_ping", null, null).handleGet();
+            new OperationSupport(client, configuration, "_ping", null, null).handleGet();
             return true;
         } catch (Exception e) {
             return false;
@@ -107,7 +103,7 @@ public class DefaultDockerClient implements DockerClient {
 
     @Override
     public ExecInterface exec() {
-        return new ExecOperationImpl(client,configuration, "exec");//TODO: check this
+        return new ExecOperationImpl(client, configuration, "exec");//TODO: check this
     }
 
     @Override
@@ -131,11 +127,9 @@ public class DefaultDockerClient implements DockerClient {
             client.connectionPool().evictAll();
         }
         if (client.dispatcher() != null &&
-                client.dispatcher().executorService() != null &&
-                !client.dispatcher().executorService().isShutdown()
-                ) {
-            client
-                    .dispatcher().executorService().shutdown();
+            client.dispatcher().executorService() != null &&
+            !client.dispatcher().executorService().isShutdown()) {
+            client.dispatcher().executorService().shutdown();
         }
     }
 }
