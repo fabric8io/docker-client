@@ -122,3 +122,42 @@ To push a tag into the registry:
 #### Deleting an image
 
     Boolean deleted = client.image().withName("192.168.1.10:5000/my/image").delete();
+
+#### Give environment variables(-e)
+
+To up a mysql container, environment variables should be given. it is can be done using ".withEnv(envVariable)".
+This is an example.
+
+	Map<String, String> envVariable = new HashMap<String, String>();
+        envVariable.put("MYSQL_ROOT_PASSWORD", "admin");
+        envVariable.put("MYSQL_USER","admin");
+        envVariable.put("MYSQL_PASSWORD", "admin");
+        envVariable.put("MYSQL_DATABASE", "test_demo");
+
+	ContainerCreateResponse container = client.container().createNew()
+                    .withName("mysql_server")
+		    .withEnv(envVariable)
+                    .withImage("mysql")
+                    .done();
+
+#### Port Binding
+
+	Map<String, ArrayList<PortBinding>> portBinding = new HashMap<>();
+        ArrayList<PortBinding> hostPort = new ArrayList<>();
+        PortBinding portBinding1 = new PortBinding("localhost", "6060");
+        hostPort.add(portBinding1);
+        portBinding.put("3306/tcp", hostPort);
+
+	HostConfig hostConfig = new HostConfig();
+        hostConfig.setPortBindings(portBinding);
+
+	ContainerCreateResponse container = client.container().createNew()
+                    .withName("mysql_server")
+		    .withHostConfig(hostConfig)
+		    .withEnv(envVariable)
+                    .withImage("mysql")
+                    .done();
+
+
+
+
