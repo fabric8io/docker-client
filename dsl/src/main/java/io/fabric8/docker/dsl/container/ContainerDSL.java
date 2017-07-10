@@ -28,6 +28,7 @@ import io.fabric8.docker.api.model.ExecConfig;
 import io.fabric8.docker.api.model.InlineContainerCreate;
 import io.fabric8.docker.api.model.InlineExecConfig;
 import io.fabric8.docker.api.model.Stats;
+import io.fabric8.docker.dsl.EventListener;
 import io.fabric8.docker.dsl.InputOutputErrorHandle;
 import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.dsl.annotations.CreateOption;
@@ -277,6 +278,9 @@ public interface ContainerDSL {
 
     @All({LogOption.class})
     void tailingLines(int number);
+
+    @All({LogOption.class})
+    void usingListener(EventListener listener);
 
     @Terminal
     @All(NamedOption.class)

@@ -18,15 +18,14 @@ package io.fabric8.docker.client.utils;
 
 import io.fabric8.docker.api.model.Callback;
 import io.fabric8.docker.client.DockerStreamData;
-import okio.BufferedSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import io.fabric8.docker.client.DockerStreamDataReader;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.InterruptedIOException;
-import java.nio.ByteBuffer;
+import okio.BufferedSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DockerStreamPumper implements Runnable, Closeable {
 
@@ -47,7 +46,8 @@ public class DockerStreamPumper implements Runnable, Closeable {
         });
     }
 
-    public DockerStreamPumper(BufferedSource in, Callback<DockerStreamData, Void> callback, Callback<Boolean, Void> onFinish) {
+    public DockerStreamPumper(BufferedSource in, Callback<DockerStreamData, Void> callback,
+        Callback<Boolean, Void> onFinish) {
         this.in = in;
         this.callback = callback;
         this.onFinish = onFinish;
@@ -57,23 +57,11 @@ public class DockerStreamPumper implements Runnable, Closeable {
     public void run() {
         thread = Thread.currentThread();
         try {
-            while (keepReading && !Thread.currentThread().isInterrupted()) {
-                byte streamTypeByte = in.readByte();
-
-                DockerStreamData.StreamType stream = DockerStreamData.StreamType.lookup(streamTypeByte);
-
-                in.skip(3);
-
-                byte[] sizeBytes = in.readByteArray(4);
-
-                int size = ByteBuffer.wrap(sizeBytes).getInt();
-
-                byte[] payload = in.readByteArray(size);
-
-                callback.call(
-                    new DockerStreamDataImpl(stream, size, payload)
-                );
+            while (keepReading && !Thread.currentThread().isInterrupted() && !in.exhausted()) {
+                final DockerStreamDataReader dockerStreamDataReader = new DockerStreamDataReader(in.inputStream());
+                callback.call(dockerStreamDataReader.readStreamData());
             }
+
             //To indicate that the response has been fully read.
             onFinish.call(true);
         } catch (InterruptedIOException e) {
@@ -94,35 +82,12 @@ public class DockerStreamPumper implements Runnable, Closeable {
         if (thread != null) {
             thread.interrupt();
         }
-    }
-
-    private static class DockerStreamDataImpl implements DockerStreamData {
-
-        private StreamType type;
-
-        private int size;
-
-        private byte[] payload;
-
-        private DockerStreamDataImpl(StreamType type, int size, byte[] payload) {
-            this.type = type;
-            this.size = size;
-            this.payload = payload;
-        }
-
-        @Override
-        public StreamType streamType() {
-            return type;
-        }
-
-        @Override
-        public int size() {
-            return size;
-        }
-
-        @Override
-        public byte[] payload() {
-            return payload;
+        if (in != null) {
+            try {
+                in.close();
+            } catch (IOException e) {
+                LOGGER.warn("Error while closing buffered source:" + e.getMessage());
+            }
         }
     }
 }

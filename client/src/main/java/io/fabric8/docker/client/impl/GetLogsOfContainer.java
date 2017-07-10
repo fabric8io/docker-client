@@ -17,32 +17,34 @@
 
 package io.fabric8.docker.client.impl;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.ws.WebSocketCall;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.client.utils.URLUtils;
+import io.fabric8.docker.dsl.EventListener;
 import io.fabric8.docker.dsl.OutputHandle;
-import io.fabric8.docker.dsl.container.ContainerErrorTimestampsTailingLinesFollowDisplayInterface;
-import io.fabric8.docker.dsl.container.ContainerOutputErrorTimestampsTailingLinesFollowDisplayInterface;
+import io.fabric8.docker.dsl.container.ContainerErrorTimestampsTailingLinesUsingListenerFollowDisplayInterface;
+import io.fabric8.docker.dsl.container.ContainerOutputErrorTimestampsTailingLinesUsingListenerFollowDisplayInterface;
 import io.fabric8.docker.dsl.container.FollowDisplayInterface;
-import io.fabric8.docker.dsl.container.SinceContainerOutputErrorTimestampsTailingLinesFollowDisplayInterface;
-import io.fabric8.docker.dsl.container.TailingLinesFollowDisplayInterface;
-import io.fabric8.docker.dsl.container.TimestampsTailingLinesFollowDisplayInterface;
-
+import io.fabric8.docker.dsl.container.SinceContainerOutputErrorTimestampsTailingLinesUsingListenerFollowDisplayInterface;
+import io.fabric8.docker.dsl.container.TailingLinesUsingListenerFollowDisplayInterface;
+import io.fabric8.docker.dsl.container.TimestampsTailingLinesUsingListenerFollowDisplayInterface;
+import io.fabric8.docker.dsl.container.UsingListenerFollowDisplayInterface;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.util.concurrent.TimeUnit;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 import static io.fabric8.docker.client.utils.Utils.isNotNullOrEmpty;
 
 public class GetLogsOfContainer extends BaseContainerOperation implements
-        SinceContainerOutputErrorTimestampsTailingLinesFollowDisplayInterface<OutputHandle>,
-        TimestampsTailingLinesFollowDisplayInterface<OutputHandle>,
-        ContainerErrorTimestampsTailingLinesFollowDisplayInterface<OutputHandle>,
-        FollowDisplayInterface<OutputHandle>,
-        TailingLinesFollowDisplayInterface<OutputHandle> {
+    TailingLinesUsingListenerFollowDisplayInterface<OutputHandle>,
+    ContainerOutputErrorTimestampsTailingLinesUsingListenerFollowDisplayInterface<OutputHandle>,
+    SinceContainerOutputErrorTimestampsTailingLinesUsingListenerFollowDisplayInterface<OutputHandle>,
+    TimestampsTailingLinesUsingListenerFollowDisplayInterface<OutputHandle>,
+    ContainerErrorTimestampsTailingLinesUsingListenerFollowDisplayInterface<OutputHandle>,
+    UsingListenerFollowDisplayInterface<OutputHandle>,
+    FollowDisplayInterface<OutputHandle> {
 
     private static final String LOG = "logs";
     private static final String FOLLOW = "follow";
@@ -63,8 +65,11 @@ public class GetLogsOfContainer extends BaseContainerOperation implements
     private final int lines;
     private final Boolean timestampsEnabled;
 
+    private final EventListener eventListener;
 
-    public GetLogsOfContainer(OkHttpClient client, Config config, String name, OutputStream out, OutputStream err, PipedInputStream outPipe, PipedInputStream errPipe, String since, int lines, Boolean timestampsEnabled) {
+    public GetLogsOfContainer(OkHttpClient client, Config config, String name, OutputStream out, OutputStream err,
+        PipedInputStream outPipe, PipedInputStream errPipe, String since, int lines, Boolean timestampsEnabled,
+        EventListener eventListener) {
         super(client, config, name, LOG);
         this.out = out;
         this.err = err;
@@ -73,6 +78,20 @@ public class GetLogsOfContainer extends BaseContainerOperation implements
         this.since = since;
         this.lines = lines;
         this.timestampsEnabled = timestampsEnabled;
+        this.eventListener = eventListener;
+    }
+
+    public GetLogsOfContainer(OkHttpClient client, Config config, String name, OutputStream out, OutputStream err,
+        PipedInputStream outPipe, PipedInputStream errPipe, String since, int lines, Boolean timestampsEnabled) {
+        super(client, config, name, LOG);
+        this.out = out;
+        this.err = err;
+        this.outPipe = outPipe;
+        this.errPipe = errPipe;
+        this.since = since;
+        this.lines = lines;
+        this.timestampsEnabled = timestampsEnabled;
+        this.eventListener = NULL_LISTENER;
     }
 
     private OutputHandle doGetLogHandle(Boolean follow) {
@@ -82,7 +101,6 @@ public class GetLogsOfContainer extends BaseContainerOperation implements
             sb.append("?").append(FOLLOW).append("=").append(follow ? TRUE : FLASE);
             sb.append("&").append(STDOUT).append("=").append(out != null || outPipe != null ? TRUE : FLASE);
             sb.append("&").append(STDERR).append("=").append(err != null || errPipe != null ? TRUE : FLASE);
-
 
             if (isNotNullOrEmpty(since)) {
                 sb.append("&").append(SINCE).append("=").append(since);
@@ -94,17 +112,16 @@ public class GetLogsOfContainer extends BaseContainerOperation implements
                 sb.append("&").append(TAIL).append("=").append(ALL);
             }
 
-            if(timestampsEnabled) {
+            if (timestampsEnabled) {
                 sb.append("&").append(TIMESTAMPS).append("=").append(TRUE);
             }
 
             Request request = new Request.Builder().url(sb.toString()).get().build();
             OkHttpClient clone = client.newBuilder().readTimeout(0, TimeUnit.MILLISECONDS).build();
 
-            final ContainerLogHandle handle = new ContainerLogHandle(out, err, outPipe, errPipe);
-            clone.newCall(request).enqueue(handle);
-            handle.waitUntilReady();
-            return handle;
+            ContainerLogHandle containerLogHandle = new ContainerLogHandle(out, err, outPipe, errPipe, eventListener);
+            clone.newCall(request).enqueue(containerLogHandle);
+            return containerLogHandle;
         } catch (Throwable t) {
             throw DockerClientException.launderThrowable(t);
         }
@@ -121,48 +138,55 @@ public class GetLogsOfContainer extends BaseContainerOperation implements
     }
 
     @Override
-    public TimestampsTailingLinesFollowDisplayInterface<OutputHandle> readingError(PipedInputStream errPipe) {
+    public TimestampsTailingLinesUsingListenerFollowDisplayInterface<OutputHandle> readingError(PipedInputStream errPipe) {
         return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled);
     }
 
     @Override
-    public TimestampsTailingLinesFollowDisplayInterface<OutputHandle> writingError(OutputStream err) {
-        return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled);
+    public TimestampsTailingLinesUsingListenerFollowDisplayInterface<OutputHandle> writingError(OutputStream err) {
+        return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled, eventListener);
     }
 
     @Override
-    public TimestampsTailingLinesFollowDisplayInterface<OutputHandle> redirectingError() {
+    public TimestampsTailingLinesUsingListenerFollowDisplayInterface<OutputHandle> redirectingError() {
         return readingError(new PipedInputStream());
     }
 
-
     @Override
-    public ContainerErrorTimestampsTailingLinesFollowDisplayInterface<OutputHandle> readingOutput(PipedInputStream outPipe) {
+    public ContainerErrorTimestampsTailingLinesUsingListenerFollowDisplayInterface<OutputHandle> readingOutput(
+        PipedInputStream outPipe) {
         return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled);
     }
 
     @Override
-    public ContainerErrorTimestampsTailingLinesFollowDisplayInterface<OutputHandle> writingOutput(OutputStream out) {
-        return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled);
+    public ContainerErrorTimestampsTailingLinesUsingListenerFollowDisplayInterface<OutputHandle> writingOutput(OutputStream out) {
+        return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled, eventListener);
     }
 
     @Override
-    public ContainerErrorTimestampsTailingLinesFollowDisplayInterface<OutputHandle> redirectingOutput() {
+    public ContainerErrorTimestampsTailingLinesUsingListenerFollowDisplayInterface<OutputHandle> redirectingOutput() {
         return readingOutput(new PipedInputStream());
     }
 
     @Override
-    public ContainerOutputErrorTimestampsTailingLinesFollowDisplayInterface<OutputHandle> since(String since) {
+    public ContainerOutputErrorTimestampsTailingLinesUsingListenerFollowDisplayInterface<OutputHandle> since(String id) {
         return null;
     }
 
     @Override
-    public FollowDisplayInterface<OutputHandle> tailingLines(int lines) {
-        return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled);
+    public UsingListenerFollowDisplayInterface<OutputHandle> tailingLines(int lines) {
+        return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled, eventListener);
     }
 
     @Override
-    public TailingLinesFollowDisplayInterface<OutputHandle> withTimestamps() {
-        return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, true);
+    public TailingLinesUsingListenerFollowDisplayInterface<OutputHandle> withTimestamps() {
+        return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, true, eventListener);
+    }
+
+    @Override
+    public FollowDisplayInterface<OutputHandle> usingListener(
+        EventListener listener) {
+        return new GetLogsOfContainer(client, config, name, out, err, outPipe, errPipe, since, lines, timestampsEnabled,
+            listener);
     }
 }
