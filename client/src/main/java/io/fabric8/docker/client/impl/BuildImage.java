@@ -17,9 +17,6 @@
 
 package io.fabric8.docker.client.impl;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.client.utils.DockerIgnorePathMatcher;
@@ -42,14 +39,7 @@ import io.fabric8.docker.dsl.image.SupressingVerboseOutputNoCachePullingRemoveIn
 import io.fabric8.docker.dsl.image.SwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingOutputFromPathInterface;
 import io.fabric8.docker.dsl.image.UsingDockerFileListenerRedirectingWritingOutputFromPathInterface;
 import io.fabric8.docker.dsl.image.UsingListenerRedirectingWritingOutputFromPathInterface;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
-
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -65,6 +55,15 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+
+import static io.fabric8.docker.client.utils.ArchiveUtil.buildTarStream;
+import static io.fabric8.docker.client.utils.ArchiveUtil.putTarEntry;
 
 public class BuildImage extends BaseImageOperation implements
         RepositoryNameSupressingVerboseOutputNoCachePullingRemoveIntermediateMemorySwapCpuSharesCpusPeriodQuotaBuildArgsUsingDockerFileListenerRedirectingWritingFromPathInterface<OutputHandle>,
@@ -164,10 +163,7 @@ public class BuildImage extends BaseImageOperation implements
 
             File tempFile = Files.createTempFile(Paths.get(DEFAULT_TEMP_DIR), DOCKER_PREFIX, BZIP2_SUFFIX).toFile();
 
-            try (FileOutputStream fout = new FileOutputStream(tempFile);
-                 BufferedOutputStream bout = new BufferedOutputStream(fout);
-                 BZip2CompressorOutputStream bzout = new BZip2CompressorOutputStream(bout);
-                 final TarArchiveOutputStream tout = new TarArchiveOutputStream(bzout)) {
+            try ( final TarArchiveOutputStream tout = buildTarStream(tempFile)) {
                  Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
 
                      @Override
@@ -189,13 +185,11 @@ public class BuildImage extends BaseImageOperation implements
                         entry.setName(relativePath.toString());
                         entry.setMode(TarArchiveEntry.DEFAULT_FILE_MODE);
                         entry.setSize(attrs.size());
-                        tout.putArchiveEntry(entry);
-                        Files.copy(file, tout);
-                        tout.closeArchiveEntry();
+                        putTarEntry(tout, entry, file);
                         return FileVisitResult.CONTINUE;
                     }
                 });
-                fout.flush();
+                tout.flush();
             }
             return fromTar(tempFile.getAbsolutePath());
 

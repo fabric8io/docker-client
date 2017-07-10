@@ -1210,35 +1210,43 @@
       "type": "object",
       "description": "",
       "properties": {
-        "DefaultNetworkSettings": {
-          "$ref": "#/definitions/docker_DefaultNetworkSettings",
-          "javaType": "io.fabric8.docker.api.model.DefaultNetworkSettings"
+        "EndpointID": {
+          "type": "string",
+          "description": ""
         },
-        "NetworkSettingsBase": {
-          "$ref": "#/definitions/docker_NetworkSettingsBase",
-          "javaType": "io.fabric8.docker.api.model.NetworkSettingsBase"
+        "Gateway": {
+          "type": "string",
+          "description": ""
         },
-        "Networks": {
-          "type": "object",
-          "description": "",
-          "additionalProperties": {
-            "$ref": "#/definitions/docker_network_EndpointSettings",
-            "javaType": "io.fabric8.docker.api.model.EndpointSettings"
-          },
-          "javaType": "java.util.Map\u003cString,io.fabric8.docker.api.model.EndpointSettings\u003e"
-        }
-      },
-      "additionalProperties": true,
-      "javaType": "io.fabric8.docker.api.model.NetworkSettings",
-      "javaInterfaces": [
-        "java.io.Serializable"
-      ]
-    },
-    "docker_NetworkSettingsBase": {
-      "type": "object",
-      "description": "",
-      "properties": {
+        "GlobalIPv6Address": {
+          "type": "string",
+          "description": ""
+        },
+        "GlobalIPv6PrefixLen": {
+          "type": "integer",
+          "description": ""
+        },
+        "IPAddress": {
+          "type": "string",
+          "description": ""
+        },
+        "IPPrefixLen": {
+          "type": "integer",
+          "description": ""
+        },
+        "IPv6Gateway": {
+          "type": "string",
+          "description": ""
+        },
+        "MacAddress": {
+          "type": "string",
+          "description": ""
+        },
         "Bridge": {
+          "type": "string",
+          "description": ""
+        },
+        "SandboxID": {
           "type": "string",
           "description": ""
         },
@@ -1267,9 +1275,78 @@
           },
           "javaType": "java.util.Map\u003cString,java.util.ArrayList\u003cio.fabric8.docker.api.model.PortBinding\u003e\u003e"
         },
+        "SandboxKey": {
+          "type": "string",
+          "description": ""
+        },
+        "SecondaryIPAddresses": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "$ref": "#/definitions/docker_network_Address",
+            "javaType": "io.fabric8.docker.api.model.Address"
+          }
+        },
+        "SecondaryIPv6Addresses": {
+          "type": "array",
+          "description": "",
+          "items": {
+            "$ref": "#/definitions/docker_network_Address",
+            "javaType": "io.fabric8.docker.api.model.Address"
+          }
+        },
+        "Networks": {
+          "type": "object",
+          "description": "",
+          "additionalProperties": {
+            "$ref": "#/definitions/docker_network_EndpointSettings",
+            "javaType": "io.fabric8.docker.api.model.EndpointSettings"
+          },
+          "javaType": "java.util.Map\u003cString,io.fabric8.docker.api.model.EndpointSettings\u003e"
+        }
+      },
+      "additionalProperties": true,
+      "javaType": "io.fabric8.docker.api.model.NetworkSettings",
+      "javaInterfaces": [
+        "java.io.Serializable"
+      ]
+    },
+    "docker_NetworkSettingsBase": {
+      "type": "object",
+      "description": "",
+      "properties": {
+        "Bridge": {
+          "type": "string",
+          "description": ""
+        },
         "SandboxID": {
           "type": "string",
           "description": ""
+        },
+        "HairpinMode": {
+          "type": "boolean",
+          "description": ""
+        },
+        "LinkLocalIPv6Address": {
+          "type": "string",
+          "description": ""
+        },
+        "LinkLocalIPv6PrefixLen": {
+          "type": "integer",
+          "description": ""
+        },
+        "Ports": {
+          "type": "object",
+          "description": "",
+          "additionalProperties": {
+            "type": "array",
+            "description": "",
+            "items": {
+              "$ref": "#/definitions/docker_nat_PortBinding",
+              "javaType": "io.fabric8.docker.api.model.PortBinding"
+            }
+          },
+          "javaType": "java.util.Map\u003cString,java.util.ArrayList\u003cio.fabric8.docker.api.model.PortBinding\u003e\u003e"
         },
         "SandboxKey": {
           "type": "string",

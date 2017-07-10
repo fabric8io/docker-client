@@ -17,7 +17,6 @@
 
 package io.fabric8.docker.client.impl;
 
-import okhttp3.OkHttpClient;
 import io.fabric8.docker.api.model.Container;
 import io.fabric8.docker.api.model.ContainerChange;
 import io.fabric8.docker.api.model.ContainerCreateRequest;
@@ -35,11 +34,11 @@ import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.dsl.container.ContainerExecResourceLogsAttachArchiveInterface;
 import io.fabric8.docker.dsl.container.ContainerInterface;
 import io.fabric8.docker.dsl.container.LimitSinceBeforeSizeFiltersAllRunningInterface;
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
+import okhttp3.OkHttpClient;
 
 public class ContainerOperationImpl extends BaseContainerOperation implements ContainerInterface {
 
@@ -49,14 +48,14 @@ public class ContainerOperationImpl extends BaseContainerOperation implements Co
         super(client, config, null, null);
     }
 
-
     @Override
     public LimitSinceBeforeSizeFiltersAllRunningInterface<List<Container>> list() {
         return new ListContainer(client, config, null, null, null, new HashMap<String, String[]>(), 0);
     }
 
     @Override
-    public ContainerExecResourceLogsAttachArchiveInterface<ContainerExecCreateResponse, InlineExecConfig, ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, OutputHandle, ContainerInspect, InputOutputErrorHandle, OutputStream> withName(String name) {
+    public ContainerExecResourceLogsAttachArchiveInterface<ContainerExecCreateResponse, InlineExecConfig, ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, Integer, OutputHandle, ContainerInspect, InputOutputErrorHandle> withName(
+        String name) {
         return new ContainerNamedOperationImpl(client, config, name);
     }
 
@@ -64,7 +63,7 @@ public class ContainerOperationImpl extends BaseContainerOperation implements Co
     public ContainerCreateResponse create(ContainerCreateRequest container) {
         try {
             String dir = "";
-            if(container.getName() != null && !container.getName().isEmpty()) {
+            if (container.getName() != null && !container.getName().isEmpty()) {
                 dir = "?name=" + container.getName();
             }
             return handleCreate(container, ContainerCreateResponse.class, CREATE_OPERATION, dir);
@@ -75,11 +74,12 @@ public class ContainerOperationImpl extends BaseContainerOperation implements Co
 
     @Override
     public InlineContainerCreate createNew() {
-        return new InlineContainerCreate(new io.fabric8.docker.api.builder.Function<ContainerCreateRequest, ContainerCreateResponse>() {
-            @Override
-            public ContainerCreateResponse apply(ContainerCreateRequest input) {
-                return create(input);
-            }
-        });
+        return new InlineContainerCreate(
+            new io.fabric8.docker.api.builder.Function<ContainerCreateRequest, ContainerCreateResponse>() {
+                @Override
+                public ContainerCreateResponse apply(ContainerCreateRequest input) {
+                    return create(input);
+                }
+            });
     }
 }

@@ -40,17 +40,16 @@ import io.fabric8.docker.dsl.container.annotations.ArchiveOption;
 import io.fabric8.docker.dsl.container.annotations.AttachOption;
 import io.fabric8.docker.dsl.container.annotations.ExecOption;
 import io.fabric8.docker.dsl.container.annotations.LogOption;
+import io.fabric8.docker.dsl.container.annotations.UploadOption;
 import io.sundr.dsl.annotations.All;
 import io.sundr.dsl.annotations.Any;
 import io.sundr.dsl.annotations.Dsl;
 import io.sundr.dsl.annotations.EntryPoint;
 import io.sundr.dsl.annotations.InterfaceName;
 import io.sundr.dsl.annotations.Multiple;
-import io.sundr.dsl.annotations.None;
 import io.sundr.dsl.annotations.Only;
 import io.sundr.dsl.annotations.Or;
 import io.sundr.dsl.annotations.Terminal;
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
@@ -164,7 +163,7 @@ public interface ContainerDSL {
     @All(NamedOption.class)
     @Only({NamedOption.class, ExecOption.class})
     @InterfaceName("ContainerExecResource")
-    Boolean resize(int h,int w);
+    Boolean resize(int h, int w);
 
     @Terminal
     @All(NamedOption.class)
@@ -207,6 +206,12 @@ public interface ContainerDSL {
     @All({NamedOption.class})
     @InterfaceName("ContainerResource")
     Boolean kill(String signal);
+
+    @Terminal
+    @OtherOption
+    @All({NamedOption.class})
+    @InterfaceName("ContainerResource")
+    Integer waitContainer();
 
     @Terminal
     @OtherOption
@@ -309,8 +314,18 @@ public interface ContainerDSL {
     @All({ArchiveOption.class})
     InputStream downloadFrom(String path);
 
-    @Terminal
+    @UploadOption
     @All({ArchiveOption.class})
-    OutputStream uploadTo(String path);
+    void uploadTo(String path);
 
+    @All({ArchiveOption.class, UploadOption.class})
+    void withNoOverwriteDirNonDir(boolean noOverwriteDirNonDir);
+
+    @Terminal
+    @Any({ArchiveOption.class, UploadOption.class})
+    Boolean withHostResource(String resource);
+
+    @Terminal
+    @Any({ArchiveOption.class, UploadOption.class})
+    Boolean withTarInputStream(InputStream tarInputStream);
 }

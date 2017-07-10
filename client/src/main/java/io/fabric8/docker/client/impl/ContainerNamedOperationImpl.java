@@ -21,6 +21,7 @@ import io.fabric8.docker.api.model.ContainerChange;
 import io.fabric8.docker.api.model.ContainerExecCreateResponse;
 import io.fabric8.docker.api.model.ContainerInspect;
 import io.fabric8.docker.api.model.ContainerProcessList;
+import io.fabric8.docker.api.model.ContainerWaitResponse;
 import io.fabric8.docker.api.model.ExecConfig;
 import io.fabric8.docker.api.model.InlineExecConfig;
 import io.fabric8.docker.api.model.Stats;
@@ -31,10 +32,10 @@ import io.fabric8.docker.dsl.InputOutputErrorHandle;
 import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.dsl.container.ContainerExecResourceLogsAttachArchiveInterface;
 import io.fabric8.docker.dsl.container.ContainerInputOutputErrorStreamGetLogsInterface;
-import io.fabric8.docker.dsl.container.DownloadFromUploadToInterface;
+
 import io.fabric8.docker.dsl.container.SinceContainerOutputErrorTimestampsTailingLinesUsingListenerFollowDisplayInterface;
+import io.fabric8.docker.dsl.container.UploadToDownloadFromHostResourceTarInputStreamInterface;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.util.List;
 import okhttp3.OkHttpClient;
@@ -42,7 +43,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 
 public class ContainerNamedOperationImpl extends BaseContainerOperation implements
-        ContainerExecResourceLogsAttachArchiveInterface<ContainerExecCreateResponse, InlineExecConfig, ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, OutputHandle, ContainerInspect, InputOutputErrorHandle, OutputStream> {
+    ContainerExecResourceLogsAttachArchiveInterface<ContainerExecCreateResponse, InlineExecConfig, ContainerProcessList, List<ContainerChange>, InputStream, Stats, Boolean, Integer, OutputHandle, ContainerInspect, InputOutputErrorHandle> {
 
     private static final String EXEC_OPERATION = "exec";
     private static final String TOP_OPERATION = "top";
@@ -52,6 +53,7 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
     private static final String START_OPERATION = "start";
     private static final String STOP_OPERATION = "stop";
     private static final String KILL_OPERATION = "kill";
+    private static final String WAIT_OPERATION = "wait";
     private static final String RESTART_OPERATION = "restart";
     private static final String RESIZE_OPERATION = "resize";
     private static final String REMOVE_VOLUMES = "v";
@@ -65,8 +67,8 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
     }
 
     @Override
-    public DownloadFromUploadToInterface<InputStream, OutputStream> archive() {
-        return new ArchiveContainer(client, config, name);
+    public UploadToDownloadFromHostResourceTarInputStreamInterface<InputStream, Boolean> archive() {
+        return new ArchiveContainer(client, config, name, ".", null, false);
     }
 
     @Override
@@ -91,7 +93,8 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
     @Override
     public List<ContainerChange> changes() {
         try {
-            return handleList(new URL(URLUtils.join(getResourceUrl().toString(), CHANGES_OPERATION)), ContainerChange.class);
+            return handleList(new URL(URLUtils.join(getResourceUrl().toString(), CHANGES_OPERATION)),
+                ContainerChange.class);
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
         }
@@ -103,7 +106,8 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
             StringBuilder sb = new StringBuilder();
             sb.append(getResourceUrl());
             RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, EMPTY);
-            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), EXPORT_OPERATION));
+            Request.Builder requestBuilder =
+                new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), EXPORT_OPERATION));
             return handleResponseStream(requestBuilder, 200);
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
@@ -135,7 +139,8 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
             sb.append(Q).append("h").append(EQUALS).append(h);
             sb.append(A).append("w").append(EQUALS).append(w);
             RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, EMPTY);
-            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), RESIZE_OPERATION));
+            Request.Builder requestBuilder =
+                new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), RESIZE_OPERATION));
             handleResponse(requestBuilder, 200);
             return true;
         } catch (Exception e) {
@@ -149,7 +154,8 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
             StringBuilder sb = new StringBuilder();
             sb.append(getResourceUrl());
             RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, EMPTY);
-            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), START_OPERATION));
+            Request.Builder requestBuilder =
+                new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), START_OPERATION));
             handleResponse(requestBuilder, 204);
             return true;
         } catch (Exception e) {
@@ -169,7 +175,8 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
             sb.append(getResourceUrl());
             sb.append(Q).append(TIMEOUT).append(EQUALS).append(time);
             RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, EMPTY);
-            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), STOP_OPERATION));
+            Request.Builder requestBuilder =
+                new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), STOP_OPERATION));
             handleResponse(requestBuilder, 204);
             return true;
         } catch (Exception e) {
@@ -189,7 +196,8 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
             sb.append(getResourceUrl());
             sb.append(Q).append(TIMEOUT).append(EQUALS).append(time);
             RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, EMPTY);
-            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), RESTART_OPERATION));
+            Request.Builder requestBuilder =
+                new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), RESTART_OPERATION));
             handleResponse(requestBuilder, 204);
             return true;
         } catch (Exception e) {
@@ -209,9 +217,27 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
             sb.append(getResourceUrl());
             sb.append(Q).append(SIGNAL).append(EQUALS).append(signal);
             RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, EMPTY);
-            Request.Builder requestBuilder = new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), KILL_OPERATION));
+            Request.Builder requestBuilder =
+                new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), KILL_OPERATION));
             handleResponse(requestBuilder, 204);
             return true;
+        } catch (Exception e) {
+            throw DockerClientException.launderThrowable(e);
+        }
+    }
+
+    @Override
+    public Integer waitContainer() {
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append(getResourceUrl());
+            RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, EMPTY);
+            Request.Builder requestBuilder =
+                new Request.Builder().post(body).url(URLUtils.join(getResourceUrl().toString(), WAIT_OPERATION));
+
+            final ContainerWaitResponse containerWaitResponse =
+                handleResponse(requestBuilder, ContainerWaitResponse.class, 200);
+            return containerWaitResponse.getStatusCode();
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
         }
@@ -272,8 +298,8 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
 
             RequestBody body = RequestBody.create(MEDIA_TYPE_JSON, JSON_MAPPER.writeValueAsString(execConfig));
             Request.Builder builder = new Request.Builder()
-                    .post(body)
-                    .url(sb.toString());
+                .post(body)
+                .url(sb.toString());
 
             return handleResponse(builder, ContainerExecCreateResponse.class, 200, 201);
         } catch (Exception e) {
@@ -283,11 +309,12 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
 
     @Override
     public InlineExecConfig execNew() {
-        return new InlineExecConfig(new io.fabric8.docker.api.builder.Function<ExecConfig, ContainerExecCreateResponse>() {
-            @Override
-            public ContainerExecCreateResponse apply(ExecConfig input) {
-                return exec(input);
-            }
-        });
+        return new InlineExecConfig(
+            new io.fabric8.docker.api.builder.Function<ExecConfig, ContainerExecCreateResponse>() {
+                @Override
+                public ContainerExecCreateResponse apply(ExecConfig input) {
+                    return exec(input);
+                }
+            });
     }
 }
