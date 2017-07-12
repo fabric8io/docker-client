@@ -32,7 +32,6 @@ import io.fabric8.docker.dsl.InputOutputErrorHandle;
 import io.fabric8.docker.dsl.OutputHandle;
 import io.fabric8.docker.dsl.container.ContainerExecResourceLogsAttachArchiveInterface;
 import io.fabric8.docker.dsl.container.ContainerInputOutputErrorStreamGetLogsInterface;
-
 import io.fabric8.docker.dsl.container.SinceContainerOutputErrorTimestampsTailingLinesUsingListenerFollowDisplayInterface;
 import io.fabric8.docker.dsl.container.UploadToDownloadFromHostResourceTarInputStreamInterface;
 import java.io.InputStream;
@@ -161,6 +160,11 @@ public class ContainerNamedOperationImpl extends BaseContainerOperation implemen
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
         }
+    }
+
+    @Override
+    public OutputHandle start(boolean detached) {
+        return null;
     }
 
     @Override
