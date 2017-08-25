@@ -21,7 +21,10 @@ public interface EventListener {
 
     void onSuccess(String message);
 
+    @Deprecated
     void onError(String message);
+
+    void onError(Throwable t);
 
     void onEvent(String event);
 }

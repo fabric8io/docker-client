@@ -66,6 +66,11 @@ public class ContainerLogsExample {
                     }
 
                     @Override
+                    public void onError(Throwable t) {
+                        t.printStackTrace(System.err);
+                    }
+
+                    @Override
                     public void onEvent(String event) {
                         System.out.println(event);
                     }

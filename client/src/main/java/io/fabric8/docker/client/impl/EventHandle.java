@@ -18,7 +18,6 @@
 package io.fabric8.docker.client.impl;
 
 import okhttp3.Call;
-import okhttp3.Request;
 import okhttp3.Response;
 import io.fabric8.docker.api.model.Callback;
 import io.fabric8.docker.client.DockerClientException;
@@ -102,7 +101,7 @@ public class EventHandle implements OutputHandle, okhttp3.Callback {
     @Override
     public void onFailure(Call call, IOException e) {
         error.set(e);
-        listener.onError(e.getMessage());
+        listener.onError(e);
         latch.countDown();
     }
 
@@ -116,17 +115,18 @@ public class EventHandle implements OutputHandle, okhttp3.Callback {
                     onEvent(new String(data));
                     return null;
                 }
-            }, new Callback<Boolean, Void>() {
+            }, new Runnable() {
                 @Override
-                public Void call(Boolean success) {
-                    if (success) {
+                public void run() {
                         if (succeded.compareAndSet(false, true) && !failed.get()) {
                             listener.onSuccess("Done.");
                         }
-                    } else {
-                        if (failed.compareAndSet(false, true)) {
-                            listener.onError("Failed.");
-                        }
+                }
+            }, new Callback<Throwable, Void>() {
+                @Override
+                public Void call(Throwable t) {
+                    if (failed.compareAndSet(false, true)) {
+                        listener.onError(t);
                     }
                     return null;
                 }

@@ -72,6 +72,12 @@ public class ImagePushExample {
                     }
 
                     @Override
+                    public void onError(Throwable t) {
+                        t.printStackTrace(System.err);
+                        pushDone.countDown();
+                    }
+
+                    @Override
                     public void onEvent(String event) {
                         System.out.println(event);
                     }

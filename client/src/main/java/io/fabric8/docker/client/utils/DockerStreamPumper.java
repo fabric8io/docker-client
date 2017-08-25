@@ -33,24 +33,31 @@ public class DockerStreamPumper implements Runnable, Closeable {
 
     private final BufferedSource in;
     private final Callback<DockerStreamData, Void> callback;
-    private final Callback<Boolean, Void> onFinish;
+    private final Runnable onSuccess;
+    private final Callback<Throwable, Void> onError;
     private boolean keepReading = true;
     private Thread thread;
 
     public DockerStreamPumper(BufferedSource in, Callback<DockerStreamData, Void> callback) {
-        this(in, callback, new Callback<Boolean, Void>() {
+        this(in, callback, new Runnable() {
             @Override
-            public Void call(Boolean input) {
+            public void run() {
+
+            }
+        }, new Callback<Throwable, Void>() {
+            @Override
+            public Void call(Throwable input) {
                 return null;
             }
         });
     }
 
     public DockerStreamPumper(BufferedSource in, Callback<DockerStreamData, Void> callback,
-        Callback<Boolean, Void> onFinish) {
+                              Runnable onSuccess, Callback<Throwable, Void> onError) {
         this.in = in;
         this.callback = callback;
-        this.onFinish = onFinish;
+        this.onSuccess = onSuccess;
+        this.onError = onError;
     }
 
     @Override
@@ -63,17 +70,17 @@ public class DockerStreamPumper implements Runnable, Closeable {
             }
 
             //To indicate that the response has been fully read.
-            onFinish.call(true);
+            onSuccess.run();
         } catch (InterruptedIOException e) {
             LOGGER.debug("Interrupted while pumping stream.", e);
-            onFinish.call(false);
+            onError.call(e);
         } catch (IOException e) {
-            onFinish.call(false);
             if (!Thread.currentThread().isInterrupted()) {
                 LOGGER.error("Error while pumping stream.", e);
             } else {
                 LOGGER.debug("Interrupted while pumping stream.", e);
             }
+            onError.call(e);
         }
     }
 
