@@ -68,6 +68,12 @@ public class ImageBuildExample {
                     }
 
                     @Override
+                    public void onError(Throwable t) {
+                        t.printStackTrace(System.err);
+                        buildDone.countDown();
+                    }
+
+                    @Override
                     public void onEvent(String event) {
                         System.out.println(event);
                     }

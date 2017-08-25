@@ -63,7 +63,7 @@ public class ContainerLogHandle implements Callback, OutputErrorHandle {
     @Override
     public void onFailure(Call call, IOException e) {
         error.set(e);
-        listener.onError(e.getMessage());
+        listener.onError(e);
         latch.countDown();
     }
 
@@ -77,24 +77,25 @@ public class ContainerLogHandle implements Callback, OutputErrorHandle {
 
         pumper =
             new DockerStreamPumper(r.body().source(),
-                new io.fabric8.docker.api.model.Callback<DockerStreamData, Void>() {
-                    @Override
-                    public Void call(DockerStreamData input) {
-                        processStream(input);
-                        writeSteam(input);
-                        return null;
-                    }
-                }, new io.fabric8.docker.api.model.Callback<Boolean, Void>() {
+                    new io.fabric8.docker.api.model.Callback<DockerStreamData, Void>() {
+                        @Override
+                        public Void call(DockerStreamData input) {
+                            processStream(input);
+                            writeSteam(input);
+                            return null;
+                        }
+                    }, new Runnable() {
                 @Override
-                public Void call(Boolean success) {
-                    if (success) {
-                        if (succeded.compareAndSet(false, true) && !failed.get()) {
-                            listener.onSuccess("Done.");
-                        }
-                    } else {
-                        if (failed.compareAndSet(false, true)) {
-                            listener.onError("Failed.");
-                        }
+                public void run() {
+                    if (succeded.compareAndSet(false, true) && !failed.get()) {
+                        listener.onSuccess("Done.");
+                    }
+                }
+            }, new io.fabric8.docker.api.model.Callback<Throwable, Void>() {
+                @Override
+                public Void call(Throwable t) {
+                    if (failed.compareAndSet(false, true)) {
+                        listener.onError(t);
                     }
                     return null;
                 }

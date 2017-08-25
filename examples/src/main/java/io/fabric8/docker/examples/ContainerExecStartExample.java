@@ -83,6 +83,11 @@ public class ContainerExecStartExample {
                     public void onError(String message) {
                     }
 
+
+                    @Override
+                    public void onError(Throwable t) {
+                    }
+
                     @Override
                     public void onEvent(String event) {
                         System.out.println("*****" + event);

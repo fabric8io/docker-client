@@ -65,6 +65,11 @@ public class ContainerStartExample {
                 }
 
                 @Override
+                public void onError(Throwable t) {
+                    latch.countDown();
+                }
+
+                @Override
                 public void onEvent(String event) {
                     System.out.println(event);
                 }

@@ -69,6 +69,11 @@ public class OperationSupport {
     }
 
     @Override
+    public void onError(Throwable t) {
+
+    }
+
+    @Override
     public void onEvent(String event) {
     }
   };
