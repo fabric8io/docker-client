@@ -35,6 +35,7 @@
     <properties>
         <osgi.import>
             !android.util*,
+            okhttp3.logging;resolution:=optional,
             *
         </osgi.import>
         <osgi.export>
