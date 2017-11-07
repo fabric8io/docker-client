@@ -17,10 +17,6 @@
 
 package io.fabric8.docker.client.impl;
 
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ws.WebSocket;
-import okhttp3.ws.WebSocketListener;
 import io.fabric8.docker.api.model.Callback;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.dsl.InputOutputErrorHandle;
@@ -28,7 +24,6 @@ import io.fabric8.docker.client.utils.InputStreamPumper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
@@ -37,7 +32,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class ContainerInputOutputErrorHandle extends ContainerOutputHandle implements InputOutputErrorHandle, WebSocketListener {
+public class ContainerInputOutputErrorHandle extends ContainerOutputHandle implements InputOutputErrorHandle {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContainerInputOutputErrorHandle.class);
 
@@ -46,7 +41,6 @@ public class ContainerInputOutputErrorHandle extends ContainerOutputHandle imple
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private final InputStreamPumper pumper;
-
 
     public ContainerInputOutputErrorHandle(InputStream in, OutputStream out, OutputStream err, PipedOutputStream inputPipe, PipedInputStream outputPipe, PipedInputStream errorPipe) {
         super(out,err,outputPipe,errorPipe);
@@ -79,22 +73,8 @@ public class ContainerInputOutputErrorHandle extends ContainerOutputHandle imple
         super.close();
     }
 
-
-
     public OutputStream getInput() {
         return input;
-    }
-
-    private void send(byte[] bytes) throws IOException {
-        if (bytes.length > 0) {
-            WebSocket ws = webSocketRef.get();
-            if (ws != null) {
-                byte[] toSend = new byte[bytes.length + 1];
-                toSend[0] = 0;
-                System.arraycopy(bytes, 0, toSend, 1, bytes.length);
-                ws.sendMessage(RequestBody.create(WebSocket.BINARY, toSend));
-            }
-        }
     }
 
     private static InputStream inputStreamOrPipe(InputStream stream, PipedOutputStream out) {

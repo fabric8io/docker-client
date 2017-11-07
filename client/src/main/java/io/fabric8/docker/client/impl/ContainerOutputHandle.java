@@ -17,14 +17,11 @@
 
 package io.fabric8.docker.client.impl;
 
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-import okhttp3.ws.WebSocket;
-import okhttp3.ws.WebSocketListener;
 import io.fabric8.docker.client.DockerClientException;
 import io.fabric8.docker.dsl.OutputErrorHandle;
-import okio.Buffer;
+import okhttp3.Response;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
 import okio.ByteString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,12 +31,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.nio.charset.Charset;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ContainerOutputHandle implements OutputErrorHandle, WebSocketListener {
+public class ContainerOutputHandle extends WebSocketListener implements OutputErrorHandle  {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContainerOutputHandle.class);
 
@@ -107,19 +105,19 @@ public class ContainerOutputHandle implements OutputErrorHandle, WebSocketListen
     }
 
     @Override
-    public void onFailure(IOException ioe, Response response) {
-        LOGGER.error(response != null ? response.message() : "Exec Failure.", ioe);
+    public void onFailure(WebSocket webSocket, Throwable t, Response response) {
+        LOGGER.error(response != null ? response.message() : "Exec Failure.", t);
         //We only need to queue startup failures.
         if (!started.get()) {
-            queue.add(ioe);
+            queue.add(t);
         }
     }
 
     @Override
-    public void onMessage(ResponseBody message) throws IOException {
+    public void onMessage(WebSocket webSocket, String text) {
         try {
-            byte streamID = message.source().readByte();
-            ByteString byteString = message.source().readByteString();
+            byte streamID = (text.getBytes())[0];   // read the first byte
+            ByteString byteString = ByteString.encodeString(text, Charset.defaultCharset());
             if (byteString.size() > 0) {
                 switch (streamID) {
                     case 1:
@@ -141,19 +139,9 @@ public class ContainerOutputHandle implements OutputErrorHandle, WebSocketListen
                         throw new IOException("Unknown stream ID " + streamID);
                 }
             }
-        } finally {
-            message.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public void onPong(Buffer buffer) {
-        LOGGER.debug("Exec Web Socket: On Pong");
-    }
-
-    @Override
-    public void onClose(int i, String s) {
-        LOGGER.debug("Exec Web Socket: On Close");
     }
 
     public InputStream getOutput() {
@@ -164,14 +152,14 @@ public class ContainerOutputHandle implements OutputErrorHandle, WebSocketListen
         return error;
     }
 
-    private void send(byte[] bytes) throws IOException {
+    protected void send(byte[] bytes) throws IOException {
         if (bytes.length > 0) {
             WebSocket ws = webSocketRef.get();
             if (ws != null) {
                 byte[] toSend = new byte[bytes.length + 1];
                 toSend[0] = 0;
                 System.arraycopy(bytes, 0, toSend, 1, bytes.length);
-                ws.sendMessage(RequestBody.create(WebSocket.BINARY, toSend));
+                ws.send(ByteString.of(toSend));
             }
         }
     }

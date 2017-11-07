@@ -53,6 +53,8 @@ import static io.fabric8.docker.client.utils.Utils.isNotNullOrEmpty;
 
 public class HttpClientUtils {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientUtils.class);
+
     //Let's fool okhttp to work with non http schemes!
     //How?
     //We pass a fake url and a custom socket factory.
@@ -135,11 +137,16 @@ public class HttpClientUtils {
                 });
             }
 
-            Logger reqLogger = LoggerFactory.getLogger(HttpLoggingInterceptor.class);
-            if (reqLogger.isTraceEnabled()) {
-                HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-                loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-                httpClientBuilder.networkInterceptors().add(loggingInterceptor);
+            try {
+                Logger reqLogger = LoggerFactory.getLogger(HttpLoggingInterceptor.class);
+                if (reqLogger.isTraceEnabled()) {
+                    HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+                    loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+                    httpClientBuilder.networkInterceptors().add(loggingInterceptor);
+                }
+            } catch (Exception ex) {
+                // The interceptor was not successfully added.
+                LOGGER.warn("The interceptor was not successfully added.");
             }
 
             if (config.getConnectionTimeout() > 0) {
