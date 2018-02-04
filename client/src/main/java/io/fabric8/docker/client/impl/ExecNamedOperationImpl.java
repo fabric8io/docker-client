@@ -101,9 +101,7 @@ public class ExecNamedOperationImpl extends OperationSupport implements
             OkHttpClient clone = client.newBuilder().readTimeout(0, TimeUnit.MILLISECONDS).build();
 
             ContainerLogHandle containerLogHandle = new ContainerLogHandle(out, err, outPipe, errPipe, eventListener);
-            System.out.println("before handle");
             clone.newCall(request).enqueue(containerLogHandle);
-            System.out.println("after enqueu");
             return containerLogHandle;
         } catch (Exception e) {
             throw DockerClientException.launderThrowable(e);
