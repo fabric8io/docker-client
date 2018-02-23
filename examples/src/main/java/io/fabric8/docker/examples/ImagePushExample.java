@@ -52,7 +52,6 @@ public class ImagePushExample {
                 .build();
 
         DockerClient client = new DefaultDockerClient(config);
-        final CountDownLatch buildDone = new CountDownLatch(1);
         final CountDownLatch pushDone = new CountDownLatch(1);
 
         client.image().withName(image).tag().inRepository(repositoryName).force().withTagName("1.0");
