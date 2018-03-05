@@ -77,7 +77,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <commons-codec.version>1.10</commons-codec.version>
         <commons-compress.version>1.9</commons-compress.version>
         <easymock.version>3.2</easymock.version>
         <felix.scr.annotations.version>1.9.8</felix.scr.annotations.version>
@@ -144,11 +143,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-                <version>${commons-codec.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-compress</artifactId>

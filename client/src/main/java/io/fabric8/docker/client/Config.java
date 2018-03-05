@@ -28,7 +28,6 @@ import io.fabric8.docker.client.utils.URLUtils;
 import io.fabric8.docker.client.utils.Utils;
 import io.sundr.builder.annotations.Buildable;
 import io.sundr.builder.annotations.Inline;
-import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.xml.bind.DatatypeConverter;
 
 import static io.fabric8.docker.client.utils.Utils.getSystemPropertyOrEnvVar;
 import static io.fabric8.docker.client.utils.Utils.hasSystemPropertyOrEnvVar;
@@ -225,8 +225,7 @@ public class Config {
                         String serverAddress = entry.getKey();
                         AuthConfig authConfig = entry.getValue();
                         if (authConfig.getAuth() != null) {
-                            String auth = new String(Base64.decodeBase64(authConfig.getAuth().getBytes(UTF_8)), UTF_8);
-                            Matcher m = AUTH_PATTERN.matcher(auth);
+                            Matcher m = AUTH_PATTERN.matcher(DatatypeConverter.printBase64Binary(authConfig.getAuth().getBytes(UTF_8)));
                             if (m.matches()) {
                                 String username = m.group(USERNAME_LABEL);
                                 String password = m.group(PASSWORD_LABEL);
