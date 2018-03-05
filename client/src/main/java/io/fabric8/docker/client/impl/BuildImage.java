@@ -55,10 +55,10 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import javax.xml.bind.DatatypeConverter;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 
@@ -261,7 +261,7 @@ public class BuildImage extends BaseImageOperation implements
 
             RequestBody body = RequestBody.create(MEDIA_TYPE_TAR, new File(path));
             Request request = new Request.Builder()
-                    .header("X-Registry-Config", new String(Base64.encodeBase64(JSON_MAPPER.writeValueAsString(config.getAuthConfigs()).getBytes("UTF-8")), "UTF-8"))
+                    .header("X-Registry-Config", DatatypeConverter.printBase64Binary(JSON_MAPPER.writeValueAsString(config.getAuthConfigs()).getBytes("UTF-8")))
                     .post(body)
                     .url(sb.toString()).build();
 

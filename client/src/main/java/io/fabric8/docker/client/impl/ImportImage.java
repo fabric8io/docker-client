@@ -31,11 +31,11 @@ import io.fabric8.docker.dsl.image.AsRepoInterface;
 import io.fabric8.docker.dsl.image.RedirectingWritingOutputTagAsRepoInterface;
 import io.fabric8.docker.dsl.image.TagAsRepoInterface;
 import io.fabric8.docker.dsl.image.UsingListenerRedirectingWritingOutputTagAsRepoInterface;
-import org.apache.commons.codec.binary.Base64;
 
 import java.io.OutputStream;
 import java.io.PipedOutputStream;
 import java.util.concurrent.TimeUnit;
+import javax.xml.bind.DatatypeConverter;
 
 public class ImportImage extends BaseImageOperation implements
         UsingListenerRedirectingWritingOutputTagAsRepoInterface<OutputHandle>,
@@ -72,7 +72,7 @@ public class ImportImage extends BaseImageOperation implements
             }
             AuthConfig authConfig = RegistryUtils.getConfigForImage(name, config);
             Request request = new Request.Builder()
-                    .header("X-Registry-Auth", new String(Base64.encodeBase64(JSON_MAPPER.writeValueAsString(authConfig != null ? authConfig : new AuthConfig()).getBytes("UTF-8")), "UTF-8"))
+                    .header("X-Registry-Auth", DatatypeConverter.printBase64Binary(JSON_MAPPER.writeValueAsString(authConfig != null ? authConfig : new AuthConfig()).getBytes("UTF-8")))
                     .post(RequestBody.create(MEDIA_TYPE_TEXT, EMPTY))
                     .url(sb.toString()).build();
 
